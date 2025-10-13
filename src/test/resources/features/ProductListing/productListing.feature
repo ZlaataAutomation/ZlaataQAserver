@@ -1,4 +1,4 @@
-Feature: This is Product Listing Page feature
+Feature: Product Listing Page 
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_PLP_01

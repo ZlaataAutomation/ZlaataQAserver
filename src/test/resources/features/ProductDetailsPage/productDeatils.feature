@@ -1,5 +1,5 @@
 
-Feature: Product Details Page Feature
+Feature: Product Details Page 
 
   #===========================================================================
   # Test Case ID :: TC_UI_Zlaata_PDP_01

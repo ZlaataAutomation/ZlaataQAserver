@@ -1,4 +1,4 @@
-Feature: This is Login feature
+Feature:  Login  Page
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_Login_01

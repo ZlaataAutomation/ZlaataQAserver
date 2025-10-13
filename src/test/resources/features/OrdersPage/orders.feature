@@ -1,4 +1,4 @@
-Feature: This is My orders feature
+Feature:  Orders Page
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_Orders_01

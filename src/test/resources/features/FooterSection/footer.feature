@@ -1,4 +1,4 @@
-Feature: This is Footer Section feature
+Feature:  Footer Section 
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_FS_01

@@ -1,4 +1,4 @@
-Feature: Search Bar Feature
+Feature: Search Bar 
 
   #===========================================================================
   # Test Case ID :: TC_UI_Zlaata_PDP_01

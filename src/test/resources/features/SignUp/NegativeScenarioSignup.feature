@@ -1,4 +1,4 @@
-Feature: This is Negative SignUp feature
+Feature: SignUp Page
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_Signup

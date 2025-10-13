@@ -1,4 +1,4 @@
-Feature: address Page Feature
+Feature: Add Address Page
 
   #===========================================================================
   # Test Case ID :: TC_UI_Zlaata_ADDP_01

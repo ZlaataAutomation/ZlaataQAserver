@@ -1,4 +1,4 @@
-Feature: CheckOut Page Feature
+Feature: Checkout Page
 
   #===========================================================================
   # Test Case ID :: TC_UI_Zlaata_COP_01

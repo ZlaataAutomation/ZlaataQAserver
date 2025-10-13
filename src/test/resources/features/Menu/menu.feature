@@ -1,4 +1,4 @@
-Feature: This is Menu feature
+Feature:  Menus section 
 
   #===========================================================================
   #Test case ID :: TC_UI_Zlaata_Menu_01
