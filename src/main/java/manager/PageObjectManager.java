@@ -34,6 +34,9 @@ public class PageObjectManager {
     private AdminGoogleMerchantPage adminGoogle;
     private AdminPanelAllImortPage adminImport;
     private AdminPanelInfluencerPage adminInflu;
+    private AdminPanelCouponPage adminCoupon;
+    private AdminPanelExportPage adminExports;
+    
    
 
     public PageObjectManager(WebDriver driver) {
@@ -131,6 +134,14 @@ public class PageObjectManager {
 	
 	public AdminPanelInfluencerPage getAdminPanelInfluencerPage() {
 		return (adminInflu == null) ? adminInflu = new AdminPanelInfluencerPage(driver) : adminInflu;
+	}
+	
+	public AdminPanelCouponPage getAdminPanelCouponPage() {
+		return (adminCoupon == null) ? adminCoupon = new AdminPanelCouponPage(driver) : adminCoupon;
+	}
+	
+	public AdminPanelExportPage getAdminPanelExportPage() {
+		return (adminExports == null) ? adminExports = new AdminPanelExportPage(driver) : adminExports;
 	}
 	
 	
