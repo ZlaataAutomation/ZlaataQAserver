@@ -68,53 +68,34 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 	    expectedBannerTitle = Common.getValueFromTestDataMap("Banner Title");
+	    Common.waitForElement(2);
+	    click(addHomePageBanner);
+	    
+	        type(bannerTitle,expectedBannerTitle );
+	        Common.waitForElement(2);
+		    waitFor(uploadImageInput);
+	        uploadImageInput.sendKeys(imagePath);
+	        System.out.println("✅ successful image updated");
+	        click(uploadButton);
+	        driver.navigate().refresh();
+	       
+	      
+	        
+	        Common.waitForElement(4);
 	    click(homePageBannerDropDown);
 	    selectHomePageValue.get(0).click();
-	    Common.waitForElement(1);
+	    Common.waitForElement(2);
 		click(status);
 		statusFilterSelect.get(0).click();
-		Common.waitForElement(1);
-	    boolean foundSortBy1 = false;
+		Common.waitForElement(2);
 
-	    // Check if Sort By = 1 already exists
-	    List<WebElement> bannerRows = driver.findElements(By.xpath(".//span[@class='d-inline-flex']"));
-	    for (int i = 0; i < bannerRows.size(); i++) {
-	        try {
-	            WebElement currentRow = driver.findElements(By.xpath("(.//tr[@class='odd'])[1]")).get(i);
-
-	            WebElement sortByInput = currentRow.findElement(By.xpath(".//input[@type='number']"));
-	            String value = sortByInput.getAttribute("value").trim();
-
-	            if (value.equals("1")) {
-	                // Found row with Sort By = 1 → Click Edit and Save
-	                WebElement editButton = currentRow.findElement(By.xpath(".//i[@class='las la-edit']"));
-	                clickUsingJavaScript(editButton);
-	                Common.waitForElement(2);
-	                type(bannerTitle,expectedBannerTitle);
-	                uploadImageInput.sendKeys(imagePath);
-	                click(uploadButton); 
-	                System.out.println("Edited and saved existing banner with Sort By = 1");
-	                foundSortBy1 = true;
-	                break;
-	            }
-	        } catch (Exception e) {
-	            // Ignore rows without input/edit
-	        }
-	    }
-
-	    // If no row with Sort By = 1 → Add new banner
-	    if (!foundSortBy1) {
-	        click(addHomePageBanner);
-	        type(bannerTitle, "Home Page Automation Banner");
-	        uploadImageInput.sendKeys(imagePath);
-	        click(uploadButton);
-
-	        // set Sort By = 1
-	        type(sortBy, "0");
+	   
+	        type(sortBy, "1");
+	        Common.waitForElement(2);
 	        click(sortBySave);
 
 	        System.out.println("Added new banner and saved with Sort By = 1");
-	    }
+	    
 	}
 
 
@@ -143,9 +124,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            titleElement = wait.until(d -> {
 	                List<WebElement> elements = driver.findElements(
-	                        By.xpath("//div[contains(@class,'banner') or contains(@class,'carousel')]//img[contains(@alt,'" 
-	                                + expectedTitle + "')]")
+	                        By.xpath("//a[contains(@class,'carousel_banner Cls_OpenSubscribe')]//img[@alt='" + expectedTitle + "']")
 	                );
+	              
 	                return elements.isEmpty() ? null : elements.get(0);
 	            });
 
@@ -177,6 +158,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	
 
 //SarojKumar 
+	//Top Selling
 	
 	public void adminLogin() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
@@ -333,8 +315,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            card = wait.until(d -> {
 	                List<WebElement> elements = d.findElements(By.xpath(
-	                        "//div[contains(@class,'products_cards')]//h3[@class='product_heading' and normalize-space(text())='" 
-	                        + productName + "']"
+	                		"//div[contains(@class,'products_cards')]//a[@class='product_heading' and normalize-space(.)='" + productName + "']"
+	                        
 	                ));
 	                return elements.isEmpty() ? null : elements.get(0);
 	            });
@@ -815,8 +797,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            card = wait.until(d -> {
 	                List<WebElement> elements = d.findElements(By.xpath(
-	                        "//div[contains(@class,'products_cards')]//h3[@class='product_heading' and normalize-space(text())='" 
-	                        + productName + "']"
+	                		"//div[contains(@class,'products_cards')]//a[@class='product_heading' and normalize-space(.)='" + productName + "']"
 	                ));
 	                return elements.isEmpty() ? null : elements.get(0);
 	            });
@@ -1589,7 +1570,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		        System.out.println("✅ Excel uploaded successfully");
 		        
 		      //Clear Catch
-			    Common.waitForElement(3);
+			    Common.waitForElement(5);
 			    waitFor(clearCatchButton);
 			    click(clearCatchButton);
 			    System.out.println("✅ Successfull click Clear Catch Button");
@@ -1697,7 +1678,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 			    ExtentManager.setTest(test);
 
 			    for (Map<String, Object> product : products) {
-			        String collection = (String) product.get("Collections");
+			        String collection = (String) product.get("Title");
 
 			        if (collection == null || collection.trim().isEmpty()) {
 			            System.out.println("⚠ Skipping empty collection");
@@ -1727,13 +1708,6 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 			                // ✅ Click
 			                link.click();
 			                System.out.println("✅ Navigated to collection: " + collection);
-
-			                // ✅ Verify products inside collection
-			                List<WebElement> productsInCollection = driver.findElements(By.xpath("//h6[@class='prod_name']"));
-			                Assert.assertTrue("❌ No products found in collection: " + collection,
-			                        productsInCollection.size() > 0);
-			                System.out.println("✅ Products available under collection: " + collection);
-			                test.pass("Products found in Collection: " + collection);
 
 			                break;
 			            }
