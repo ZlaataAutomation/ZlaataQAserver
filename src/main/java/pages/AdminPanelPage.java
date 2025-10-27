@@ -100,8 +100,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 
 	public void verifyBannerOnHomePage() {
-	    switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 
 	    String expectedTitle = Common.getValueFromTestDataMap("Banner Title");
 
@@ -288,8 +288,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	//Verify the product successfull showing in user application home page top selling Section
 	
 	public void verifyProductShowInTopSelling(String productName) throws InterruptedException {
-	    switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,700);");
 
@@ -454,8 +454,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	// Verify product is NOT in Top Selling (Negative Test)
 	public void verifyProductNotInTopSelling(String productName) throws InterruptedException {
-	    switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,700);");
 
@@ -769,8 +769,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	}
 	
 	public void verifyProductShowInNewArrivalsSction(String productName) {
-	    switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,2400);");
 	    Common.waitForElement(3);
@@ -886,8 +886,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
     // Method 2: Verify Banner in User Application
 	public void verifyBannerUserApp() {
-		switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,1300);");
 	    Common.waitForElement(3);
@@ -1030,8 +1030,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	
 	public void verifyProductsInUserApp(String filePath) throws IOException {
-	    switchToWindow(1);
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 
 	    List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
@@ -1246,8 +1246,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
         }
 
         // ✅ Step 3: Switch to User App
-        switchToWindow(1);
-        driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+        HomePage home = new HomePage(driver);
+		home.homeLaunch();
         // ✅ Step 4: Loop through Excel SKUs and verify in User App
         for (Map<String, Object> product : excelProducts) {
             Object skuObj = product.get("sku");
@@ -1453,8 +1453,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
     }
 		
     public void verifyCatagoriesInUserApp(String filePath) throws IOException, InterruptedException {
-        switchToWindow(1);
-        driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+    	HomePage home = new HomePage(driver);
+		home.homeLaunch();
         Common.waitForElement(3);
 
         List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
@@ -1665,8 +1665,8 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 
 		 public void verifyCollectionsInUserApp(String filePath) throws IOException {
-			    switchToWindow(1);
-			    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+			 HomePage home = new HomePage(driver);
+				home.homeLaunch();
 			    Common.waitForElement(3);
 
 			    List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);

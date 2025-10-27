@@ -7,6 +7,7 @@ Feature: This is Login feature
   #Expected: Order placed successfully
   #============================================================================
   
+  @positive
   @sanity
   @TC_UI_Zlaata_Login_01
   Scenario Outline: TC_UI_Zlaata_Login_01 |User Login Scenario|"<TD_ID>"
@@ -18,6 +19,7 @@ Feature: This is Login feature
       | TD_ID                  |
       | TD_UI_Zlaata_Login_01 |
       
+      @positive
       @sanity
     @TC_UI_Zlaata_Login_02
   Scenario Outline: TC_UI_Zlaata_Login_02 |FirstBuy200 Coupon is displaying|"<TD_ID>"
@@ -29,6 +31,7 @@ Feature: This is Login feature
       | TD_ID                  |
       | TD_UI_Zlaata_Login_02 |
   
+  @negative
   @sanity
   @TC_UI_Zlaata_Login_03
   Scenario Outline: TC_UI_Zlaata_Login_03 |User left phone_number field Empty|"<TD_ID>"
@@ -40,6 +43,7 @@ Feature: This is Login feature
       | TD_ID                  |
       | TD_UI_Zlaata_Login_03 |
       
+      @negative
       @sanity
         @TC_UI_Zlaata_Login_04
   Scenario Outline: TC_UI_Zlaata_Login_04 |User entered phone_number with less than 10 digits|"<TD_ID>"

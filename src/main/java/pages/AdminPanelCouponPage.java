@@ -127,11 +127,18 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
         Common.waitForElement(3);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[normalize-space()='" + couponName + "']")));
         System.out.println("✅ Coupon is visible in Admin panel: " + couponName);
+        Common.waitForElement(2);
+ 		    waitFor(clearCatchButton);
+ 		    click(clearCatchButton);
+ 		    System.out.println("✅ Successfull click Clear Catch Button");
+ 		    Common.waitForElement(2);
 	
 	    }
 	    public void verifyProductsInUserAppMyCouponSection() {
-	    	switchToWindow(1);
-		    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+	    	HomePage home = new HomePage(driver);
+			home.homeLaunch();
+	    	LoginPage login = new LoginPage(driver);
+			login.userLogin();
 		   
 			
 			Common.waitForElement(3);
@@ -365,11 +372,18 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
         Common.waitForElement(3);
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[normalize-space()='" + specialCouponName + "']")));
         System.out.println("✅ Coupon is visible in Admin panel: " + specialCouponName);
+        Common.waitForElement(2);
+ 		    waitFor(clearCatchButton);
+ 		    click(clearCatchButton);
+ 		    System.out.println("✅ Successfull click Clear Catch Button");
+ 		    Common.waitForElement(2);
 	
 	 }
 	    
 	    public void verifySpecialCouponInUserApp() throws InterruptedException {
  	
+	    	HomePage home = new HomePage(driver);
+			home.homeLaunch();
 			LoginPage login = new LoginPage(driver);
 			login.userLogin();
 			
@@ -485,14 +499,208 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		}
 	
 	
+//TC-03
+//Specific Product Item
+	    public void verifySpecificProductItemCoupon() throws InterruptedException {
+
+	    	Common.waitForElement(4);
+		    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+		    System.out.println("✅ Successfull redirect to Adimn Coupon page");
+		    Common.waitForElement(2);
+		  // ✅ Step 1: Click on "Add Coupon" button
+		    wait.until(ExpectedConditions.elementToBeClickable(addCouponButton));
+		    click(addCouponButton);
+	        // ✅ Step 2: Generate a unique random coupon name
+	         int randomNum = (int) (Math.random() * 10000); // creates 0–9999
+	        couponName = "Specific100Flat" + randomNum;
+
+	        // ✅ Step 3: Enter Title
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(titleBox));
+	        titleBox.clear();
+	        titleBox.sendKeys(couponName);
+	        System.out.println("Title: " + couponName);
+	        // ✅ Step 4: Enter Coupon Code
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(codeBox));
+	        codeBox.clear();
+	        codeBox.sendKeys(couponName);
+	        System.out.println("Coupon Code: " + couponName);
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(shortDesriptionBox));
+	        shortDesriptionBox.clear();
+	        shortDesriptionBox.sendKeys("Applicable only Specific Product above ₹499");
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(maxDiscountBox));
+	        maxDiscountBox.clear();
+	        maxDiscountBox.sendKeys("100");
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(maxUsageLimitBox));
+	        maxUsageLimitBox.clear();
+	        maxUsageLimitBox.sendKeys("1");
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(percentageBox));
+	        percentageBox.clear();
+	        percentageBox.sendKeys("10");
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(minimumPurchaseBox));
+	        minimumPurchaseBox.clear();
+	        minimumPurchaseBox.sendKeys("499");
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(isAlwaysBtn));
+	        isAlwaysBtn.click();
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(statusBtn));
+	        statusBtn.click();
+	        // Select  Specific Product Item  Coupon
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBtn));
+		    click(couponTypeBtn); 
+		    Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBox));
+	        couponTypeBox.clear();
+	        type(couponTypeBox, "Specific Product Item" + Keys.ENTER);
+		    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+		    Common.waitForElement(3);
+		    wait.until(ExpectedConditions.elementToBeClickable(productBox));
+		    click(productBox); 
+		    Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(productBox));
+	        waitFor(productBox);
+		    type(productBox, "Test by Auto");
+		    Common.waitForElement(4);
+		    productBox.sendKeys(Keys.ENTER);
+		    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+		    Common.waitForElement(3);
+		     wait.until(ExpectedConditions.elementToBeClickable(saveAndBackButton));
+		    click(saveAndBackButton); 
+	        System.out.println("Created coupon: " + couponName);
+	        Common.waitForElement(2);
+		    waitFor(clearCatchButton);
+		    click(clearCatchButton);
+		    System.out.println("✅ Successfull click Clear Catch Button");
+		    Common.waitForElement(2);
+	      
+	    
+	}
+	
+	    public void searchAndAddThatProductsToCart(String firstProduct, String secondProduct) throws InterruptedException {
+	    	HomePage home = new HomePage(driver);
+			home.homeLaunch();
+	    	LoginPage login = new LoginPage(driver);
+			login.userLogin();
+	        Common.waitForElement(3);
+	        
+	        
+
+	        // ✅ Product list to search and add
+	        String[] products = { firstProduct, secondProduct };
+
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+	        for (String productName : products) {
+	            System.out.println("\n🔍 Searching for product: " + productName);
+
+	            // ✅ Click on search icon / box
+	            WebElement searchBox = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//input[@id='search__product']")
+	            ));
+	            
+	         // Search in user app
+	            wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+	            searchBox.clear();
+	            searchBox.sendKeys(productName);
+	            System.out.println("✅ Searched for listing: " + productName);
+
+	            // Wait for product to appear
+	            By productLocator = By.xpath("//h6[normalize-space()='" + productName + "']");
+	            wait.until(ExpectedConditions.visibilityOfElementLocated(productLocator));
+
+	            WebElement productElement = driver.findElement(productLocator);
+	            Assert.assertTrue("❌ Listing name not found in User App: " + productName, productElement.isDisplayed());
+
+	            // Click product
+	            productElement.click();
+	            System.out.println("✅ Product opened in User App: "+ productName);
+	            
+//	         // ✅ Wait for & scroll into the Top Selling section
+//	            WebElement targetProduct = wait.until(
+//	                    ExpectedConditions.presenceOfElementLocated(
+//	                            By.cssSelector(".prod_add_cart_btn"))
+//	            );
+//	            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", targetProduct);
+//	            Common.waitForElement(3);
+//	            // ✅ Wait for Add to Cart button
+	            WebElement addToCartBtn = wait.until(ExpectedConditions.elementToBeClickable(
+	                By.xpath("//button[contains(text(),'Add to')]")
+	            ));
+	            addToCartBtn.click();
+	            System.out.println("🛒 Added product to cart: " + productName);
+	        }
+
+	        System.out.println("\n🎉 Both products searched and added to cart successfully!");
+	        
+	        checkCouponInCheckOutPage();
+	    }
+	    
+	public void checkCouponInCheckOutPage() {
+		
+	 // Go to Coupon section
+	    // --------------------------
+	    Common.waitForElement(3);
+        wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
+	    click(clickCartBtn);
+	    Common.waitForElement(3);
+        wait.until(ExpectedConditions.elementToBeClickable(viewCoupon));
+	    click(viewCoupon);
+	 // Convert to uppercase to match the app display
+	    couponName = couponName.toUpperCase();
+	    
+	 // Wait for popup to appear
+	    Common.waitForElement(2);
+        wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+	    click(searchBox);
+	    searchBox.sendKeys(couponName);
+	    System.out.println("✍️ Entered coupon code: " + couponName);
+
+	    Common.waitForElement(2);
+        wait.until(ExpectedConditions.elementToBeClickable(applyBtn));
+	    click(applyBtn);
+	    System.out.println("🟢 Clicked on Apply button.");
+	    Common.waitForElement(3);
+	 // Apply coupon
+	    boolean applied = false;
+
+	    try {
+	        // Wait for "Applied" message on main screen
+	        WebElement appliedMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//p[@class='acc_status']")));
+	        System.out.println("✅ Coupon applied successfully and popup closed.");
+	        applied = true;
+
+	        // --- Verify Discount Limit (₹100 max) ---
+	        WebElement discountMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//p[@class='acc_details_status']")));
+	        String discountText = discountMsg.getText(); // e.g., "You saved ₹100 extra"
+
+	        // Extract numeric value from message
+	        String discountValueStr = discountText.replaceAll("[^0-9.]", "");
+	        double discountValue = Double.parseDouble(discountValueStr);
+
+	        if (discountValue <= 100) {
+	            System.out.println("✅ Discount applied correctly: ₹" + discountValue);
+	        } else {
+	            System.out.println("❌ Discount exceeded maximum limit! Applied: ₹" + discountValue);
+	            Assert.fail("Discount exceeded maximum limit of ₹100!");
+	        }
+
+	    } catch (TimeoutException e) {
+	        System.out.println("❌ Popup not closed, coupon not applied!");
+	        applied = false;
+	    }
 	
 	
-	
-	
-	
-	
-	
-	
+	}
 	    
 	    
 	    
