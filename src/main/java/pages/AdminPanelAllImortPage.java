@@ -157,8 +157,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
     }
 		
     public void verifyCatagoriesInUserApp(String filePath) throws IOException, InterruptedException {
-        switchToWindow(1);
-        driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+    	HomePage home = new HomePage(driver);
+		home.homeLaunch();
         Common.waitForElement(3);
         List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
 
@@ -351,8 +351,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 
 
 	 public void verifyCollectionsInUserApp(String filePath) throws IOException, InterruptedException {
-		    switchToWindow(1);
-		    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		 HomePage home = new HomePage(driver);
+			home.homeLaunch();
 		    Common.waitForElement(3);
 
 		    List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
@@ -550,8 +550,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	        System.out.println("🎉 All product StyleName verification completed successfully!");
 	    }
 	    public void verifyProductStyleInUserApp(String filePath) throws IOException, InterruptedException {
-	        switchToWindow(1);
-	        driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+	    	HomePage home = new HomePage(driver);
+			home.homeLaunch();
 	        Common.waitForElement(3);
 	        List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
 
@@ -713,8 +713,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 
 		
 		public void verifyProductsInUserApp(String filePath) throws IOException {
-		    switchToWindow(1);
-		    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+			HomePage home = new HomePage(driver);
+			home.homeLaunch();
 		    Common.waitForElement(3);
 
 		    List<Map<String, Object>> products = ExcelXLSReader.readProductsWithMultipleListing(filePath);
@@ -887,8 +887,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	// Method to verify that the Search Keyboard Product 
 			public void verifySearchKeyboardProductInUserApp(String filePath) throws InterruptedException, IOException {
 				// ✅ Step 1: Open User App
-			    switchToWindow(1);
-			    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+				HomePage home = new HomePage(driver);
+				home.homeLaunch();
 			    Common.waitForElement(3);
 
 			    // ✅ Step 2: Read expected product from Excel
@@ -989,8 +989,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 // Method to verify that the Search Keyboard Product 
 			public void verifySearchKeyboardCollectionInUserApp(String filePath) throws InterruptedException, IOException {
 			    // ✅ Step 1: Open User App
-			    switchToWindow(1);
-			    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+				HomePage home = new HomePage(driver);
+				home.homeLaunch();
 			    Common.waitForElement(3);
 
 			    // ✅ Step 2: Read expected product from Excel
@@ -1093,8 +1093,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 // Method to verify that the Search Keyboard Product 
 			public void verifySearchKeyboardStyleInUserApp(String filePath) throws InterruptedException, IOException {
 			    // ✅ Step 1: Open User App
-			    switchToWindow(1);
-			    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+				HomePage home = new HomePage(driver);
+				home.homeLaunch();
 			    Common.waitForElement(3);
 
 			    // ✅ Step 2: Read expected product from Excel

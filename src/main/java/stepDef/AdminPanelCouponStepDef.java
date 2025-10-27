@@ -16,7 +16,8 @@ public class AdminPanelCouponStepDef {
 		adminCoupon = testContext.getPageObjectManager().getAdminPanelCouponPage();
 	}
 	
-	
+//TC-01
+//Normal Coupon
 		@When("Admin clicks Add Coupon and enters random title and code.")
 		public void admin_clicks_add_coupon_and_enters_random_title_and_code() throws InterruptedException {
 			adminCoupon.createCouponInAdminPanel();
@@ -33,8 +34,8 @@ public class AdminPanelCouponStepDef {
 		    adminCoupon.verifyIncheckoutCouponPage();
 		}
 
-
-
+//TC-02
+//Special Coupon
 			@When("Admin clicks Add Coupon and enters random special title and code.")
 			public void admin_clicks_add_coupon_and_enters_random_special_title_and_code() throws InterruptedException {
 				adminCoupon.createSpecialCouponInAdminPanel();
@@ -47,6 +48,19 @@ public class AdminPanelCouponStepDef {
 			public void verify_the_same_special_coupon_is_visible_in_user_app_coupon_list() throws InterruptedException {
 				adminCoupon.verifySpecialCouponInUserApp();
 			}
+
+//TC-03
+//Specific Product Item Coupon
+				@When("Admin Create Specific Product Item Coupon and enters random special title and code.")
+				public void admin_create_specific_product_item_coupon_and_enters_random_special_title_and_code() throws InterruptedException {
+					adminCoupon.verifySpecificProductItemCoupon();
+				}
+
+				@Then("Verify the same Specific Product Item coupon is visible in User App.")
+				public void verify_the_same_specific_product_item_coupon_is_visible_in_user_app() throws InterruptedException {
+					adminCoupon.searchAndAddThatProductsToCart("Test By Auto1", "Test By Auto2");
+				}
+
 
 
 

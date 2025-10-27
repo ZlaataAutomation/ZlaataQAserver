@@ -1,6 +1,6 @@
 Feature: Admin Sorting The Product in Admin Panel Verify Successful Sort In User App.
 
-
+@Stage
 @Regression
    @TC_UI_Zlaata_ASP_01
 Scenario Outline: TC_UI_Zlaata_ASP_01 |Verify category product sorting between Admin Panel and User Application.| "<TD_ID>"  
@@ -12,6 +12,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_01   | 
   
+  @Stage
   @Regression
   @TC_UI_Zlaata_ASP_02
 Scenario Outline: TC_UI_Zlaata_ASP_02 |Verify Collection product sorting between Admin Panel and User Application.| "<TD_ID>"  
@@ -23,6 +24,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_02   | 
   
+  @Stage
   @Regression
     @TC_UI_Zlaata_ASP_03
 Scenario Outline: TC_UI_Zlaata_ASP_03 |Verify Styles product sorting between Admin Panel and User Application.| "<TD_ID>"  
@@ -34,6 +36,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_03   | 
   
+  @Stage
   @Regression
     @TC_UI_Zlaata_ASP_04
 Scenario Outline: TC_UI_Zlaata_ASP_04 |Verify Micro Page product sorting between Admin Panel and User Application.| "<TD_ID>"  
@@ -45,6 +48,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_04   | 
   
+  @Stage
   @Regression
    @TC_UI_Zlaata_ASP_05
 Scenario Outline: TC_UI_Zlaata_ASP_05 |Verify All product sorting between Admin Panel and User Application.| "<TD_ID>"  

@@ -44,7 +44,8 @@ public class AdminPanelInfluencerPage extends AdminPanelInfluencerObjRepo {
 	}
 	
 	public String takeRandomProductName() {
-		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	    Actions actions = new Actions(driver);
@@ -283,7 +284,8 @@ public class AdminPanelInfluencerPage extends AdminPanelInfluencerObjRepo {
 		
 	
 	public void verifyFirstProductInUserAppInfluencer(String productListingName) {
-		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		HomePage home = new HomePage(driver);
+		home.homeLaunch();
 	    Common.waitForElement(3);
 	    waitFor(clickInfluencer);
 	    click(clickInfluencer);

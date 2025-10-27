@@ -54,7 +54,19 @@ public abstract class AdminPanelExportObjRepo extends BasePage {
    
      @FindBy(xpath = "//a[normalize-space()='Export Histories']")
      protected WebElement selectExportHistories;
-    
+     
+     @FindBy(xpath = "//label[contains(text(),'Status')]/following::span[contains(@class,'select2-selection--single')][1]")
+     protected WebElement statusBtn;
+     
+     @FindBy(xpath = "(//input[@role='searchbox'])[2]")
+     protected WebElement statusSearchBox;
+     
+     @FindBy(xpath = "//a[@title='Zlaata Admin']")
+     protected WebElement myAcc;
+     
+     @FindBy(xpath = "(//a[normalize-space()='Logout'])[1]")
+     protected WebElement logOut;
+     
     
     
     
