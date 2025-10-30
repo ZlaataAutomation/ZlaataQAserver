@@ -21,9 +21,7 @@ public class AdminPanelCouponStepDef {
 		@When("Admin clicks Add Coupon and enters random title and code.")
 		public void admin_clicks_add_coupon_and_enters_random_title_and_code() throws InterruptedException {
 			adminCoupon.createCouponInAdminPanel();
-
 		}
-
 		@Then("Verify the coupon is visible in Admin coupon list")
 		public void verify_the_coupon_is_visible_in_admin_coupon_list() {
 		 adminCoupon.verifyCouponInAdmin();

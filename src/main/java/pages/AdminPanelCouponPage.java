@@ -48,20 +48,20 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 		    System.out.println("✅ Successfull redirect to Adimn Coupon page");
 		    Common.waitForElement(2);
-		  // ✅ Step 1: Click on "Add Coupon" button
+		    //  Click on "Add Coupon" button
 		    wait.until(ExpectedConditions.elementToBeClickable(addCouponButton));
 		    click(addCouponButton);
-	        // ✅ Step 2: Generate a unique random coupon name
+	        // ✅  Generate a unique random coupon name
 	         int randomNum = (int) (Math.random() * 10000); // creates 0–9999
 	        couponName = "Automation100Flat" + randomNum;
 
-	        // ✅ Step 3: Enter Title
+	        // ✅  Enter Title
 	        Common.waitForElement(2);
 	        wait.until(ExpectedConditions.elementToBeClickable(titleBox));
 	        titleBox.clear();
 	        titleBox.sendKeys(couponName);
 	        System.out.println("Title: " + couponName);
-	        // ✅ Step 4: Enter Coupon Code
+	        // ✅Enter Coupon Code
 	        Common.waitForElement(2);
 	        wait.until(ExpectedConditions.elementToBeClickable(codeBox));
 	        codeBox.clear();
@@ -590,8 +590,6 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	    	LoginPage login = new LoginPage(driver);
 			login.userLogin();
 	        Common.waitForElement(3);
-	        
-	        
 
 	        // ✅ Product list to search and add
 	        String[] products = { firstProduct, secondProduct };
@@ -630,7 +628,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 //	            );
 //	            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", targetProduct);
 //	            Common.waitForElement(3);
-//	            // ✅ Wait for Add to Cart button
+	            // ✅ Wait for Add to Cart button
 	            WebElement addToCartBtn = wait.until(ExpectedConditions.elementToBeClickable(
 	                By.xpath("//button[contains(text(),'Add to')]")
 	            ));

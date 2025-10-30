@@ -36,6 +36,7 @@ public class PageObjectManager {
     private AdminPanelInfluencerPage adminInflu;
     private AdminPanelCouponPage adminCoupon;
     private AdminPanelExportPage adminExports;
+    private AdminProductSecondaryColorPage adminSColor;
     
    
 
@@ -144,6 +145,9 @@ public class PageObjectManager {
 		return (adminExports == null) ? adminExports = new AdminPanelExportPage(driver) : adminExports;
 	}
 	
+	public AdminProductSecondaryColorPage getAdminProductSecondaryColorPage() {
+		return (adminSColor == null) ? adminSColor = new AdminProductSecondaryColorPage(driver) : adminSColor;
+	}
 	
 	
 }
