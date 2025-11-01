@@ -37,7 +37,7 @@ public class PageObjectManager {
     private AdminPanelCouponPage adminCoupon;
     private AdminPanelExportPage adminExports;
     private AdminProductSecondaryColorPage adminSColor;
-    
+    private AdminEmailVerifyOrderFlowPage adminEmail;
    
 
     public PageObjectManager(WebDriver driver) {
@@ -147,6 +147,10 @@ public class PageObjectManager {
 	
 	public AdminProductSecondaryColorPage getAdminProductSecondaryColorPage() {
 		return (adminSColor == null) ? adminSColor = new AdminProductSecondaryColorPage(driver) : adminSColor;
+	}
+	
+	public AdminEmailVerifyOrderFlowPage getAdminEmailVerifyOrderFlowPage() {
+		return (adminEmail == null) ? adminEmail = new AdminEmailVerifyOrderFlowPage(driver) : adminEmail;
 	}
 	
 	

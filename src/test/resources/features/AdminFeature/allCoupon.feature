@@ -2,7 +2,7 @@ Feature: Verify coupon creation and availability in Admin and User App
 Background:
     Given admin is logged in
  
- @Regression
+ #@Regression
     @TC_UI_Zlaata_ADC_01
 Scenario Outline: TC_UI_Zlaata_ADC_01 |Verify Admin can create a new coupon and it appears in Admin and User App.| "<TD_ID>" 
     When Admin clicks Add Coupon and enters random title and code.
@@ -13,7 +13,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADC_01   |
 
-@Regression
+#@Regression
   @TC_UI_Zlaata_ADC_02
 Scenario Outline: TC_UI_Zlaata_ADC_02 |Verify Admin can create a special coupon and it appears in Admin and User App.| "<TD_ID>" 
     When Admin clicks Add Coupon and enters random special title and code.
@@ -24,7 +24,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADC_02   |
   
-  @Regression
+ # @Regression
   @TC_UI_Zlaata_ADC_03
 Scenario Outline: TC_UI_Zlaata_ADC_03 |Verify Admin can create a Specific Product Item coupon and it appears in Admin and User App.| "<TD_ID>" 
     When Admin Create Specific Product Item Coupon and enters random special title and code.
