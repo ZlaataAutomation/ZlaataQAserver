@@ -78,6 +78,35 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	@FindBy(xpath = "//a[contains(@class,'view_details_btn') and contains(text(),'View Order Details')]")
 	protected WebElement viewOrderDetails;
 	
+	 @FindBy(xpath = "//input[@id='menuSearch']")  
+	 protected WebElement searchProductSortMenu;
+	
+	 @FindBy(xpath = "(//a[contains(@href,'/admin/order')])[1]")  
+	 protected WebElement clickOrders;
+	 
+	
+	 @FindBy(xpath = "//a[normalize-space()='Order Id']")  
+	 protected WebElement orderIdbtn;
+	 
+	 @FindBy(xpath = "(//input[@role='searchbox'])[1]")  
+	 protected WebElement orderSearchBox;
+	 
+	 @FindBy(xpath = "//i[@class='las la-edit']")
+	    protected WebElement editBtn;
+	 
+	 @FindBy(xpath = "(//select[@class='form-control orderaccept courier-filed'])[1]")  
+	 protected WebElement shipmentStatus;
+	 
+	 @FindBy(xpath = "(//select[@class='form-control courier-provider'])[1]")  
+	 protected WebElement courierProvider;
+	 
+	 @FindBy(xpath="//span[@data-value='save_and_back']")
+	    protected WebElement saveButton;
+	 
+	 @FindBy(xpath="//select[@class='form-control order-status']")
+	    protected WebElement orderStatus;
+	
+	
 	
 	
 	

@@ -6,15 +6,19 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ElementClickInterceptedException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import manager.FileReaderManager;
@@ -54,6 +58,47 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 
 		    System.out.println("\u001B[32m✅ Login successful\u001B[0m");
 		}
+	 public void deleteAllProductsFromCart() {
+
+		    // Open cart
+		    driver.findElement(By.xpath("//a[@class='Cls_cart_btn Cls_redirect_restrict']")).click();
+		    Common.waitForElement(1);
+
+		    // ✅ STEP 1: Check if cart is already empty
+		    try {
+		        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
+		            System.out.println("🛍️ Cart already empty. No delete action needed.");
+		            return; // Stop method immediately
+		        }
+		    } catch (NoSuchElementException ignored) {
+		        // Cart is NOT empty, proceed to delete
+		    }
+
+		    // ✅ STEP 2: Delete products one by one
+		    while (true) {
+		        try {
+		            WebElement deleteBtn = driver.findElement(By.xpath("//div[@title='Delete']"));
+		            deleteBtn.click();
+		            System.out.println("🗑️ Product deleted");
+		            Common.waitForElement(1); 
+		        } catch (NoSuchElementException e) {
+		            System.out.println("✅ No more products to delete.");
+		            break;
+		        } catch (Exception e) {
+		            System.out.println("⚠️ Error while deleting: " + e.getMessage());
+		            break;
+		        }
+		    }
+
+		    // ✅ STEP 3: Final confirmation
+		    try {
+		        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
+		            System.out.println("🛍️ Cart is empty, Continue Shopping displayed.");
+		        }
+		    } catch (NoSuchElementException e) {
+		        System.out.println("ℹ️ Bag is not empty message not found.");
+		    }
+		}
 
 		// Fetch from Excel
 		String productName = Common.getValueFromTestDataMap("ProductListingName");
@@ -75,8 +120,8 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		    System.out.println(CYAN + line + RESET);
 
 		    userLoginApp();
-		    OrdersPage order = new OrdersPage(driver);
-		    order.deleteAllProductsFromCart();
+		    
+		   deleteAllProductsFromCart();
 
 		    // ✅ Search product
 		    System.out.println(YELLOW + "🔍 Searching for product: " + productName + RESET);
@@ -100,54 +145,73 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		    click(bagIcon);
 		    System.out.println(GREEN + "✅ Opened cart" + RESET);
 
-		    Common.waitForElement(2);
-		    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
-		    click(continueBtn);
-		    System.out.println(GREEN + "✅ Clicked Continue (Cart Page)" + RESET);
-
-		    Common.waitForElement(2);
-		    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
-		    click(continueBtn);
-		    System.out.println(GREEN + "✅ Clicked Continue (Address Page)" + RESET);
-
-		  	    
-		    Common.waitForElement(2);
-		    wait.until(ExpectedConditions.elementToBeClickable(selectNetBank));
-		    click(selectNetBank);
-		    System.out.println(GREEN + "✅ Selected NetBanking option" + RESET);
 
 		    Common.waitForElement(2);
 		    wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn));
 		    click(placeOrderBtn);
 		    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
 
-		    Thread.sleep(5000);
-		    List<WebElement> frames = driver.findElements(By.tagName("iframe"));
-		    System.out.println("🧩 Total iframes found: " + frames.size());
-		    for (WebElement f : frames) {
-		        System.out.println(" → iframe name/id: " + f.getAttribute("name") + " | " + f.getAttribute("id"));
-		    }
-		 // Wait for Razorpay iframe to appear dynamically
+		    Thread.sleep(5000);    
+		 // ✅ 1. Switch to Razorpay iframe (you already have this)
 		    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
-		        By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
+		            By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
 		    ));
+		    System.out.println("✅ Switched to Razorpay iframe");
 
-		    System.out.println("✅ Switched to Razorpay iframe successfully");
+		    // ✅ 2. Click Continue button
+		    wait.until(ExpectedConditions.elementToBeClickable(
+		            By.xpath("//button[contains(.,'Continue')]")
+		    )).click();
+		    System.out.println("✅ Continue clicked");
+//
+//		    // ✅ 3. Click Skip OTP
+//		    wait.until(ExpectedConditions.elementToBeClickable(
+//		            By.xpath("//button[contains(text(),'Skip OTP')]")
+//		    )).click();
+//		    System.out.println("✅ Skipped OTP");
 
-		    // Click HDFC Bank inside the iframe
-		    WebElement hdfcBank = wait.until(ExpectedConditions.elementToBeClickable(
-		        By.xpath("//div[@role='button' and .//span[contains(text(),'HDFC Bank')]]")
-		    ));
-		    hdfcBank.click();
-		    System.out.println("💳 Clicked HDFC Bank option");
+		    // ✅ 4. Enter Pincode
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(
+		            By.id("zipcode")
+		    )).sendKeys("560001");
 
-		    // (Optional) Click the success/Pay button
-		    // WebElement successBtn = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(.,'Success')]")));
-		    // successBtn.click();
+		    // ✅ 5. Enter City auto-filled → skip  
+		    // ✅ 6. Enter Name
+		    driver.findElement(By.id("name")).sendKeys("Saroj Test");
 
+		    // ✅ 7. Enter House / Building
+		    driver.findElement(By.id("line1")).sendKeys("Bangalore");
+
+		    // ✅ 8. Enter Area / Street
+		    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
+
+		    
+		    // ✅ 9. Click Continue (Address Submit)
+		    Common.waitForElement(3);
+		    wait.until(ExpectedConditions.elementToBeClickable(
+		            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
+		    )).click();
+
+		    System.out.println("✅ Address submitted successfully");
+		    
+		    
+		    
+
+		    // ✅ 3. Select Netbanking option
+		    Common.waitForElement(3);
+		    wait.until(ExpectedConditions.elementToBeClickable(
+		            By.xpath("//span[@data-testid='Netbanking']")
+		    )).click();
+
+		    // ✅ 4. Select HDFC Bank
+		    wait.until(ExpectedConditions.elementToBeClickable(
+		            By.xpath("(//div[@role='button' and .//span[contains(text(),'HDFC Bank')]])[1]")
+		    )).click();
+
+		    // ⬅️ Optional: Switch back to main page after selecting
 		    driver.switchTo().defaultContent();
 
-		 
+		   
 
 		    // Switch to Razorpay window
 		    String mainWindow = driver.getWindowHandle();
@@ -252,13 +316,10 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 	
 	
 		
-		
-		
+		String gmailId="zlaata.qa.test@gmail.com";
+		String gmailPassword="user@123";
 	
-public void verifyOrderConfirmationMail(String gmailId, String gmailPassword, 
-	                String expectedOrderId, 
-	                String expectedProduct, 
-	                String expectedAmount, String expectedmsg)
+public void verifyOrderConfirmationMail(String expectedmsg)
 	throws InterruptedException {
 	
 	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
@@ -300,21 +361,24 @@ public void verifyOrderConfirmationMail(String gmailId, String gmailPassword,
 	
 	// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 	boolean mailFound = false;
-	int retries = 20; // 20 retries (5s each) = ~100 seconds max wait
+	int retries = 36; // 3 min max wait
+
 	for (int i = 0; i < retries; i++) {
-	List<WebElement> mails = driver.findElements(By.xpath("//table//tr//span[@class='bog']/span"));
-	for (WebElement mail : mails) {
-	if (mail.getText().contains(expectedmsg)) {
-	mailFound = true;
-	mail.click();
-	System.out.println(GREEN + "📨 Found 'Order Confirmed' mail and opened it!" + RESET);
-	break;
-	}
-	}
-	if (mailFound) break;
-	System.out.println(YELLOW + "⏳ Waiting for Order Confirmation Mail... retry " + (i + 1) + RESET);
-	Thread.sleep(5000);
-	driver.navigate().refresh();
+
+	    try {
+	        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+
+	        if (latestMail.getText().contains(expectedmsg)) {
+	            latestMail.click();
+	            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
+	            mailFound = true;
+	            break;
+	        }
+	    } catch (Exception ignored) {}
+
+	    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+	    Thread.sleep(5000);
+	    driver.navigate().refresh();
 	}
 	
 	if (!mailFound) {
@@ -345,7 +409,6 @@ public void verifyOrderConfirmationMail(String gmailId, String gmailPassword,
 	    System.out.println(CYAN + line + RESET);
 
 	    
-	 // ✅ Compare with UI captured values
 	    System.out.println(GREEN + "🔍 Comparing mail details with order summary..." + RESET);
 
 	    Assert.assertTrue("❌ Order ID mismatch! Expected: " + orderId + " | Found: " + mailOrderId,
@@ -354,36 +417,147 @@ public void verifyOrderConfirmationMail(String gmailId, String gmailPassword,
 	    Assert.assertTrue("❌ Product name mismatch! Expected: " + productName + " | Found: " + mailProductName,
 	            mailProductName.contains(productName));
 
-	    Assert.assertTrue("❌ Total MRP mismatch! Expected: " + totalMRF + " | Found: " + mailTotalMRP,
-	            mailTotalMRP.contains(totalMRF));
-
-	    Assert.assertTrue("❌ Discounted MRP mismatch! Expected: " + discountedMRP + " | Found: " + mailDiscountedMRP,
-	            mailDiscountedMRP.contains(discountedMRP));
-
-	    Assert.assertTrue("❌ Total Amount mismatch! Expected: " + totalAmount + " | Found: " + mailTotalAmount,
-	            mailTotalAmount.contains(totalAmount));
+	   
+	    Assert.assertEquals("❌ Total MRP mismatch!", normalizePrice(totalMRF), normalizePrice(mailTotalMRP));
+	    Assert.assertEquals("❌ Discounted MRP mismatch!", normalizePrice(discountedMRP), normalizePrice(mailDiscountedMRP));
+	    Assert.assertEquals("❌ Total Amount mismatch!", normalizePrice(totalAmount), normalizePrice(mailTotalAmount));
 
 	    System.out.println(GREEN + "✅ All order details verified successfully in the mail!" + RESET);
 	    System.out.println(CYAN + line + RESET);
 	    
-	   
-	
-	
-	
-	
 	}		
+	// ✅ Price comparison using normalized values
+private String normalizePrice(String price) {
+    return price.replaceAll("[^0-9]", ""); // Keep only digits
+}
+
+
+//Order Status change Place to Shipped
+public void updateOrderStatusToShipped() throws InterruptedException {
+
+    String GREEN = "\u001B[32m";
+    String YELLOW = "\u001B[33m";
+    String RED = "\u001B[31m";
+    String RESET = "\u001B[0m";
+    String line = "──────────────────────────────────────────────────────────────";
+
+    System.out.println(line);
+    System.out.println(GREEN + "🚚 Updating Order Status for Order ID: " + orderId + RESET);
+    System.out.println(line);
+
+    adminLoginApp();
+    
+	Common.waitForElement(3);
+	click(searchProductSortMenu);
+	waitFor(searchProductSortMenu);
+	type(searchProductSortMenu, "Orders");
+	System.out.println("Typed 'Orders");
+	Common.waitForElement(2);
+	waitFor(clickOrders);
+	click(clickOrders);
+	System.out.println("Selected Product Sorts");
+	Common.waitForElement(3);
 	
+    // ✅ Go to order search box and search order ID
+    wait.until(ExpectedConditions.elementToBeClickable(orderIdbtn));
+    Common.waitForElement(2);
+	waitFor(orderIdbtn);
+	click(orderIdbtn);
+	wait.until(ExpectedConditions.elementToBeClickable(orderSearchBox));
+    Common.waitForElement(2);
+	waitFor(orderSearchBox);
+    orderSearchBox.clear();
+    orderSearchBox.sendKeys(orderId);
+    Common.waitForElement(1);
+    orderSearchBox.sendKeys(Keys.ENTER);
+    Common.waitForElement(3);
+
+    // ✅ Verify order is displayed
+    try {
+        WebElement orderRow = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//td/span[normalize-space(text())='" + orderId + "']")));
+        System.out.println(GREEN + "✅ Order found in table!" + RESET);
+    } catch (TimeoutException e) {
+        System.out.println(RED + "❌ Order not found! Stopping execution." + RESET);
+        return;
+    }
+
+    // ✅ Click Edit button
+    wait.until(ExpectedConditions.elementToBeClickable(editBtn));
+    Common.waitForElement(2);
+	waitFor(editBtn);
+	click(editBtn);
+    System.out.println(GREEN + "✅ Clicked Edit" + RESET);
+
+    // ✅ Shipment Status → Order Accept
+    wait.until(ExpectedConditions.elementToBeClickable(shipmentStatus));
+    Common.waitForElement(2);
+	waitFor(shipmentStatus);
+	click(shipmentStatus);
+	Common.waitForElement(2);
+	Select select = new Select(shipmentStatus);
+	select.selectByVisibleText("Order Accept");
+    System.out.println(GREEN + "✅ Shipment Status set to 'Order Accept'" + RESET);
+
+    // ✅ Courier Provider → Manual
+    wait.until(ExpectedConditions.elementToBeClickable(courierProvider));
+    Common.waitForElement(2);
+	waitFor(courierProvider);
+	click(courierProvider);
+	Common.waitForElement(2);
+	Select select1 = new Select(courierProvider);
+	select1.selectByVisibleText("Manual");
+    System.out.println(GREEN + "✅ Courier Provider set to Manual" + RESET);
+
+    // ✅ Save & Back
+    Common.waitForElement(2);
+    wait.until(ExpectedConditions.elementToBeClickable(saveButton));
+    waitFor(saveButton);
+    click(saveButton);
+    System.out.println("✅ Saved  changes");
+
+    // ✅ Again click Edit for second update
+    Common.waitForElement(5);
+    wait.until(ExpectedConditions.elementToBeClickable(editBtn)).click();
+    System.out.println(GREEN + "✅ Re-opened Edit screen" + RESET);
+
+    // ✅ Order Status → Order Shipped
+    wait.until(ExpectedConditions.elementToBeClickable(orderStatus));
+    Common.waitForElement(2);
+	waitFor(orderStatus);
+	click(orderStatus);
+	Common.waitForElement(2);
+	Select select2 = new Select(orderStatus);
+	select2.selectByVisibleText("Order Shipped");
+    System.out.println(GREEN + "✅ Order Status set to 'Order Shipped'" + RESET);
+
+ // ✅ Save & Back
+    Common.waitForElement(2);
+    wait.until(ExpectedConditions.elementToBeClickable(saveButton));
+    waitFor(saveButton);
+    click(saveButton);
+    System.out.println("✅ Saved  changes");
+
+    System.out.println(GREEN + "🎉 Order status updated successfully to SHIPPED!" + RESET);
+    System.out.println(line);
+}
+
 	
-	
-	//TC01 Verify Order Placed Confirm
+
+//TC01 Verify Order Placed Confirm
 		public void verifyOrderPlacedEmail() throws InterruptedException {
+			
 			addProductToCartAndPlacedTheOrder();
 			
-			verifyOrderConfirmationMail("zlaata.qa.test@gmail.com", "user@123", orderId, productName, totalAmount,"Order Confirmation" );
+			verifyOrderConfirmationMail("Order Confirmation");
 			
+			//Order Shipped
+//			updateOrderStatusToShipped();
+//			
+//			verifyOrderConfirmationMail("Order Shipped");
 		}
 	
-	
+
 	
 	
 	

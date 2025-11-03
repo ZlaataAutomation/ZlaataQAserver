@@ -16,7 +16,7 @@ features = {"src/test/resources/features/"},
 glue = "stepDef",	
 monochrome = true,	
 dryRun = false,
-tags= "@Sorting"
+tags= "@TC_UI_Admin_OEV_01"
 )
 
 		
