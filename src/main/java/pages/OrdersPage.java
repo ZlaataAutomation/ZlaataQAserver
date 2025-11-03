@@ -97,7 +97,7 @@ public final class OrdersPage extends SaleOffer50PercentageObjRepo{
 	    }
 	}
 
-	private void deleteAllProductsFromCart() {
+	public void deleteAllProductsFromCart() {
 	    int deletedCount = 0;
 	    List<WebElement> deleteButtons = driver.findElements(By.xpath("//div[@title='Delete']"));
 

@@ -281,6 +281,20 @@
     <version>3.1.1</version>
 </dependency>
 
+ <!-- For handling email -->
+    <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>javax.mail</artifactId>
+        <version>1.6.2</version>
+    </dependency>
+
+    <!-- For parsing HTML mail content -->
+    <dependency>
+        <groupId>org.jsoup</groupId>
+        <artifactId>jsoup</artifactId>
+        <version>1.15.4</version>
+    </dependency>
+
 </dependencies>
 	
 	<build>

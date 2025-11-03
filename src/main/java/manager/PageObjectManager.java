@@ -36,7 +36,8 @@ public class PageObjectManager {
     private AdminPanelInfluencerPage adminInflu;
     private AdminPanelCouponPage adminCoupon;
     private AdminPanelExportPage adminExports;
-    
+    private AdminProductSecondaryColorPage adminSColor;
+    private AdminEmailVerifyOrderFlowPage adminEmail;
    
 
     public PageObjectManager(WebDriver driver) {
@@ -144,6 +145,13 @@ public class PageObjectManager {
 		return (adminExports == null) ? adminExports = new AdminPanelExportPage(driver) : adminExports;
 	}
 	
+	public AdminProductSecondaryColorPage getAdminProductSecondaryColorPage() {
+		return (adminSColor == null) ? adminSColor = new AdminProductSecondaryColorPage(driver) : adminSColor;
+	}
+	
+	public AdminEmailVerifyOrderFlowPage getAdminEmailVerifyOrderFlowPage() {
+		return (adminEmail == null) ? adminEmail = new AdminEmailVerifyOrderFlowPage(driver) : adminEmail;
+	}
 	
 	
 }
