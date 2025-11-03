@@ -318,119 +318,122 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		
 		String gmailId="zlaata.qa.test@gmail.com";
 		String gmailPassword="user@123";
-	
-public void verifyOrderConfirmationMail(String expectedmsg)
-	throws InterruptedException {
-	
-	WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
-	JavascriptExecutor js = (JavascriptExecutor) driver;
-	
-	String CYAN = "\u001B[36m";
-	String YELLOW = "\u001B[33m";
-	String GREEN = "\u001B[32m";
-	String RED = "\u001B[31m";
-	String RESET = "\u001B[0m";
-	String line = "──────────────────────────────────────────────────────────────";
-	
-	System.out.println(CYAN + line + RESET);
-	System.out.println(GREEN + "📧 Starting Gmail Order Confirmation Verification..." + RESET);
-	System.out.println(CYAN + line + RESET);
-	
-	// ✅ Open Gmail login page
-	driver.get("https://mail.google.com/");
-	System.out.println("🌐 Opening Gmail login page...");
-	
-	// ---- LOGIN FLOW ----
-	try {
-	// Enter email
-	wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("identifierId"))).sendKeys(gmailId);
-	driver.findElement(By.id("identifierNext")).click();
-	
-	// Enter password
-	wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("Passwd"))).sendKeys(gmailPassword);
-	driver.findElement(By.id("passwordNext")).click();
-	System.out.println(GREEN + "🔐 Logged into Gmail successfully." + RESET);
-	
-	} catch (Exception e) {
-	System.out.println(YELLOW + "⚠️ Already logged in or session cached. Skipping login..." + RESET);
-	}
-	
-	// ✅ Wait for inbox to load
-	wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
-	System.out.println(GREEN + "📥 Gmail inbox loaded." + RESET);
-	
-	// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
-	boolean mailFound = false;
-	int retries = 36; // 3 min max wait
-
-	for (int i = 0; i < retries; i++) {
-
-	    try {
-	        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
-
-	        if (latestMail.getText().contains(expectedmsg)) {
-	            latestMail.click();
-	            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
-	            mailFound = true;
-	            break;
-	        }
-	    } catch (Exception ignored) {}
-
-	    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
-	    Thread.sleep(5000);
-	    driver.navigate().refresh();
-	}
-	
-	if (!mailFound) {
-	System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-	Assert.fail("Order confirmation mail not found.");
-	}
-	
-	// ---- READ MAIL CONTENT ----
-	Thread.sleep(4000);
-	
-
-	    // ✅ Extract order details from mail DOM
-	    System.out.println(GREEN + "🔍 Extracting order details from mail..." + RESET);
-
-	    String mailOrderId = driver.findElement(By.xpath("//td[contains(text(),'Order ID')]/following-sibling::td/following-sibling::td")).getText().trim();
-	    String mailProductName = driver.findElement(By.xpath("//td[contains(text(),'Product')]/ancestor::table//td[contains(@class,'font_12') and contains(text(),'Flare')]")).getText().trim();
-	    String mailTotalMRP = driver.findElement(By.xpath("//td[contains(text(),'Total MRP')]/following-sibling::td")).getText().trim();
-	    String mailDiscountedMRP = driver.findElement(By.xpath("//td[contains(text(),'Discounted MRP')]/following-sibling::td")).getText().trim();
-	    String mailTotalAmount = driver.findElement(By.xpath("//td[contains(text(),'Total Amount')]/following-sibling::td")).getText().trim();
-
-	    System.out.println(CYAN + line + RESET);
-	    System.out.println(YELLOW + "📬 Mail Extracted Details:" + RESET);
-	    System.out.println("📦 Product Name: " + mailProductName);
-	    System.out.println("🆔 Order ID: " + mailOrderId);
-	    System.out.println("💰 Total MRP: " + mailTotalMRP);
-	    System.out.println("💸 Discounted MRP: " + mailDiscountedMRP);
-	    System.out.println("🪙 Total Amount: " + mailTotalAmount);
-	    System.out.println(CYAN + line + RESET);
-
-	    
-	    System.out.println(GREEN + "🔍 Comparing mail details with order summary..." + RESET);
-
-	    Assert.assertTrue("❌ Order ID mismatch! Expected: " + orderId + " | Found: " + mailOrderId,
-	            mailOrderId.contains(orderId));
-
-	    Assert.assertTrue("❌ Product name mismatch! Expected: " + productName + " | Found: " + mailProductName,
-	            mailProductName.contains(productName));
-
-	   
-	    Assert.assertEquals("❌ Total MRP mismatch!", normalizePrice(totalMRF), normalizePrice(mailTotalMRP));
-	    Assert.assertEquals("❌ Discounted MRP mismatch!", normalizePrice(discountedMRP), normalizePrice(mailDiscountedMRP));
-	    Assert.assertEquals("❌ Total Amount mismatch!", normalizePrice(totalAmount), normalizePrice(mailTotalAmount));
-
-	    System.out.println(GREEN + "✅ All order details verified successfully in the mail!" + RESET);
-	    System.out.println(CYAN + line + RESET);
-	    
-	}		
+			
 	// ✅ Price comparison using normalized values
 private String normalizePrice(String price) {
     return price.replaceAll("[^0-9]", ""); // Keep only digits
 }
 
+public void verifyOrderConfirmationMail(String expectedmsg)
+		throws InterruptedException {
+		
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		
+		String CYAN = "\u001B[36m";
+		String YELLOW = "\u001B[33m";
+		String GREEN = "\u001B[32m";
+		String RED = "\u001B[31m";
+		String RESET = "\u001B[0m";
+		String line = "──────────────────────────────────────────────────────────────";
+		
+		System.out.println(CYAN + line + RESET);
+		System.out.println(GREEN + "📧 Starting Gmail Order Confirmation Verification..." + RESET);
+		System.out.println(CYAN + line + RESET);
+		
+		// ✅ Open Gmail login page
+		driver.get("https://mail.google.com/");
+		System.out.println("🌐 Opening Gmail login page...");
+		
+		// ---- LOGIN FLOW ----
+		// Check if already logged in by looking for inbox element
+		List<WebElement> inboxCheck = driver.findElements(By.xpath("//table//tr//span[@class='bog']/span"));
+
+		if (inboxCheck.size() > 0) {
+		    System.out.println(YELLOW + "⚠️ Gmail session already active... Skipping login." + RESET);
+		} else {
+		    System.out.println(CYAN + "🔐 Logging into Gmail..." + RESET);
+
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("identifierId"))).sendKeys(gmailId);
+		    driver.findElement(By.id("identifierNext")).click();
+
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("Passwd"))).sendKeys(gmailPassword);
+		    driver.findElement(By.id("passwordNext")).click();
+
+		    System.out.println(GREEN + "✅ Logged into Gmail successfully." + RESET);
+		}
+		
+		// ✅ Wait for inbox to load
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
+		System.out.println(GREEN + "📥 Gmail inbox loaded." + RESET);
+		
+		// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
+		boolean mailFound = false;
+		int retries = 36; // 3 min max wait
+
+		for (int i = 0; i < retries; i++) {
+
+		    try {
+		        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+
+		        if (latestMail.getText().contains(expectedmsg)) {
+		            latestMail.click();
+		            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
+		            mailFound = true;
+		            break;
+		        }
+		    } catch (Exception ignored) {}
+
+		    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+		    Thread.sleep(5000);
+		    driver.navigate().refresh();
+		}
+		
+		if (!mailFound) {
+		System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+		Assert.fail("Order confirmation mail not found.");
+		}
+		
+		// ---- READ MAIL CONTENT ----
+		Thread.sleep(4000);
+		
+
+		    // ✅ Extract order details from mail DOM
+		    System.out.println(GREEN + "🔍 Extracting order details from mail..." + RESET);
+
+		    String mailOrderId = driver.findElement(By.xpath("//td[contains(text(),'Order ID')]/following-sibling::td/following-sibling::td")).getText().trim();
+		    String mailProductName = driver.findElement(By.xpath("//td[contains(text(),'Product')]/ancestor::table//td[contains(@class,'font_12') and contains(text(),'Flare')]")).getText().trim();
+		    String mailTotalMRP = driver.findElement(By.xpath("//td[contains(text(),'Total MRP')]/following-sibling::td")).getText().trim();
+		    String mailDiscountedMRP = driver.findElement(By.xpath("//td[contains(text(),'Discounted MRP')]/following-sibling::td")).getText().trim();
+		    String mailTotalAmount = driver.findElement(By.xpath("//td[contains(text(),'Total Amount')]/following-sibling::td")).getText().trim();
+
+		    System.out.println(CYAN + line + RESET);
+		    System.out.println(YELLOW + "📬 Mail Extracted Details:" + RESET);
+		    System.out.println("📦 Product Name: " + mailProductName);
+		    System.out.println("🆔 Order ID: " + mailOrderId);
+		    System.out.println("💰 Total MRP: " + mailTotalMRP);
+		    System.out.println("💸 Discounted MRP: " + mailDiscountedMRP);
+		    System.out.println("🪙 Total Amount: " + mailTotalAmount);
+		    System.out.println(CYAN + line + RESET);
+
+		    
+		    System.out.println(GREEN + "🔍 Comparing mail details with order summary..." + RESET);
+
+		    Assert.assertTrue("❌ Order ID mismatch! Expected: " + orderId + " | Found: " + mailOrderId,
+		            mailOrderId.contains(orderId));
+
+		    Assert.assertTrue("❌ Product name mismatch! Expected: " + productName + " | Found: " + mailProductName,
+		            mailProductName.contains(productName));
+
+		   
+		    Assert.assertEquals("❌ Total MRP mismatch!", normalizePrice(totalMRF), normalizePrice(mailTotalMRP));
+		    Assert.assertEquals("❌ Discounted MRP mismatch!", normalizePrice(discountedMRP), normalizePrice(mailDiscountedMRP));
+		    Assert.assertEquals("❌ Total Amount mismatch!", normalizePrice(totalAmount), normalizePrice(mailTotalAmount));
+
+		    System.out.println(GREEN + "✅ All order details verified successfully in the mail!" + RESET);
+		    System.out.println(CYAN + line + RESET);
+		    
+		}
 
 //Order Status change Place to Shipped
 public void updateOrderStatusToShipped() throws InterruptedException {
@@ -447,30 +450,25 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 
     adminLoginApp();
     
-	Common.waitForElement(3);
-	click(searchProductSortMenu);
-	waitFor(searchProductSortMenu);
-	type(searchProductSortMenu, "Orders");
-	System.out.println("Typed 'Orders");
-	Common.waitForElement(2);
-	waitFor(clickOrders);
-	click(clickOrders);
-	System.out.println("Selected Product Sorts");
-	Common.waitForElement(3);
+	
+    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+	System.out.println("Redirect to Placed Order Page");
+	Common.waitForElement(1);
 	
     // ✅ Go to order search box and search order ID
+	Common.waitForElement(2);
     wait.until(ExpectedConditions.elementToBeClickable(orderIdbtn));
-    Common.waitForElement(2);
-	waitFor(orderIdbtn);
+    waitFor(orderIdbtn);
 	click(orderIdbtn);
+	 Common.waitForElement(1);
 	wait.until(ExpectedConditions.elementToBeClickable(orderSearchBox));
-    Common.waitForElement(2);
+    Common.waitForElement(1);
 	waitFor(orderSearchBox);
     orderSearchBox.clear();
     orderSearchBox.sendKeys(orderId);
     Common.waitForElement(1);
     orderSearchBox.sendKeys(Keys.ENTER);
-    Common.waitForElement(3);
+    Common.waitForElement(2);
 
     // ✅ Verify order is displayed
     try {
@@ -497,7 +495,7 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 	Common.waitForElement(2);
 	Select select = new Select(shipmentStatus);
 	select.selectByVisibleText("Order Accept");
-    System.out.println(GREEN + "✅ Shipment Status set to 'Order Accept'" + RESET);
+	System.out.println(GREEN + "✅ Shipment Status set to 'Order Accept'" + RESET);
 
     // ✅ Courier Provider → Manual
     wait.until(ExpectedConditions.elementToBeClickable(courierProvider));
@@ -507,7 +505,7 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 	Common.waitForElement(2);
 	Select select1 = new Select(courierProvider);
 	select1.selectByVisibleText("Manual");
-    System.out.println(GREEN + "✅ Courier Provider set to Manual" + RESET);
+	System.out.println(GREEN + "✅ Courier Provider set to Manual" + RESET);
 
     // ✅ Save & Back
     Common.waitForElement(2);
@@ -529,7 +527,7 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 	Common.waitForElement(2);
 	Select select2 = new Select(orderStatus);
 	select2.selectByVisibleText("Order Shipped");
-    System.out.println(GREEN + "✅ Order Status set to 'Order Shipped'" + RESET);
+	System.out.println(GREEN + "✅ Order Status set to 'Order Shipped'" + RESET);
 
  // ✅ Save & Back
     Common.waitForElement(2);
@@ -542,8 +540,84 @@ public void updateOrderStatusToShipped() throws InterruptedException {
     System.out.println(line);
 }
 
-	
 
+
+public void orderStatusShippedToDelivered() {
+
+    String GREEN = "\u001B[32m";
+    String YELLOW = "\u001B[33m";
+    String RED = "\u001B[31m";
+    String RESET = "\u001B[0m";
+    String line = "──────────────────────────────────────────────────────────────";
+
+    System.out.println(line);
+    System.out.println(GREEN + "🚚 Updating Order Status for Order ID: " + orderId + RESET);
+    System.out.println(line);
+
+    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
+
+    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+    System.out.println(GREEN + "✅ Navigated to Orders page" + RESET);
+
+//    // ✅ Search Order ID
+//    wait.until(ExpectedConditions.elementToBeClickable(orderIdbtn)).click();
+//    wait.until(ExpectedConditions.elementToBeClickable(orderSearchBox));
+//    orderSearchBox.clear();
+//    orderSearchBox.sendKeys(orderId);
+//    orderSearchBox.sendKeys(Keys.ENTER);
+    Common.waitForElement(3);
+
+    // ✅ Validate Order Exists
+    try {
+        wait.until(ExpectedConditions.visibilityOfElementLocated(
+                By.xpath("//td/span[normalize-space(text())='" + orderId + "']")));
+        System.out.println(GREEN + "✅ Order found in table!" + RESET);
+    } catch (TimeoutException e) {
+        System.out.println(RED + "❌ Order not found! Stopping execution." + RESET);
+        return;
+    }
+
+    // ✅ Open Edit
+    wait.until(ExpectedConditions.elementToBeClickable(editBtn)).click();
+    System.out.println(GREEN + "✅ Opened Edit page" + RESET);
+
+    // ✅ Step 1: Set to Out For Delivery
+    wait.until(ExpectedConditions.elementToBeClickable(orderStatus));
+	waitFor(orderStatus);
+	click(orderStatus);
+	Common.waitForElement(2);
+    Select step1 = new Select(orderStatus);
+    step1.selectByVisibleText("Out For Delivery");
+    System.out.println(GREEN + "✅ Status changed → Out For Delivery" + RESET);
+    Common.waitForElement(3);
+    wait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
+    System.out.println(GREEN + "💾 Saved changes (Out For Delivery)" + RESET);
+
+    // ✅ Re-open Edit
+    Common.waitForElement(5);
+    wait.until(ExpectedConditions.elementToBeClickable(editBtn)).click();
+    System.out.println(GREEN + "✅ Re-opened Edit page" + RESET);
+
+    // ✅ Step 2: Set to Order Delivered
+    wait.until(ExpectedConditions.elementToBeClickable(orderStatus));
+    waitFor(orderStatus);
+	click(orderStatus);
+	Common.waitForElement(2);
+    Select step2 = new Select(orderStatus);
+    step2.selectByVisibleText("Order Delivered");
+    System.out.println(GREEN + "✅ Status changed → Order Delivered" + RESET);
+
+    Common.waitForElement(3);
+    wait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
+    System.out.println(GREEN + "💾 Saved changes (Order Delivered)" + RESET);
+
+    System.out.println(line);
+    System.out.println(GREEN + "🎉 Order successfully updated from Shipped → Delivered!" + RESET);
+    System.out.println(line);
+}
+
+	
+//String totalMRF="₹1999", discountedMRP="₹999", youSaved="₹1000", totalAmount="₹999", orderId="ZLTQA/25-26/18079";
 //TC01 Verify Order Placed Confirm
 		public void verifyOrderPlacedEmail() throws InterruptedException {
 			
@@ -552,9 +626,14 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 			verifyOrderConfirmationMail("Order Confirmation");
 			
 			//Order Shipped
-//			updateOrderStatusToShipped();
-//			
-//			verifyOrderConfirmationMail("Order Shipped");
+			updateOrderStatusToShipped();
+			
+			verifyOrderConfirmationMail("Order Shipped");
+			
+			//Order Delivered
+			orderStatusShippedToDelivered();
+			
+			verifyOrderConfirmationMail("Order Delivered Confirmation");
 		}
 	
 

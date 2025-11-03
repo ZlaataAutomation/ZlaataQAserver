@@ -81,7 +81,7 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	 @FindBy(xpath = "//input[@id='menuSearch']")  
 	 protected WebElement searchProductSortMenu;
 	
-	 @FindBy(xpath = "(//a[contains(@href,'/admin/order')])[1]")  
+	 @FindBy(xpath = "(//a[@class='nav-link active'])[1]")  
 	 protected WebElement clickOrders;
 	 
 	
