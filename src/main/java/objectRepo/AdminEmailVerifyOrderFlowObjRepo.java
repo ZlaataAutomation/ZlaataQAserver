@@ -106,9 +106,58 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	 @FindBy(xpath="//select[@class='form-control order-status']")
 	    protected WebElement orderStatus;
 	
+	 @FindBy(xpath="(//div[contains(@class,'popup_containers_cls_btn')])[5]")
+	    protected WebElement closeBtn;
+	 
+	 @FindBy(xpath="//label[normalize-space()='Incorrect size Ordered']")
+	    protected WebElement selectReason;
+	 
+	 @FindBy(xpath="//button[contains(@class,'order_return_continue_btn')]")
+	    protected WebElement continueReturnBtn;
+	 
 	
+	 @FindBy(xpath="//label[normalize-space()='Payment Refund']/following-sibling::select")
+	    protected WebElement paymentRefundBtn;
+	 
+	 @FindBy(xpath="(//div[@title='User Icon'])[1]")
+	    protected WebElement myProfileIcon;
+	 
+	 @FindBy(xpath="(//h2[normalize-space()='My Orders'])[1]")
+	    protected WebElement myOrdersBtn;
+	 
+	 @FindBy(xpath="(//input[@id='myOrdersSearch'])[1]")
+	    protected WebElement myOrderSearchBox;
+	 
+	 @FindBy(xpath="(//label[normalize-space()='Wrong size/color Received'])[1]")
+	    protected WebElement returnReason;
+	 
+	 @FindBy(xpath="//button[contains(@class,'place_order_btn') and text()='Confirm Return']")
+	    protected WebElement confirmReturnBtn;
 	
+	 
+	 @FindBy(xpath="(//label[normalize-space()='Wrong size/color Received'])[2]")
+	    protected WebElement exchangeReason;
 	
+	 @FindBy(xpath="(//button[normalize-space()='Exchange Item'])[1]")
+	    protected WebElement exchangeItemBtn;
+	
+	 @FindBy(xpath="(//button[normalize-space(text())='Exchange'])[1]")
+	    protected WebElement exchangeBtn;
+	 
+	 @FindBy(xpath="//select[@name='item[1][courier_provider_status]']")
+	    protected WebElement exShipmentStatus;
+	
+	 @FindBy(xpath="//select[@name='item[1][status]']")
+	    protected WebElement exchangeStatus;
+	
+	 @FindBy(xpath="//select[@name='item[0][courier_provider_status]']")
+	    protected WebElement reShipmentStatus;
+	 
+	 @FindBy(xpath="//select[@name='item[0][status]']")
+	    protected WebElement returnStatus;
+	 
+	 @FindBy(xpath="//button[@class='prod_cancel_btn cls_cancel_button']")
+	    protected WebElement cancelBtn;
 	
 	
 }
