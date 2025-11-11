@@ -139,6 +139,7 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		    WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(
 		        By.xpath("//div[@aria-label='Delete']")));
 		    deleteButton.click();
+		    Thread.sleep(3000);
 
 		    System.out.println("🗑️ All emails deleted successfully.");
 		}
@@ -1909,6 +1910,95 @@ public void orderExchangeForUserSide() {
 			   
 	}
 	
+	public void verifyExchangeOrderCanceledByAdminSideEmail(String expectedmsg)
+			throws InterruptedException {
+			
+			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+			JavascriptExecutor js = (JavascriptExecutor) driver;
+			
+			String CYAN = "\u001B[36m";
+			String YELLOW = "\u001B[33m";
+			String GREEN = "\u001B[32m";
+			String RED = "\u001B[31m";
+			String RESET = "\u001B[0m";
+			String line = "──────────────────────────────────────────────────────────────";
+			
+			System.out.println(CYAN + line + RESET);
+			System.out.println(GREEN + "📧 Starting Gmail Order Confirmation Verification..." + RESET);
+			System.out.println(CYAN + line + RESET);
+			
+			// ✅ Open Gmail login page
+			driver.get("https://mail.google.com/");
+			System.out.println("🌐 Opening Gmail login page...");
+			
+			// ---- LOGIN FLOW ----
+			// Check if already logged in by looking for inbox element
+			List<WebElement> inboxCheck = driver.findElements(By.xpath("//table//tr//span[@class='bog']/span"));
+
+			if (inboxCheck.size() > 0) {
+			    System.out.println(YELLOW + "⚠️ Gmail session already active... Skipping login." + RESET);
+			} else {
+			    System.out.println(CYAN + "🔐 Logging into Gmail..." + RESET);
+
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("identifierId"))).sendKeys(gmailId);
+			    driver.findElement(By.id("identifierNext")).click();
+
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("Passwd"))).sendKeys(gmailPassword);
+			    driver.findElement(By.id("passwordNext")).click();
+
+			    System.out.println(GREEN + "✅ Logged into Gmail successfully." + RESET);
+			}
+			
+			// ✅ Wait for inbox to load
+			wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
+			System.out.println(GREEN + "📥 Gmail inbox loaded." + RESET);
+			
+			// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
+			boolean mailFound = false;
+			int retries = 36; // 3 min max wait
+
+			for (int i = 0; i < retries; i++) {
+
+			    try {
+			        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+
+			        if (latestMail.getText().contains(expectedmsg)) {
+			            latestMail.click();
+			            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
+			            mailFound = true;
+			            break;
+			        }
+			    } catch (Exception ignored) {}
+
+			    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    Thread.sleep(5000);
+			    driver.navigate().refresh();
+			}
+			
+			if (!mailFound) {
+			System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+			Assert.fail("Order confirmation mail not found.");
+			}
+			
+			// ---- READ MAIL CONTENT ----
+			Thread.sleep(4000);
+			
+
+			    // ✅ Extract order details from mail DOM
+			    System.out.println(GREEN + "🔍 Extracting order details from mail..." + RESET);
+			    WebElement heading = driver.findElement(By.xpath("//p[normalize-space(text())='Exchange Cancelled - Product received in damaged state']"));
+			    String actualMsg = heading.getText().trim();
+
+			    Assert.assertEquals("❌ Heading text mismatch in email!", expectedmsg, actualMsg);
+
+			    System.out.println("✅ Heading verified successfully: " + actualMsg);
+
+			  
+			    System.out.println(CYAN + line + RESET);
+			    
+			   
+	}
+	
 	public void orderReturnRequestRejectByAdmin() {
 		 String GREEN = "\u001B[32m";
 		    String YELLOW = "\u001B[33m";
@@ -2413,6 +2503,7 @@ public void orderExchangeForUserSide() {
 		}
 //TC04 Verify Order Return Flow 
 		public void verifyOrderReturnAllEmail() throws InterruptedException {
+			deleteAllMailsIfNotEmpty();
 			
 			addProductToCartAndPlacedTheOrder();
 			
@@ -2446,6 +2537,7 @@ public void orderExchangeForUserSide() {
 	
 //Tc06 Verify Return Order Cancel From User Side
 		public void verifyReurnOrderCancellationEmailFromUserSide() throws InterruptedException {
+			deleteAllMailsIfNotEmpty();
 			
 			addProductToCartAndPlacedTheOrder();
 		
@@ -2548,7 +2640,7 @@ public void orderExchangeForUserSide() {
 				
 				exchangeOrderRequestRejectByAdminReceivedDamageState();
 				
-				verifyReturnOrderCanceledByAdminSideEmail("Exchange Cancelled - Product received in damaged state");
+				verifyExchangeOrderCanceledByAdminSideEmail("Exchange Cancelled - Product received in damaged state");
 				
 			}	
 	
