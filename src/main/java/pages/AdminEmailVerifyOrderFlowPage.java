@@ -99,6 +99,49 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		        System.out.println("ℹ️ Bag is not empty message not found.");
 		    }
 		}
+	 
+	 public void deleteAllMailsIfNotEmpty() throws InterruptedException {
+		    driver.get("https://mail.google.com/");
+		    
+
+		    // --- Gmail Login ---
+		    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("identifierId"))).sendKeys(gmailId);
+		    driver.findElement(By.id("identifierNext")).click();
+
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("Passwd"))).sendKeys(gmailPassword);
+		    driver.findElement(By.id("passwordNext")).click();
+
+		    // --- Wait for Inbox to load ---
+		    wait.until(ExpectedConditions.or(
+		        ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.ae4.aDM")),
+		        ExpectedConditions.visibilityOfElementLocated(By.cssSelector("div.aRv"))
+		    ));
+
+		    // --- STEP 1: Check for any mail rows ---
+		    List<WebElement> mails = driver.findElements(By.xpath("//tr[contains(@class,'zA')]"));
+
+		    if (mails.isEmpty()) {
+		        System.out.println("✅ Inbox empty — nothing to delete.");
+		        return;
+		    }
+
+		    System.out.println("⚠️ Found " + mails.size() + " email(s). Proceeding to delete...");
+
+		    // --- STEP 2: Click 'Select all' checkbox ---
+		    WebElement selectAll = wait.until(ExpectedConditions.elementToBeClickable(
+		        By.xpath("//div[@aria-label='Select']//span[@role='checkbox']")));
+		    selectAll.click();
+
+		    Thread.sleep(2000);
+
+		    // --- STEP 3: Click 'Delete' button ---
+		    WebElement deleteButton = wait.until(ExpectedConditions.elementToBeClickable(
+		        By.xpath("//div[@aria-label='Delete']")));
+		    deleteButton.click();
+
+		    System.out.println("🗑️ All emails deleted successfully.");
+		}
 
 		// Fetch from Excel
 		String productName = Common.getValueFromTestDataMap("ProductListingName");
@@ -2310,6 +2353,8 @@ public void orderExchangeForUserSide() {
 //String totalMRF="₹1999", discountedMRP="₹999", youSaved="₹1000", totalAmount="₹999", orderId="ZLTQA/25-26/18079";
 //TC01 Verify Order Placed Confirm
 		public void verifyOrderPlacedEmail() throws InterruptedException {
+			
+			deleteAllMailsIfNotEmpty();
 			
 			addProductToCartAndPlacedTheOrder();
 			
