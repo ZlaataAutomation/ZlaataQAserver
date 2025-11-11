@@ -56,7 +56,7 @@ public abstract class AdminProductSecondaryColorObjRepo extends BasePage{
     @FindBy(xpath = "//i[@class='fa fa-refresh']") 
     protected WebElement clearCatchButton;
     
-    @FindBy(xpath = "//input[@id='search__product']")
+    @FindBy(xpath = "//input[@id='search_input']")
     protected WebElement userSearchBox;
     
     @FindBy(xpath = "//button[contains(@class,'add_bag_prod_buy_now_btn') and normalize-space()='Add to Bag']")

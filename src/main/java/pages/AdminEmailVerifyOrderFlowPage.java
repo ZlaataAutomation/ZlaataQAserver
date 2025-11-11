@@ -433,29 +433,45 @@ public void verifyOrderConfirmationMail(String expectedmsg)
 		
 		// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 		boolean mailFound = false;
-		int retries = 36; // 3 min max wait
+		int retries = 36; // ~3 minutes
 
 		for (int i = 0; i < retries; i++) {
-
 		    try {
-		        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+		        // Always re-locate the first mail element fresh each time
+		        WebElement firstMail = wait.until(
+		            ExpectedConditions.presenceOfElementLocated(
+		                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+		            )
+		        );
 
-		        if (latestMail.getText().contains(expectedmsg)) {
-		            latestMail.click();
+		        String mailText = firstMail.getText().trim();
+
+		        if (mailText.contains(expectedmsg)) {
+		            // Wait until clickable before clicking
+		            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+		            firstMail.click();
 		            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 		            mailFound = true;
 		            break;
 		        }
-		    } catch (Exception ignored) {}
 
-		    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+		    } catch (StaleElementReferenceException e) {
+		        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+		    } catch (Exception e) {
+		        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+		    }
+
+		    // Wait and refresh for next retry
 		    Thread.sleep(5000);
 		    driver.navigate().refresh();
+
+		    // Wait until inbox reloads before next iteration
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 		}
-		
+
 		if (!mailFound) {
-		System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-		Assert.fail("Order confirmation mail not found.");
+		    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+		    Assert.fail("Order confirmation mail not found.");
 		}
 		
 		// ---- READ MAIL CONTENT ----
@@ -559,7 +575,7 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 
     adminLoginApp();
     
-	
+    Common.waitForElement(2);
     driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 	System.out.println("Redirect to Placed Order Page");
 	Common.waitForElement(1);
@@ -822,29 +838,45 @@ public void verifyRefundCreditedEmail(String expectedmsg)
 		
 		// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 		boolean mailFound = false;
-		int retries = 36; // 3 min max wait
+		int retries = 36; // ~3 minutes
 
 		for (int i = 0; i < retries; i++) {
-
 		    try {
-		        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+		        // Always re-locate the first mail element fresh each time
+		        WebElement firstMail = wait.until(
+		            ExpectedConditions.presenceOfElementLocated(
+		                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+		            )
+		        );
 
-		        if (latestMail.getText().contains(expectedmsg)) {
-		            latestMail.click();
+		        String mailText = firstMail.getText().trim();
+
+		        if (mailText.contains(expectedmsg)) {
+		            // Wait until clickable before clicking
+		            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+		            firstMail.click();
 		            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 		            mailFound = true;
 		            break;
 		        }
-		    } catch (Exception ignored) {}
 
-		    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+		    } catch (StaleElementReferenceException e) {
+		        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+		    } catch (Exception e) {
+		        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+		    }
+
+		    // Wait and refresh for next retry
 		    Thread.sleep(5000);
 		    driver.navigate().refresh();
+
+		    // Wait until inbox reloads before next iteration
+		    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 		}
-		
+
 		if (!mailFound) {
-		System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-		Assert.fail("Order confirmation mail not found.");
+		    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+		    Assert.fail("Order confirmation mail not found.");
 		}
 		
 		// ---- READ MAIL CONTENT ----
@@ -1228,29 +1260,45 @@ public void orderExchangeForUserSide() {
 			
 			// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 			boolean mailFound = false;
-			int retries = 36; // 3 min max wait
+			int retries = 36; // ~3 minutes
 
 			for (int i = 0; i < retries; i++) {
-
 			    try {
-			        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+			        // Always re-locate the first mail element fresh each time
+			        WebElement firstMail = wait.until(
+			            ExpectedConditions.presenceOfElementLocated(
+			                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+			            )
+			        );
 
-			        if (latestMail.getText().contains(expectedmsg)) {
-			            latestMail.click();
+			        String mailText = firstMail.getText().trim();
+
+			        if (mailText.contains(expectedmsg)) {
+			            // Wait until clickable before clicking
+			            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+			            firstMail.click();
 			            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 			            mailFound = true;
 			            break;
 			        }
-			    } catch (Exception ignored) {}
 
-			    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    } catch (StaleElementReferenceException e) {
+			        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+			    } catch (Exception e) {
+			        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    }
+
+			    // Wait and refresh for next retry
 			    Thread.sleep(5000);
 			    driver.navigate().refresh();
+
+			    // Wait until inbox reloads before next iteration
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 			}
-			
+
 			if (!mailFound) {
-			System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-			Assert.fail("Order confirmation mail not found.");
+			    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+			    Assert.fail("Order confirmation mail not found.");
 			}
 			
 			// ---- READ MAIL CONTENT ----
@@ -1866,29 +1914,45 @@ public void orderExchangeForUserSide() {
 			
 			// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 			boolean mailFound = false;
-			int retries = 36; // 3 min max wait
+			int retries = 36; // ~3 minutes
 
 			for (int i = 0; i < retries; i++) {
-
 			    try {
-			        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+			        // Always re-locate the first mail element fresh each time
+			        WebElement firstMail = wait.until(
+			            ExpectedConditions.presenceOfElementLocated(
+			                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+			            )
+			        );
 
-			        if (latestMail.getText().contains(expectedmsg)) {
-			            latestMail.click();
+			        String mailText = firstMail.getText().trim();
+
+			        if (mailText.contains(expectedmsg)) {
+			            // Wait until clickable before clicking
+			            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+			            firstMail.click();
 			            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 			            mailFound = true;
 			            break;
 			        }
-			    } catch (Exception ignored) {}
 
-			    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    } catch (StaleElementReferenceException e) {
+			        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+			    } catch (Exception e) {
+			        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    }
+
+			    // Wait and refresh for next retry
 			    Thread.sleep(5000);
 			    driver.navigate().refresh();
+
+			    // Wait until inbox reloads before next iteration
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 			}
-			
+
 			if (!mailFound) {
-			System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-			Assert.fail("Order confirmation mail not found.");
+			    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+			    Assert.fail("Order confirmation mail not found.");
 			}
 			
 			// ---- READ MAIL CONTENT ----
@@ -1955,29 +2019,45 @@ public void orderExchangeForUserSide() {
 			
 			// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 			boolean mailFound = false;
-			int retries = 36; // 3 min max wait
+			int retries = 36; // ~3 minutes
 
 			for (int i = 0; i < retries; i++) {
-
 			    try {
-			        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+			        // Always re-locate the first mail element fresh each time
+			        WebElement firstMail = wait.until(
+			            ExpectedConditions.presenceOfElementLocated(
+			                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+			            )
+			        );
 
-			        if (latestMail.getText().contains(expectedmsg)) {
-			            latestMail.click();
+			        String mailText = firstMail.getText().trim();
+
+			        if (mailText.contains(expectedmsg)) {
+			            // Wait until clickable before clicking
+			            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+			            firstMail.click();
 			            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 			            mailFound = true;
 			            break;
 			        }
-			    } catch (Exception ignored) {}
 
-			    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    } catch (StaleElementReferenceException e) {
+			        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+			    } catch (Exception e) {
+			        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    }
+
+			    // Wait and refresh for next retry
 			    Thread.sleep(5000);
 			    driver.navigate().refresh();
+
+			    // Wait until inbox reloads before next iteration
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 			}
-			
+
 			if (!mailFound) {
-			System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-			Assert.fail("Order confirmation mail not found.");
+			    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+			    Assert.fail("Order confirmation mail not found.");
 			}
 			
 			// ---- READ MAIL CONTENT ----
@@ -2140,29 +2220,45 @@ public void orderExchangeForUserSide() {
 			
 			// ---- WAIT FOR ORDER CONFIRMATION MAIL ----
 			boolean mailFound = false;
-			int retries = 36; // 3 min max wait
+			int retries = 36; // ~3 minutes
 
 			for (int i = 0; i < retries; i++) {
-
 			    try {
-			        WebElement latestMail = driver.findElement(By.xpath("(//table//tr//span[@class='bog']/span)[1]"));
+			        // Always re-locate the first mail element fresh each time
+			        WebElement firstMail = wait.until(
+			            ExpectedConditions.presenceOfElementLocated(
+			                By.xpath("(//table//tr//span[@class='bog']/span)[1]")
+			            )
+			        );
 
-			        if (latestMail.getText().contains(expectedmsg)) {
-			            latestMail.click();
+			        String mailText = firstMail.getText().trim();
+
+			        if (mailText.contains(expectedmsg)) {
+			            // Wait until clickable before clicking
+			            wait.until(ExpectedConditions.elementToBeClickable(firstMail));
+			            firstMail.click();
 			            System.out.println(GREEN + "📨 Order mail received and opened!" + RESET);
 			            mailFound = true;
 			            break;
 			        }
-			    } catch (Exception ignored) {}
 
-			    System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    } catch (StaleElementReferenceException e) {
+			        System.out.println(YELLOW + "⚠️ Element went stale after refresh, re-locating..." + RESET);
+			    } catch (Exception e) {
+			        System.out.println(YELLOW + "⏳ Waiting for latest mail... retry " + (i + 1) + RESET);
+			    }
+
+			    // Wait and refresh for next retry
 			    Thread.sleep(5000);
 			    driver.navigate().refresh();
+
+			    // Wait until inbox reloads before next iteration
+			    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//table")));
 			}
-			
+
 			if (!mailFound) {
-			System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
-			Assert.fail("Order confirmation mail not found.");
+			    System.out.println(RED + "❌ Order Confirmation Mail not received within time!" + RESET);
+			    Assert.fail("Order confirmation mail not found.");
 			}
 			
 			// ---- READ MAIL CONTENT ----

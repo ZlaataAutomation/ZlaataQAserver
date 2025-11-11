@@ -50,7 +50,7 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	@FindBy(xpath = "//form[@class='digit-group login_otp_input_form']")
 	protected WebElement otpEnterTextBox;
 	
-	@FindBy(xpath = "//input[@id='search__product']")
+	@FindBy(xpath = "//input[@id='search_input']")
 	protected WebElement userSearchBox;
 	
 	@FindBy(xpath = "//div[contains(@class,'product_list_add_to_cart')]")

@@ -1,5 +1,6 @@
 Feature: Admin Export The Excel File and Check with  Export Excel File Check Wheather its Matching .
 
+@Export
 @Regression
     @TC_UI_Zlaata_APE_01
 Scenario Outline: TC_UI_Zlaata_APE_01 |Verify exported Order > Placed > Order Page have dates within selected range.| "<TD_ID>" 
@@ -10,6 +11,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_01   |
   
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_02
 Scenario Outline: TC_UI_Zlaata_APE_02 |Verify exported Order > Placed > Return Page have dates within selected range.| "<TD_ID>" 
@@ -20,6 +22,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_02   |
  
+ @Export
  @Regression
  @TC_UI_Zlaata_APE_03
 Scenario Outline: TC_UI_Zlaata_APE_03 |Verify exported Order > Placed > Exchange Page have dates within selected range.| "<TD_ID>" 
@@ -30,6 +33,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_03   |
   
+  @Export
  @Regression
   @TC_UI_Zlaata_APE_04
 Scenario Outline: TC_UI_Zlaata_APE_04 |Verify exported Order > CANCELED > Order Page have dates within selected range.| "<TD_ID>" 
@@ -40,6 +44,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_04   |
   
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_05
 Scenario Outline: TC_UI_Zlaata_APE_05 |Verify exported Order > CANCELED > Return Page have dates within selected range.| "<TD_ID>" 
@@ -50,6 +55,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_05   |
   
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_06
 Scenario Outline: TC_UI_Zlaata_APE_06 |Verify exported Order > CANCELED > Exchange Page have dates within selected range.| "<TD_ID>" 
@@ -60,6 +66,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_06   |
   
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_07
 Scenario Outline: TC_UI_Zlaata_APE_07 |Verify exported Payment Pending Page have dates within selected range.| "<TD_ID>" 
@@ -69,6 +76,8 @@ Scenario Outline: TC_UI_Zlaata_APE_07 |Verify exported Payment Pending Page have
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_07   |
+  
+  @Export
  @Regression
   @TC_UI_Zlaata_APE_08
 Scenario Outline: TC_UI_Zlaata_APE_08 |Verify exported Payment Refund Page have dates within selected range.| "<TD_ID>" 
@@ -78,6 +87,8 @@ Scenario Outline: TC_UI_Zlaata_APE_08 |Verify exported Payment Refund Page have 
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_08   |
+  
+  @Export
    @Regression
   @TC_UI_Zlaata_APE_09
 Scenario Outline: TC_UI_Zlaata_APE_09 |Verify exported Payment Failed Page have dates within selected range.| "<TD_ID>" 
@@ -87,6 +98,8 @@ Scenario Outline: TC_UI_Zlaata_APE_09 |Verify exported Payment Failed Page have 
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_09   |
+  
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_10
 Scenario Outline: TC_UI_Zlaata_APE_10 |Verify exported RTO Orders Page have dates within selected range.| "<TD_ID>" 
@@ -96,6 +109,8 @@ Scenario Outline: TC_UI_Zlaata_APE_10 |Verify exported RTO Orders Page have date
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_APE_10   |
+  
+  @Export
   @Regression
   @TC_UI_Zlaata_APE_11
 Scenario Outline: TC_UI_Zlaata_APE_11 |Verify exported All Orders Page have dates within selected range.| "<TD_ID>" 

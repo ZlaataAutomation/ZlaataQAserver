@@ -1,5 +1,6 @@
 Feature: Home Page Banner upload verification admin panel
  
+ @Home
     @Regression
      @TC_UI_Zlaata_ADM_01
 Scenario Outline: TC_UI_Zlaata_ADM_01 | Verify banner upload on home page section  | "<TD_ID>"  
@@ -11,6 +12,7 @@ Examples:
   | TD_UI_Zlaata_ADM_01   |
   
   
+  @Home
     @Positive
   @Regression
     @TC_UI_Zlaata_ADM_02
@@ -25,6 +27,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADM_02   |
   
+  @Home
   @Regression
   @TC_UI_Zlaata_ADM_03
 Scenario Outline: TC_UI_Zlaata_ADM_03 |Verify New Arrivals Section Product Display on Homepage.| "<TD_ID>"  
@@ -38,6 +41,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADM_03   |
  
+ @Home
  @Regression
    @TC_UI_Zlaata_ADM_04
 Scenario Outline: TC_UI_Zlaata_ADM_04 |Verify Category Section Display on Website.| "<TD_ID>"  
@@ -61,6 +65,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADM_05   |
   
+  @Home
     @Regression
      @TC_UI_Zlaata_ADM_06
 Scenario Outline: TC_UI_Zlaata_ADM_06 |Remove product SKU from Top Selling and verify on User App.| "<TD_ID>" 
@@ -72,6 +77,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADM_06   |
   
+  @Home
   @Regression
     @TC_UI_Zlaata_ADM_07
 Scenario Outline: TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "<TD_ID>" 

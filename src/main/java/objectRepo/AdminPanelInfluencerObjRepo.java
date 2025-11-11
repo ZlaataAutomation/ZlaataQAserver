@@ -127,7 +127,7 @@ public abstract class AdminPanelInfluencerObjRepo extends BasePage {
     @FindBy(xpath = "//i[@class='fa fa-refresh']") 
     protected WebElement clearCatchButton;
     
-    @FindBy(xpath = "//input[@id='search__product']") 
+    @FindBy(xpath = "//input[@id='search_input']") 
     protected WebElement searchBox;
 	
     @FindBy(xpath = "//a[normalize-space()='Influencer']") 
