@@ -1370,7 +1370,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             userSearchBox.clear();
             userSearchBox.sendKeys(productColorName);
           
-
+            Common.waitForElement(3);
             By locator = By.xpath("//h6[normalize-space()='" + productColorName + "']");
             wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 

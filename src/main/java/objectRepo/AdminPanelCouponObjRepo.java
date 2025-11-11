@@ -65,7 +65,7 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "//span[@role='combobox' and contains(@aria-labelledby,'select2-coupon_type')]")
 	protected WebElement couponTypeBtn;
 
-   	@FindBy(xpath = "(//input[@role='searchbox'])[2]")
+   	@FindBy(xpath = "(//input[@role='searchbox'])[9]")
 	protected WebElement couponTypeBox;
 
    	@FindBy(xpath = "//span[@data-value='save_and_back']")
