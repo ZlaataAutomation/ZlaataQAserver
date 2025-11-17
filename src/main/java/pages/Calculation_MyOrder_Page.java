@@ -1745,7 +1745,7 @@ public void validateOrderSummaryForTwoProduct_P1() {
  //   System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
     System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
     System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved1 + RESET);
-    System.out.println(YELLOW + "Calculated TotalOrderValue  Amount: " + calcTotalAmount1 + RESET);
+    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcTotalAmount1 + RESET);
 //    int calcPayableAmount =
 //            calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
@@ -1885,7 +1885,7 @@ public void validateOrderSummaryForTwoProduct_P2() {
 //    System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
     System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
     System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved2 + RESET);
-    System.out.println(YELLOW + "Calculated TotalOrderValue Amount: " + calcTotalAmount2 + RESET);
+    System.out.println(YELLOW + "Calculated Payable Amount: " + calcTotalAmount2 + RESET);
 //    int calcPayableAmount =
 //            calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
@@ -2226,7 +2226,171 @@ public void verifyThreadSplit_P2() {
 
     System.out.println(LINE);
 }
-	
+
+
+public void verifyGiftCardSplit_P2() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 GIFT CARD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If giftCardAmount2 is ZERO
+    // ============================================
+    if (giftCardAmount == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING GIFT CARD SPLIT VALIDATION — UI Gift Card Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any validation
+    }
+
+    // ============================================
+    // GIFT CARD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Gift Card Split Calculation..." + RESET);
+
+    System.out.println(GREEN +
+        "Formula: (ProductDiscountedMRP / TotalDiscountedMRP) * TotalGiftCardAmount"
+        + RESET);
+
+    double calcGiftCardRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcGiftCardRaw = ((double) discountedMRP2 / (double) discountedMRP) * giftCardAmount;
+    }
+
+    int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
+    int calcGiftCardCeil  = (int) Math.ceil(calcGiftCardRaw);
+
+    System.out.println(YELLOW + "Calculated Gift Card Raw:      " + calcGiftCardRaw + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Floor:    " + calcGiftCardFloor + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Ceil:     " + calcGiftCardCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Gift Card Value:            " + giftCardAmount2 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (giftCardAmount2 == calcGiftCardFloor || giftCardAmount2 == calcGiftCardCeil) {
+
+        System.out.println(GREEN +
+            "✅ GIFT CARD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+        RESET);
+
+    } else {
+
+        System.out.println(RED +
+            "❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " + giftCardAmount2 +
+            " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil +
+            RESET);
+
+        Assert.fail("❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " +
+            giftCardAmount2 + " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil);
+    }
+
+    System.out.println(LINE);
+}
+public void verifyGiftCardSplit_P1() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 GIFT CARD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If giftCardAmount2 is ZERO
+    // ============================================
+    if (giftCardAmount == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING GIFT CARD SPLIT VALIDATION — UI Gift Card Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any validation
+    }
+
+    // ============================================
+    // GIFT CARD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Gift Card Split Calculation..." + RESET);
+
+    System.out.println(GREEN +
+        "Formula: (ProductDiscountedMRP / TotalDiscountedMRP) * TotalGiftCardAmount"
+        + RESET);
+
+    double calcGiftCardRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcGiftCardRaw = ((double) discountedMRP1 / (double) discountedMRP) * giftCardAmount;
+    }
+
+    int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
+    int calcGiftCardCeil  = (int) Math.ceil(calcGiftCardRaw);
+
+    System.out.println(YELLOW + "Calculated Gift Card Raw:      " + calcGiftCardRaw + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Floor:    " + calcGiftCardFloor + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Ceil:     " + calcGiftCardCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Gift Card Value:            " + giftCardAmount1 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (giftCardAmount1 == calcGiftCardFloor || giftCardAmount1 == calcGiftCardCeil) {
+
+        System.out.println(GREEN +
+            "✅ GIFT CARD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+        RESET);
+
+    } else {
+
+        System.out.println(RED +
+            "❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " + giftCardAmount1 +
+            " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil +
+            RESET);
+
+        Assert.fail("❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " +
+        		giftCardAmount1 + " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil);
+    }
+
+    System.out.println(LINE);
+}
+
+
+
+
+
+
+
+
+
 //TC-01 For one Product	
 	public void verify_P1_With_GW_C_GC_GA_T() throws InterruptedException {
 		
@@ -2291,6 +2455,8 @@ public void verifyThreadSplit_P2() {
 		verifyCouponSplit_P1();
 		
 		verifyThreadSplit_P1();
+		
+		verifyGiftCardSplit_P1();
 	    
 		closeBtn.click();
 	    
@@ -2302,6 +2468,8 @@ public void verifyThreadSplit_P2() {
 		verifyCouponSplit_P2();
 		
 		verifyThreadSplit_P2();
+		
+		verifyGiftCardSplit_P1();
 		
 		closeBtn.click();
 		
