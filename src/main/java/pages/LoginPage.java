@@ -28,8 +28,8 @@ public final class LoginPage extends LoginObjRepository {
     
     public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-//				click(submit);
+				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+				click(submit);
     }
 
     public void userLogin() {
