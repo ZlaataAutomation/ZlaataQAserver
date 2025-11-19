@@ -10,6 +10,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
@@ -34,8 +35,8 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	}
 	
 	public void userLoginApp() {
-		HomePage home = new HomePage(driver);
-		home.homeLaunch();
+//		HomePage home = new HomePage(driver);
+//		home.homeLaunch();
     	LoginPage login = new LoginPage(driver);
 		login.userLogin();
 	}
@@ -111,7 +112,7 @@ public void deleteAllProductFromCart() {
 	    actions.moveToElement(shopMenu).perform();
 
 	    WebElement allButton = wait.until(ExpectedConditions.elementToBeClickable(
-	            By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='All']")));
+	            By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES']")));
 	    allButton.click();
 
 	    System.out.println("✅ Clicked on 'All' under Shop menu");
@@ -157,7 +158,8 @@ public void deleteAllProductFromCart() {
 	        WebElement productNameElement = productCard.findElement(
 	                By.xpath(".//h2[@class='product_list_cards_heading']"));
 
-	        productNameElement.click(); // Open PDP
+	     // Fix: JS click to avoid interception
+	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productNameElement);
 
 	        productFound = true;
 	        System.out.println("✅ Selected random in-stock product: " + productlistingName);
@@ -171,13 +173,16 @@ public void deleteAllProductFromCart() {
 	    // Click ADD TO CART button on PDP
 	    
 
-	   
+	    Common.waitForElement(2);
 	    WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(
 	            By.xpath("(//button[contains(text(),'Add to')])[1]")));
 	    Common.waitForElement(2);
-	    wait.until(ExpectedConditions.elementToBeClickable(addToCart));
+	 // scroll it into center
+	    ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({block: 'center'});", addToCart);
 
-	    addToCart.click();
+	    // click via JS (bypasses click interception)
+	    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCart);
 	    
 
 	    System.out.println("🛒 Add to Cart clicked on PDP for: " + productlistingName);
@@ -220,7 +225,13 @@ public void deleteAllProductFromCart() {
 
 	    // Select 500
 	    Common.waitForElement(2);
-	    wait.until(ExpectedConditions.elementToBeClickable(choose500)).click();
+	 // Scroll into view
+	    ((JavascriptExecutor) driver).executeScript(
+	        "arguments[0].scrollIntoView({block: 'center'});", choose500
+	    );
+
+	    // JS Click → 100% no interception
+	    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", choose500);
 	    System.out.println(GREEN + "💵 Selected ₹500 Gift Card" + RESET);
 
 	    // Next Button
@@ -409,7 +420,7 @@ public void deleteAllProductFromCart() {
 	        ));
 
 	        giftCardInput.clear();
-	        giftCardInput.sendKeys("4359900573959653");
+	        giftCardInput.sendKeys("7624 9826 0572 1212");
 	        System.out.println(GREEN + "✔ Entered Gift Card number successfully" + RESET);
 
 	        Common.waitForElement(2);
@@ -419,7 +430,13 @@ public void deleteAllProductFromCart() {
 	                By.xpath("//button[contains(@class,'ClsGCapplyButton') and not(@disabled)]")
 	        ));
 
-	        applyBtn.click();
+	     // Scroll into view
+	        ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({block: 'center'});", applyBtn
+	        );
+
+	        // Safe JS click to avoid interception
+	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", applyBtn);
 	        System.out.println(GREEN + "✔ Clicked Apply button" + RESET);
 
 	        // Wait for Balance
@@ -441,7 +458,7 @@ public void deleteAllProductFromCart() {
 	            ));
 
 	            amountInput.clear();
-	            amountInput.sendKeys("10");
+	            amountInput.sendKeys("50");
 
 	            System.out.println(GREEN + "✔ Entered ₹50 as Gift Card amount" + RESET);
 
@@ -651,17 +668,41 @@ public void deleteAllProductFromCart() {
 	     // UI shown values
 	        System.out.println(LINE);
 	        System.out.println(CYAN + "📌 This Value Displayng in application checkout page" + RESET);
-	        System.out.println(YELLOW + "You Saved : " + uiSavedAmount + RESET);
-	        System.out.println(YELLOW + "Total Amount : " + uiTotalAmount + RESET);
+	        System.out.println(YELLOW + "You Saved UI: " + uiSavedAmount + RESET);
+	        System.out.println(YELLOW + "Total Amount UI : " + uiTotalAmount + RESET);
 	        System.out.println(LINE);
 	        // -----------------------------
 	        // Perform calculations
 	        // -----------------------------
+	        System.out.println(
+	        	    "calcTotalAmount = ("
+	        	        + "GiftCardMRP : " + giftCardMRP + " + "
+	        	        + "DiscountedMRP : " + discountedMRP + " + "
+	        	        + "GiftWrapFee : " + giftWrapFee + " + "
+	        	        + "ExpressShipping : " + expressShipping + " + "
+	        	        + "CustomFee : " + customFee
+	        	        + ") - ("
+	        	        + "ThreadValue : " + threadValue + " + "
+	        	        + "GiftCardAmount : " + giftCardAmount + " + "
+	        	        + "CouponDiscount : " + couponDiscount
+	        	        + ") " 
+	        	     
+	        	);
 
 	        int calcTotalAmount =
 	            (giftCardMRP + discountedMRP + giftWrapFee + expressShipping + customFee)
 	                    - (threadValue + giftCardAmount + couponDiscount);
-
+	        System.out.println(LINE);
+	        System.out.println(
+	        	    "calcSaved = ("
+	        	        + "TotalMRP : " + totalMRP + " - "
+	        	        + "DiscountedMRP : " + discountedMRP
+	        	        + ") + "
+	        	        + "ThreadValue : " + threadValue + " + "
+	        	        + "CouponDiscount : " + couponDiscount
+	        	        + "  "
+	        	        
+	        	);
 	        // Calculate Saved: (TotalMRP - DiscountedMRP) + coupon + thread 
 	        int calcSaved = (totalMRP - discountedMRP)
 	                + threadValue + couponDiscount;
@@ -723,9 +764,14 @@ public void deleteAllProductFromCart() {
 	    String RESET = "\u001B[0m";
 	    String LINE = "────────────────────────────────────────────";
 	    
-	    Common.waitForElement(2);
-	    wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn));
-	    click(placeOrderBtn);
+	    
+	 // Scroll so the button is fully visible
+	    ((JavascriptExecutor) driver).executeScript(
+	        "arguments[0].scrollIntoView({block: 'center'});", placeOrderBtn
+	    );
+
+	    // JS Click (cannot be intercepted)
+	    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", placeOrderBtn);
 	    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
 	    Common.waitForElement(4);
 		 // ✅ 1. Switch to Razorpay iframe (you already have this)
@@ -761,9 +807,9 @@ public void deleteAllProductFromCart() {
 	    // ---------------------------------------
 	    System.out.println(LINE);
 	    System.out.println(CYAN + "📌 VALUES DISPLAYED IN RAZORPAY SUMMARY" + RESET);
-	    System.out.println(YELLOW + "Subtotal: " + uiSubtotal + RESET);
-	    System.out.println(YELLOW + "Discount on Price: " + uiDiscount + RESET);
-	    System.out.println(YELLOW + "Grand Total: " + uiGrandTotal + RESET);
+	    System.out.println(YELLOW + "Subtotal UI: " + uiSubtotal + RESET);
+	    System.out.println(YELLOW + "Discount on Price UI: " + uiDiscount + RESET);
+	    System.out.println(YELLOW + "Grand Total UI: " + uiGrandTotal + RESET);
 	    System.out.println(LINE);
 
 	    // ------------------------------------------------------
@@ -784,16 +830,42 @@ public void deleteAllProductFromCart() {
 	    // ------------------------------------------------------
 	    // 🔹 PERFORM CALCULATIONS (As per your formula)
 	    // ------------------------------------------------------
-
+        System.out.println(
+        	    "calcSubtotal = ("
+        	        + "TotalMRP : " + totalMRP + " + "
+        	        + "GiftCardMRP : " + giftCardMRP + " + "
+        	        + "GiftWrapFee : " + giftWrapFee + " + "
+        	        + "CustomFee : " + customFee + " + "
+        	        + "ExpressShipping : " + expressShipping
+        	        + ")  "
+        	        
+        	);
 	    int calcSubtotal =
 	            (totalMRP + giftCardMRP + giftWrapFee + customFee + expressShipping);
 
+	    System.out.println(
+	    	    "calcDiscount = ("
+	    	        + "TotalMRP : " + totalMRP + " - "
+	    	        + "DiscountedMRP : " + discountedMRP
+	    	        + ") + "
+	    	        + "GiftCardAmount : " + giftCardAmount + " + "
+	    	        + "ThreadValue : " + threadValue + " + "
+	    	        + "CouponDiscount : " + couponDiscount
+	    	        + " "
+	    	        
+	    	);
 	    int calcDiscount =
 	            (totalMRP - discountedMRP) + giftCardAmount + threadValue + couponDiscount;
-
+	    System.out.println(
+	    	    "calcGrandTotal = "
+	    	        + "Subtotal : " + calcSubtotal + " - "
+	    	        + "Discount : " + calcDiscount
+	    	        + "  "
+	    	        
+	    	);
 	    int calcGrandTotal =
 	            calcSubtotal - calcDiscount;
-
+	    System.out.println(LINE);
 	    // ------------------------------------------------------
 	    // 🔹 PRINT CALCULATION DETAILS CLEARLY
 	    // ------------------------------------------------------
@@ -1033,15 +1105,33 @@ public void deleteAllProductFromCart() {
 	    	    // -------------------------------
 	    	    // 🔹 CALCULATIONS
 	    	    // -------------------------------
-	    	    int calcYouSaved =
-	    	            (totalMRP_P1 - discountedMRP_P1)
-	    	            + threadValue_P1
-	    	            + couponDiscount_P1
-	    	            +giftCardAmount_P1;
-
+	    	    
+	    	    System.out.println(
+	    	    	    "calcTotalAmount = ("
+	    	    	        + "DiscountedMRP_P1 : " + discountedMRP_P1 + " + "
+	    	    	        + "CustomFee_P1 : " + customFee_P1
+	    	    	        + ") - ("
+	    	    	        + "ThreadValue_P1 : " + threadValue_P1 + " + "
+	    	    	        + "GiftCardAmount_P1 : " + giftCardAmount_P1 + " + "
+	    	    	        + "CouponDiscount_P1 : " + couponDiscount_P1
+	    	    	        + ") "
+	    	    	        
+	    	    	);
 	    	     calcTotalAmount =
 	    	            (discountedMRP_P1 + customFee_P1)
 	    	            - (threadValue_P1 + giftCardAmount_P1 + couponDiscount_P1);
+	    	     
+	    	     
+	    	    System.out.println(
+	    	    	    "calcYouSaved = "
+	    	    	        + "TotalMRP_P1 : " + totalMRP_P1 + " - "
+	    	    	        + "Total Amount : " + calcTotalAmount
+	    	    	        + ""
+	    	    	        
+	    	    	);
+	    	    int calcYouSaved =
+	    	            totalMRP_P1 - calcTotalAmount;
+	    
 
 	    	    // -------------------------------
 	    	    // 🔹 PRINT CALCULATIONS
@@ -1050,8 +1140,7 @@ public void deleteAllProductFromCart() {
 
 	    	    // YOU SAVED
 	    	    System.out.println(YELLOW + "You Saved Formula:" + RESET);
-	    	    System.out.println("   (" + totalMRP_P1 + " - " + discountedMRP_P1 +
-	    	            ") + " + threadValue_P1 + " + " + couponDiscount_P1);
+	    	    System.out.println("   " + totalMRP_P1 + " - " + calcTotalAmount +"");
 	    	    System.out.println(GREEN + "   = " + calcYouSaved + RESET);
 
 	    	    System.out.println();
@@ -1171,7 +1260,7 @@ public void deleteAllProductFromCart() {
         // =============================
         // STEP 2: Print Backend Values
         // =============================
-        System.out.println(CYAN + "📌 BACKEND / VARIABLES YOU STORED EARLIER" + RESET);
+        System.out.println(CYAN + "📌 BACKEND / VARIABLES YOU STORED EARLIER(Price Break Up)" + RESET);
         System.out.println(YELLOW + "Total MRP:            " + totalMRP_P1 + RESET);
 	    System.out.println(YELLOW + "Discounted MRP:       " + discountedMRP_P1 + RESET);
 	    System.out.println(YELLOW + "Customisation Fee:    " + customFee_P1 + RESET);
@@ -1192,27 +1281,35 @@ public void deleteAllProductFromCart() {
         // STEP 3: Calculations
         // =============================
         System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
+        System.out.println(GREEN + "Payable Amount Formula: Total Amount(Price Break Up):" + calcTotalAmount + "+ Gift Card(Price Break Up):"+ giftCardAmount_P1 +" " + RESET);
+        int calcPayableAmount =
+        		calcTotalAmount + giftCardAmount_P1;
+        System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+        System.out.println(LINE);
+        System.out.println(GREEN + "Total Order Value Formula: Payable Amount:" + calcPayableAmount + "+ Gift Wrap Fee:"+ uiGiftWrapFee +"+ Shipping Charges Fee:"+ uiShippingCharges +" " + RESET);
         int calcTotalOrderValue =
-             (calcTotalAmount + uiGiftWrapFee + uiShippingCharges);
-
+             (calcPayableAmount + uiGiftWrapFee + uiShippingCharges);
+        System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
+        System.out.println(LINE);
+        System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + calcTotalAmount + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
         int calcYouSaved =
-                (totalMRP_P1 - discountedMRP_P1)
-                + threadValue_P1
-                + couponDiscount_P1;
+                (totalMRP_P1 + customFee_P1)
+                - calcPayableAmount;
+        System.out.println(YELLOW + "You saved  Amount: " + calcYouSaved + RESET);
 //        int calcTotalOrderValue =
 //                (discountedMRP + giftWrapFee + expressShipping + customFee)
 //                        - (threadValue + couponDiscount);
 
 //        System.out.println(GREEN + "Formula: (DiscountedMRP + Wrap + Express + Custom) - (Thread + Coupon)" + RESET);
-        System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
-        System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
-        System.out.println(YELLOW + "You saved Payable Amount: " + calcYouSaved + RESET);
+ //       System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
+//        System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
+//        System.out.println(YELLOW + "You saved  Amount: " + calcYouSaved + RESET);
 //        int calcPayableAmount =
 //                calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
-//        System.out.println(GREEN + "Formula: TotalOrderValue - (Wrap + Express)" + RESET);
+ //       System.out.println(GREEN + "Formula: TotalOrderValue - (Wrap + Express)" + RESET);
         
-//        System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+ //       System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
 
         System.out.println(LINE);
 
@@ -1241,7 +1338,7 @@ public void deleteAllProductFromCart() {
         }
 
         // ---- PAYABLE AMOUNT ----
-        if (calcTotalAmount == uiPayableAmount) {
+        if (calcPayableAmount == uiPayableAmount) {
             System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
         } else {
             System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
@@ -1376,6 +1473,7 @@ int customFee1;
 int giftCardAmount1;
 int couponDiscount1;
 int threadValue1;
+int calcPayableAmount1;	
 public void validatePriceBreakupDetails_P1() {
 	 String GREEN  = "\u001B[32m";
 	    String RED    = "\u001B[31m";
@@ -1435,15 +1533,15 @@ public void validatePriceBreakupDetails_P1() {
     // -------------------------------
     // 🔹 CALCULATIONS
     // -------------------------------
-    int calcYouSaved =
-            (totalMRP1 - discountedMRP1)
-            + threadValue1
-            + couponDiscount1
-            +giftCardAmount1;
-
-     calcTotalAmount1 =
+    calcTotalAmount1 =
             (discountedMRP1 + customFee1)
             - (threadValue1 + giftCardAmount1 + couponDiscount1);
+    
+    int calcYouSaved =
+            totalMRP1 - calcTotalAmount1;
+
+    calcPayableAmount1 =
+  		  calcTotalAmount1 + giftCardAmount1;
 
     // -------------------------------
     // 🔹 PRINT CALCULATIONS
@@ -1452,8 +1550,7 @@ public void validatePriceBreakupDetails_P1() {
 
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Formula:" + RESET);
-    System.out.println("   (" + totalMRP1 + " - " + discountedMRP1 +
-            ") + " + threadValue1 + " + " + couponDiscount1);
+    System.out.println("   (" + totalMRP1 + " - " + calcTotalAmount1);
     System.out.println(GREEN + "   = " + calcYouSaved + RESET);
 
     System.out.println();
@@ -1572,15 +1669,14 @@ public void validatePriceBreakupDetails_P2() {
     // -------------------------------
     // 🔹 CALCULATIONS
     // -------------------------------
-    int calcYouSaved =
-            (totalMRP2 - discountedMRP2)
-            + threadValue2
-            + couponDiscount2
-            +giftCardAmount2;
-
-     calcTotalAmount2 =
+    calcTotalAmount2 =
             (discountedMRP2 + customFee2)
             - (threadValue2 + giftCardAmount2 + couponDiscount2);
+    
+    int calcYouSaved =
+            totalMRP2 - calcTotalAmount2;
+
+     
 
     // -------------------------------
     // 🔹 PRINT CALCULATIONS
@@ -1589,8 +1685,7 @@ public void validatePriceBreakupDetails_P2() {
 
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Formula:" + RESET);
-    System.out.println("   (" + totalMRP2 + " - " + discountedMRP2 +
-            ") + " + threadValue2 + " + " + couponDiscount2);
+    System.out.println("   (" + totalMRP2 + " - " + calcTotalAmount2 );
     System.out.println(GREEN + "   = " + calcYouSaved + RESET);
 
     System.out.println();
@@ -1644,11 +1739,16 @@ public void validatePriceBreakupDetails_P2() {
 
 public void moveToProduct(int productLevel) {
 	Common.waitForElement(2);
-    String xpath = "(//a[contains(@class,'order_placed_redirect_btn')])[" + productLevel + "]";
-    
-    driver.findElement(By.xpath(xpath)).click();
+	// Build dynamic XPath
+	String xpath = "(//a[contains(@class,'order_placed_redirect_btn')])[" + productLevel + "]";
+	WebElement btn = driver.findElement(By.xpath(xpath));
+
+	// 1️⃣ Scroll to the element
+	((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", btn);
+	
+	((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
 }
-		
+
 public void validateOrderSummaryForTwoProduct_P1() {
 
     String CYAN = "\u001B[36m";
@@ -1729,13 +1829,15 @@ public void validateOrderSummaryForTwoProduct_P1() {
     // STEP 3: Calculations
     // =============================
     System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
+//   calcPayableAmount1 =
+//		  calcTotalAmount1 + giftCardAmount1;
+  
     int calcTotalOrderValue =
-         (calcTotalAmount1 + calcTotalAmount2 + uiGiftWrapFee + uiShippingCharges);
+         (calcPayableAmount1 + calcPayableAmount2 + uiGiftWrapFee + uiShippingCharges);
     
     int calcYouSaved1 =
-            (totalMRP1 - discountedMRP1)
-            + threadValue1
-            + couponDiscount1;
+            (totalMRP1 + customFee1)
+            - calcPayableAmount1;
 
 //    int calcTotalOrderValue =
 //            (discountedMRP + giftWrapFee + expressShipping + customFee)
@@ -1745,7 +1847,7 @@ public void validateOrderSummaryForTwoProduct_P1() {
  //   System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
     System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
     System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved1 + RESET);
-    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcTotalAmount1 + RESET);
+    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcPayableAmount1 + RESET);
 //    int calcPayableAmount =
 //            calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
@@ -1779,19 +1881,19 @@ public void validateOrderSummaryForTwoProduct_P1() {
     }
 
     // ---- PAYABLE AMOUNT ----
-    if (calcTotalAmount1 == uiPayableAmount) {
+    if (calcPayableAmount1 == uiPayableAmount) {
         System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
     } else {
         System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcTotalAmount + RESET);
+                uiPayableAmount + " | Calc: " + calcPayableAmount1 + RESET);
 
         Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcTotalAmount);
+                uiPayableAmount + " | Calc: " + calcPayableAmount1);
     }
 
     System.out.println(LINE);
 }  
-
+int calcPayableAmount2;
 public void validateOrderSummaryForTwoProduct_P2() {
 
     String CYAN = "\u001B[36m";
@@ -1869,23 +1971,27 @@ public void validateOrderSummaryForTwoProduct_P2() {
     // STEP 3: Calculations
     // =============================
     System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
-    int calcTotalOrderValue =
-         (calcTotalAmount1 + calcTotalAmount2 + uiGiftWrapFee + uiShippingCharges);
+     calcPayableAmount2 =
+  		  calcTotalAmount2 + giftCardAmount2;
     
-    int calcYouSaved2 =
-            (totalMRP2 - discountedMRP2)
-            + threadValue2
-            + couponDiscount2;
+      int calcTotalOrderValue =
+           (calcPayableAmount2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+      
+      int calcYouSaved2 =
+              (totalMRP2 + customFee2)
+              - calcPayableAmount2;
+      
+ 
 
 //    int calcTotalOrderValue =
 //            (discountedMRP + giftWrapFee + expressShipping + customFee)
 //                    - (threadValue + couponDiscount);
 
 //    System.out.println(GREEN + "Formula: (DiscountedMRP + Wrap + Express + Custom) - (Thread + Coupon)" + RESET);
-//    System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
+    System.out.println(GREEN + "Calculated Payable Amount From First Product: "+ calcPayableAmount1 + RESET);
     System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
     System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved2 + RESET);
-    System.out.println(YELLOW + "Calculated Payable Amount: " + calcTotalAmount2 + RESET);
+    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount2 + RESET);
 //    int calcPayableAmount =
 //            calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
@@ -1920,14 +2026,14 @@ public void validateOrderSummaryForTwoProduct_P2() {
     }
 
     // ---- PAYABLE AMOUNT ----
-    if (calcTotalAmount2 == uiPayableAmount) {
+    if (calcPayableAmount2 == uiPayableAmount) {
         System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
     } else {
         System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcTotalAmount + RESET);
+                uiPayableAmount + " | Calc: " + calcPayableAmount2 + RESET);
 
         Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcTotalAmount);
+                uiPayableAmount + " | Calc: " + calcPayableAmount2);
     }
 
     System.out.println(LINE);
@@ -2384,9 +2490,159 @@ public void verifyGiftCardSplit_P1() {
 }
 
 
+String accessoriesProduct;
 
+public String takeRandomAccessoriesProductFromAll() {
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+    Actions actions = new Actions(driver);
 
+    // Hover on Shop → All
+    WebElement shopMenu = wait.until(ExpectedConditions.visibilityOfElementLocated(
+            By.xpath("//span[@class='navigation_menu_txt'][normalize-space()='Shop']")));
+    actions.moveToElement(shopMenu).perform();
 
+    WebElement allButton = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='Accessories']")));
+    allButton.click();
+
+    System.out.println("✅ Clicked on 'All' under Shop menu");
+
+    // Collect all product cards
+    List<WebElement> products = wait.until(ExpectedConditions
+            .visibilityOfAllElementsLocatedBy(By.xpath("//div[contains(@class,'product_list_cards_list ')]")));
+
+    if (products.isEmpty()) {
+        System.out.println("⚠️ No products found on listing page!");
+        return null;
+    }
+
+    Random rand = new Random();
+    int maxAttempts = Math.min(5, products.size());
+    boolean productFound = false;
+
+    for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+
+        int randomIndex = rand.nextInt(products.size()) + 1;
+        System.out.println("🎯 Checking random product index: " + randomIndex);
+
+        WebElement productCard = driver.findElement(
+                By.xpath("(//div[contains(@class,'product_list_cards_list')])[" + randomIndex + "]"));
+
+        String name = productCard.findElement(
+                By.xpath(".//h2[@class='product_list_cards_heading']"))
+                .getText().trim();
+
+        List<WebElement> stockLabels = productCard.findElements(
+                By.xpath(".//h2[contains(@class,'product_list_cards_out_of_stock_heading') and normalize-space()='OUT OF STOCK']"));
+
+        boolean isOutOfStock = !stockLabels.isEmpty() && stockLabels.get(0).isDisplayed();
+
+        if (isOutOfStock) {
+            System.out.println("❌ '" + name + "' is OUT OF STOCK. Retrying...");
+            continue;
+        }
+
+        // Found in-stock product
+        productlistingName = name;
+
+        WebElement productNameElement = productCard.findElement(
+                By.xpath(".//h2[@class='product_list_cards_heading']"));
+
+        productNameElement.click(); // Open PDP
+
+        productFound = true;
+        System.out.println("✅ Selected random in-stock product: " + productlistingName);
+        break;
+    }
+
+    if (!productFound) {
+        System.out.println("⚠️ No in-stock product found after trying " + maxAttempts);
+        return null;
+    }
+    // Click ADD TO CART button on PDP
+    
+
+   
+    WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(
+            By.xpath("(//button[contains(text(),'Add to')])[1]")));
+    Common.waitForElement(2);
+    wait.until(ExpectedConditions.elementToBeClickable(addToCart));
+
+    addToCart.click();
+    
+
+    System.out.println("🛒 Add to Cart clicked on PDP for: " + productlistingName);
+
+    return productlistingName;
+}
+
+public void takeCustomizeProduct() {
+    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+    JavascriptExecutor js = (JavascriptExecutor) driver;
+
+    String GREEN = "\u001B[32m";
+    String YELLOW = "\u001B[33m";
+    String RED = "\u001B[31m";
+    String RESET = "\u001B[0m";
+    String CYAN = "\u001B[36m";
+    String line = "──────────────────────────────────────────────────────────────";
+    String productName = Common.getValueFromTestDataMap("ProductListingName");
+
+    try {
+        System.out.println(CYAN + line + RESET);
+        System.out.println(GREEN + "🛒 Selecting Product & Applying Custom Size..." + RESET);
+        System.out.println(CYAN + line + RESET);
+        
+        System.out.println(YELLOW + "🔍 Searching for product: " + productName + RESET);
+	    wait.until(ExpectedConditions.elementToBeClickable(userSearchBox));
+	    userSearchBox.clear();
+	    userSearchBox.sendKeys(productName);
+	    userSearchBox.sendKeys(Keys.ENTER);
+	    Common.waitForElement(2);
+
+        // ▌1️⃣ Click product from listing
+        System.out.println(YELLOW + "👉 Clicking product: " + productName + RESET);
+        WebElement productElement = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath(".//h2[@class='product_list_cards_heading']"))
+        );
+        Common.waitForElement(1);
+        productElement.click();
+        Common.waitForElement(1);
+        // ▌2️⃣ Click CUSTOM SIZE button
+        System.out.println(YELLOW + "📏 Clicking Custom Size option..." + RESET);
+        Common.waitForElement(2);
+        WebElement customSizeBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//div[contains(@class, 'prod_size_name') and contains(@class, 'Cls_custom_btn')]"))
+        );
+        customSizeBtn.click();
+        System.out.println(YELLOW + "✏️ Entering size: ");
+        driver.findElement(By.xpath("//input[@id='bustInput']")).sendKeys("45");
+        driver.findElement(By.xpath("//input[@id='pantWaistInput']")).sendKeys("55");
+        driver.findElement(By.xpath("//input[@id='bottomLengthInput']")).sendKeys("55");
+        driver.findElement(By.xpath("//input[@id='hipInput']")).sendKeys("55");
+
+        Common.waitForElement(1);
+        // ▌4️⃣ Submit custom size
+        System.out.println(YELLOW + "📨 Submitting custom size..." + RESET);
+        WebElement submitBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Submit')]"))
+        );
+        submitBtn.click();
+        Common.waitForElement(1);
+        // ▌5️⃣ Click ADD TO CART
+        System.out.println(YELLOW + "🛍️ Adding product to cart..." + RESET);
+        WebElement addToCartBtn = wait.until(
+                ExpectedConditions.elementToBeClickable(By.xpath("(//button[contains(text(),'Add to')])[1]"))
+        );
+        addToCartBtn.click();
+
+        System.out.println(GREEN + "✅ Product added to cart successfully!" + RESET);
+        System.out.println(CYAN + line + RESET);
+
+    } catch (Exception e) {
+        System.out.println(RED + "❌ Failed during Custom Size Add-to-Cart flow: " + e.getMessage() + RESET);
+    }
+}
 
 
 
@@ -2406,7 +2662,7 @@ public void verifyGiftCardSplit_P1() {
 		
 		selectExpressDelivery();
 		
-//		applyGiftCardAmount();
+		applyGiftCardAmount();
 			
 		applyThreadValue();
 		
@@ -2438,7 +2694,7 @@ public void verifyGiftCardSplit_P1() {
 		
 		selectExpressDelivery();
 		
-//		applyGiftCardAmount();
+		applyGiftCardAmount();
 			
 		applyThreadValue();
 		
@@ -2477,19 +2733,71 @@ public void verifyGiftCardSplit_P1() {
 		driver.navigate().back();
 		moveToProduct(1);
 		
-		validateOrderSummaryForTwoProduct_P1();
-		
-		
-		
-		
-		
-		
-		
-		
+		validateOrderSummaryForTwoProduct_P1();	
 		
 	}
 	
-	
+	//TC-03 For one  Product, one Customize Product and Accessories		
+		public void verify_P1_CP_AP_With_GC_C_GW_GCA_T_E() throws InterruptedException{
+			
+	        userLoginApp();
+			
+			deleteAllProductFromCart();
+			
+			takeRandomProductFromAll();
+			
+			takeRandomAccessoriesProductFromAll();
+			
+			takeCustomizeProduct();
+			
+			addGiftCardInCart();
+				
+			applyCouponAndGiftWrap();
+			
+			selectExpressDelivery();
+			
+			applyGiftCardAmount();
+				
+			applyThreadValue();
+			
+			verifyPriceDetailsCalculation();
+			
+			validateRazorpaySummaryCalculation();
+			
+			placeOrderAndCheckOrderConfirmation();
+//First Product		
+			moveToProduct(1);
+		
+			validatePriceBreakupDetails_P1();
+			
+			verifyCouponSplit_P1();
+			
+			verifyThreadSplit_P1();
+			
+			verifyGiftCardSplit_P1();
+		    
+			closeBtn.click();
+		    
+			driver.navigate().back();
+			moveToProduct(2);
+			
+			validatePriceBreakupDetails_P2();
+			
+			verifyCouponSplit_P2();
+			
+			verifyThreadSplit_P2();
+			
+			verifyGiftCardSplit_P1();
+			
+			closeBtn.click();
+			
+			validateOrderSummaryForTwoProduct_P2();
+			driver.navigate().back();
+			moveToProduct(1);
+			
+			validateOrderSummaryForTwoProduct_P1();	
+			
+		}
 	
 	
 	

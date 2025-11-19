@@ -57,10 +57,10 @@ public class AdminPanelInfluencerPage extends AdminPanelInfluencerObjRepo {
 
 	    // ✅ Click "All" from dropdown
 	    WebElement allButton = wait.until(ExpectedConditions
-	            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='All']")));
+	            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES']")));
 	    allButton.click();
 
-	    System.out.println("✅ Clicked on 'All' under Shop menu");
+	    System.out.println("✅ Clicked on 'Dresses' under Shop menu");
 	    
 	    // ✅ Wait until first product appears and copy its name
 	    WebElement firstProductName = wait.until(ExpectedConditions

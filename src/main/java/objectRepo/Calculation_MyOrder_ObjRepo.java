@@ -65,6 +65,9 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
 	
    	@FindBy(xpath = "(//div[contains(@class,'popup_containers_cls_btn')])[5]")
 	protected WebElement closeBtn;
+   	
+   	@FindBy(xpath = "//input[@id='search_input']")
+	protected WebElement userSearchBox;
     
     
     

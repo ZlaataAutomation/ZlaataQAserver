@@ -36,7 +36,7 @@
 <a href="#"><span class="badge badge-primary">Zlaata_Automation_Reports</span></a>
 </li>
 <li class="m-r-10">
-<a href="#"><span class="badge badge-primary">Nov 17, 2025 05:40:05 PM</span></a>
+<a href="#"><span class="badge badge-primary">Nov 19, 2025 09:27:27 AM</span></a>
 </li>
 </ul>
 </div>
@@ -58,6 +58,11 @@
 <span class="ico"><i class="fa fa-tag"></i></span>
 </a>
 </li>
+<li class="nav-item dropdown" onclick="toggleView('exception-view')">
+<a id="nav-exception" class="dropdown-toggle" href="#">
+<span class="ico"><i class="fa fa-bug"></i></span>
+</a>
+</li>
 </ul>
 </div>
 </div>      <div class="vcontainer">
@@ -67,25 +72,25 @@
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0">Started</p>
-<h3>Nov 17, 2025 05:40:05 PM</h3>
+<h3>Nov 19, 2025 09:27:27 AM</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0">Ended</p>
-<h3>Nov 17, 2025 05:47:57 PM</h3>
+<h3>Nov 19, 2025 09:27:33 AM</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0 text-pass">Features Passed</p>
-<h3>1</h3>
+<h3>0</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0 text-fail">Features Failed</p>
-<h3>0</h3>
+<h3>1</h3>
 </div></div>
 </div>
 </div>
@@ -101,12 +106,12 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'>
-<b>1</b> features passed
+<div><small data-tooltip='0%'>
+<b>0</b> features passed
 </small>
 </div>
 <div>
-<small data-tooltip='0%'><b>0</b> features failed,
+<small data-tooltip='100%'><b>1</b> features failed,
 <b>0</b> skipped, <b data-tooltip='0%'>0</b> others
 </small>
 </div>
@@ -124,9 +129,9 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'><b>1</b> scenarios passed</small></div>
+<div><small data-tooltip='0%'><b>0</b> scenarios passed</small></div>
 <div>
-<small data-tooltip='0%'><b>0</b> scenarios failed,
+<small data-tooltip='100%'><b>1</b> scenarios failed,
 <b>0</b> skipped, <b data-tooltip='%'>0</b> others
 </small>
 </div>
@@ -144,10 +149,10 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'><b>2</b> steps passed</small></div>
+<div><small data-tooltip='20%'><b>1</b> steps passed</small></div>
 <div>
-<small data-tooltip='0%'><b>0</b> steps failed,
-<b>0</b> skipped, <b data-tooltip='%'>0</b> others
+<small data-tooltip='40%'><b>2</b> steps failed,
+<b>2</b> skipped, <b data-tooltip='%'>0</b> others
 </small>
 </div>
 </div>
@@ -163,7 +168,7 @@
 </div></div>
 <script>
 var timeline = {
-"Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread":471.092
+"Admin can update product influencer status and verify in User App":5.657
 };
 </script>
 <div class="row">
@@ -173,20 +178,20 @@ var timeline = {
 <div class="card-body pb-0 pt-0"><table class="table table-sm table-bordered">
 <thead><tr class="bg-gray"><th>Name</th><th>Passed</th><th>Failed</th><th>Skipped</th><th>Others</th><th>Passed %</th></tr></thead><tbody>
 <tr>
-<td>@Calculation</td>
+<td>@Regression</td>
+<td>0</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0</td>
-<td>100%</td>
+<td>0%</td>
 </tr>
 <tr>
-<td>@TC_UI_Zlaata_Calculate_02</td>
+<td>@TC_UI_Zlaata_ADMI_01</td>
+<td>0</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0</td>
-<td>100%</td>
+<td>0%</td>
 </tr>
 </tbody>
 </table></div>
@@ -197,21 +202,21 @@ var timeline = {
 <script>
 var statusGroup = {
 parentCount: 5,
-passParent: 1,
-failParent: 0,
+passParent: 0,
+failParent: 1,
 warningParent: 0,
 skipParent: 0,
 childCount: 5,
-passChild: 1,
-failChild: 0,
+passChild: 0,
+failChild: 1,
 warningChild: 0,
 skipChild: 0,
 infoChild: 0,
 grandChildCount: 5,
-passGrandChild: 2,
-failGrandChild: 0,
+passGrandChild: 1,
+failGrandChild: 2,
 warningGrandChild: 0,
-skipGrandChild: 0,
+skipGrandChild: 2,
 infoGrandChild: 0,
 eventsCount: 5,
 };
@@ -225,7 +230,7 @@ eventsCount: 5,
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-exclamation-circle"></i></a>
 <ul id="status-toggle" class="dropdown-menu dropdown-md p-v-0">
-<a class="dropdown-item" status="pass" href="#"><span>Pass</span><span class="status success"></span></a>
+<a class="dropdown-item" status="fail" href="#"><span>Fail</span><span class="status danger"></span></a>
 <div class="dropdown-divider"></div>
 <a status="clear" class="dropdown-item" href="#"><span>Clear</span><span class="pull-right"><i class="fa fa-close"></i></span></a>
 </ul>
@@ -233,31 +238,31 @@ eventsCount: 5,
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tag"></i></a>
 <ul id="tag-toggle" class="dropdown-menu dropdown-md p-v-0">
-<a class="dropdown-item" href="#">@Calculation</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_02</a>
+<a class="dropdown-item" href="#">@Regression</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_ADMI_01</a>
 </ul>
 </li>
 </ul>
 </div>    <div class="test-list-wrapper scrollable">
       <ul class="test-list-item">
-        <li class="test-item"  status="pass" test-id="1"
+        <li class="test-item"  status="fail" test-id="1"
           author=""
           tag=""
           device="">
           <div class="test-detail">
-            <p class="name">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread</p>
+            <p class="name">Admin can update product influencer status and verify in User App</p>
             <p class="text-sm">
-              <span>5:40:06 PM</span> / <span>00:07:51:092</span>
-              <span class="badge pass-bg log float-right">Pass</span>
+              <span>9:27:28 AM</span> / <span>00:00:05:657</span>
+              <span class="badge fail-bg log float-right">Fail</span>
             </p>
           </div>
           <div class="test-contents d-none">
 <div class="detail-head">
 <div class="p-v-10">
 <div class="info">
-<h5 class="test-status text-pass">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread</h5>
-<span class='badge badge-success'>11.17.2025 5:40:06 PM</span>
-<span class='badge badge-danger'>11.17.2025 5:47:57 PM</span>
-<span class='badge badge-default'>00:07:51:092</span>
+<h5 class="test-status text-fail">Admin can update product influencer status and verify in User App</h5>
+<span class='badge badge-success'>11.19.2025 9:27:28 AM</span>
+<span class='badge badge-danger'>11.19.2025 9:27:33 AM</span>
+<span class='badge badge-default'>00:00:05:657</span>
 &middot; <span class='uri-anchor badge badge-default'>#test-id=1</span>
 <span class='badge badge-default pointer float-right ml-1 et'><i class="fa fa-chevron-down"></i></span>
 <span class='badge badge-default pointer float-right ct'><i class="fa fa-chevron-up"></i></span>
@@ -269,24 +274,114 @@ eventsCount: 5,
   <div class="card">
     <div class="card-header" role="tab">
       <div class="card-title">
-        <div class="node" id="2"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "<TD_ID>"</div>
+        <div class="node" id="2"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "<TD_ID>"</div>
       </div>
     </div>
-        <div class="scenario_outline collapse">
+        <div class="scenario_outline ">
             <div class="card-body l1">
               <div class="card-header">
                 <div class="card-title outline-child">
-                  <div class="node" id="3"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</div>
+                  <div class="node" id="3"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01"</div>
                 </div>
               </div>
-              <div class="card-body mt-3 collapse">
-                  <div class="step pass-bg">
-                    <span>Given User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
+              <div class="card-body mt-3 ">
+                  <div class="step fail-bg">
+                    <span>Given I take a random product from User App</span>
       <div>
+        <textarea disabled class="code-block">org.openqa.selenium.NoSuchSessionException: invalid session id: session deleted as the browser has closed the connection
+from disconnected: not connected to DevTools
+  (Session info: chrome=142.0.7444.163)
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [9f8797793d7e2aa22d0a525a8fa35c30, get {url=https://testing.zlaata.com/}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.163, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54329}, goog:processID: 4140, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:54329/devtoo..., se:cdpVersion: 142.0.7444.163, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 9f8797793d7e2aa22d0a525a8fa35c30
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:215)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:544)
+	at org.openqa.selenium.remote.RemoteWebDriver.get(RemoteWebDriver.java:312)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.call(WebDriverDecorator.java:315)
+	at org.openqa.selenium.support.decorators.DefaultDecorated.call(DefaultDecorated.java:48)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.lambda$createProxyFactory$3(WebDriverDecorator.java:405)
+	at net.bytebuddy.renamed.java.lang.Object$ByteBuddy$Eerx89G8.get(Unknown Source)
+	at pages.HomePage.homeLaunch(HomePage.java:34)
+	at pages.AdminPanelInfluencerPage.takeRandomProductName(AdminPanelInfluencerPage.java:48)
+	at stepDef.AdminPanelInfluencerStepDef.i_take_a_random_product_from_user_app(AdminPanelInfluencerStepDef.java:24)
+	at ✽.I take a random product from User App(file:///C:/Users/Sarojkumar/git/ZlaataQAsever/src/test/resources/features/AdminFeature/influencer.feature:6)
+</textarea>
+      
+      </div>
+                  </div>
+                  <div class="step skip-bg">
+                    <span>When I search the product in Admin, set Influencer Yes, upload image, add to collection and sort "Influ.jpg"</span>
+      <div>Step skipped
+      </div>
+                  </div>
+                  <div class="step skip-bg">
+                    <span>Then I verify the product appears on the User App Influencer page</span>
+      <div>Step skipped
+      </div>
+                  </div>
+                  <div class="step fail-bg">
+                    <span>stepDef.Hooks.tearDown(io.cucumber.java.Scenario)</span>
+      <div>
+        <textarea disabled class="code-block">org.openqa.selenium.NoSuchSessionException: invalid session id
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [9f8797793d7e2aa22d0a525a8fa35c30, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.163, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54329}, goog:processID: 4140, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:54329/devtoo..., se:cdpVersion: 142.0.7444.163, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 9f8797793d7e2aa22d0a525a8fa35c30
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:215)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:544)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:617)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:621)
+	at org.openqa.selenium.remote.RemoteWebDriver.getScreenshotAs(RemoteWebDriver.java:333)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.call(WebDriverDecorator.java:315)
+	at org.openqa.selenium.support.decorators.DefaultDecorated.call(DefaultDecorated.java:48)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.lambda$createProxyFactory$3(WebDriverDecorator.java:405)
+	at net.bytebuddy.renamed.java.lang.Object$ByteBuddy$Eerx89G8.getScreenshotAs(Unknown Source)
+	at utils.ExcelReportUtil.captureScreenshot(ExcelReportUtil.java:68)
+	at stepDef.Hooks.tearDown(Hooks.java:298)
+</textarea>
+      
       </div>
                   </div>
                   <div class="step pass-bg">
-                    <span>When Verify Product P1 & P2 checkout page, Razorpay popup details and My Orders price breakup after placing the order.</span>
+                    <span>stepDef.Hooks.afterScenario(io.cucumber.java.Scenario)</span>
+      <div>❌ Failed to capture screenshot in @After hook: Session ID is null. Using WebDriver after calling quit()?
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.163, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54329}, goog:processID: 4140, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:54329/devtoo..., se:cdpVersion: 142.0.7444.163, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+      </div>
       <div>
       </div>
                   </div>
@@ -317,15 +412,15 @@ eventsCount: 5,
 <li class="test-item">
 <div class="test-detail">
 <span class="meta">
-<span class='badge log pass-bg'>1</span>
+<span class='badge log badge-danger'>1</span>
 </span>
-<p class="name">@Calculation</p>
+<p class="name">@Regression</p>
 <p class="duration text-sm">1 tests</p>
 </div>
 <div class="test-contents d-none">
 <div class="info">
-<h4>@Calculation</h4>
-<span status="pass" class='badge log pass-bg'>1 passed</span>
+<h4>@Regression</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
 </div>
 <table class='table table-sm mt-4'>
 <thead>
@@ -336,13 +431,13 @@ eventsCount: 5,
 </tr>
 </thead>
 <tbody>
-<tr class="tag-test-status" status="pass">
-<td><span class="badge log pass-bg">Pass</span></td>
-<td>17:40:06 PM</td>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>09:27:28 AM</td>
 <td>
-<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</a>
+<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01"</a>
 <div class="">
-<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</span>
+<span class="badge badge-default">Admin can update product influencer status and verify in User App.TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01"</span>
 </div>
 </td>
 </tr>
@@ -353,15 +448,15 @@ eventsCount: 5,
 <li class="test-item">
 <div class="test-detail">
 <span class="meta">
-<span class='badge log pass-bg'>1</span>
+<span class='badge log badge-danger'>1</span>
 </span>
-<p class="name">@TC_UI_Zlaata_Calculate_02</p>
+<p class="name">@TC_UI_Zlaata_ADMI_01</p>
 <p class="duration text-sm">1 tests</p>
 </div>
 <div class="test-contents d-none">
 <div class="info">
-<h4>@TC_UI_Zlaata_Calculate_02</h4>
-<span status="pass" class='badge log pass-bg'>1 passed</span>
+<h4>@TC_UI_Zlaata_ADMI_01</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
 </div>
 <table class='table table-sm mt-4'>
 <thead>
@@ -372,13 +467,75 @@ eventsCount: 5,
 </tr>
 </thead>
 <tbody>
-<tr class="tag-test-status" status="pass">
-<td><span class="badge log pass-bg">Pass</span></td>
-<td>17:40:06 PM</td>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>09:27:28 AM</td>
 <td>
-<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</a>
+<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01"</a>
 <div class="">
-<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</span>
+<span class="badge badge-default">Admin can update product influencer status and verify in User App.TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01"</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="test-content scrollable">
+<div class="test-content-detail">
+<div class="detail-body"></div>
+</div>
+</div>
+</div><div class="test-wrapper row view exception-view attributes-view">
+<div class="test-list">
+<div class="test-list-tools">
+<ul class="tools pull-left"><li><a href=""><span class="font-size-14">Exception</span></a></li></ul>
+<ul class="tools text-right"><li><a href="#"><span class="badge badge-primary">1</span></a></li></ul>
+</div>
+<div class="test-list-wrapper scrollable">
+<ul class="test-list-item">
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log badge-danger'>2</span>
+</span>
+<p class="name">org.openqa.selenium.NoSuchSessionException</p>
+<p class="duration text-sm">2 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>org.openqa.selenium.NoSuchSessionException</h4>
+<span status="fail" class='badge log badge-danger'>2 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>09:27:33 AM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='6'>Given I take a random product from User App</a>
+<div class="">
+<span class="badge badge-default">Admin can update product influencer status and verify in User App.TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01".Given I take a random product from User App</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>09:27:33 AM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='12'>stepDef.Hooks.tearDown(io.cucumber.java.Scenario)</a>
+<div class="">
+<span class="badge badge-default">Admin can update product influencer status and verify in User App.TC_UI_Zlaata_ADMI_01 |Update a product as influencer and verify in User App| "TD_UI_Zlaata_ADMI_01".stepDef.Hooks.tearDown(io.cucumber.java.Scenario)</span>
 </div>
 </td>
 </tr>
