@@ -68,6 +68,9 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "(//input[@role='searchbox'])[9]")
 	protected WebElement couponTypeBox;
 
+   	@FindBy(xpath = "(//input[contains(@class, 'select2-search__field') and @type='search'])[2]")
+	protected WebElement menuBtn;
+   	
    	@FindBy(xpath = "//span[@data-value='save_and_back']")
 	protected WebElement saveAndBackButton;
    	
@@ -95,7 +98,7 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[2]")
 	protected WebElement applyBtn;
 
-   	@FindBy(xpath = "(//input[@placeholder='Select a product'])[1]")
+   	@FindBy(xpath = "(//input[contains(@class, 'select2-search__field') and @type='search'])[7]")
 	protected WebElement productBox;
    	
    	@FindBy(xpath = "//i[@class='fa fa-refresh']") 
