@@ -260,24 +260,69 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	    Common.waitForElement(3);
         wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
 	    click(clickCartBtn);
-	    Common.waitForElement(3);
-        wait.until(ExpectedConditions.elementToBeClickable(viewCoupon));
-	    click(viewCoupon);
+//	    Common.waitForElement(3);
+//        wait.until(ExpectedConditions.elementToBeClickable(viewCoupon));
+//	    click(viewCoupon);
 	 // Convert to uppercase to match the app display
 	    couponName = couponName.toUpperCase();
 	    
+	 // Enter coupon
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+	    click(searchBox);
+	    searchBox.sendKeys(couponName);
+	    System.out.println( "✍️ Entered coupon code:"+ couponName);
 
-	 // Check for coupon heading text anywhere in coupon list
-	    List<WebElement> couponElements = driver.findElements(
-	        By.xpath("//div[@class='coupon_list_wrap eligible_coupons']//div[contains(@class,'coupon_heading') and normalize-space(text())='" + couponName + "']")
-	    );
+	    // Click Apply
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(applyBtn));
+	    click(applyBtn);
+	    System.out.println("🔄 Applying coupon...");
 
-	    if (!couponElements.isEmpty()) {
-	        System.out.println("✅ Coupon '" + couponName + "' is visible on available for you section.");
-	    } else {
-	        System.out.println("❌ Coupon '" + couponName + "' is NOT visible on the page.");
-	        Assert.fail("Coupon not available in the app.");
+	  
+	    System.out.println( "🔍 Checking Coupon Status..." );
+
+
+	    // CHECK 1: Coupon Applied
+	    try {
+	        WebElement appliedMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//p[@class='acc_status']")));
+
+	        System.out.println( "✅ Coupon applied successfully!" );
+
+	    } catch (TimeoutException e) {
+	        System.out.println( "❌ Coupon NOT applied!" );
+	        Assert.fail("Coupon was not applied!");
 	    }
+
+	    // CHECK 2: Discount Amount
+	    try {
+	        WebElement discountMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//p[@class='acc_details_status']")));
+
+	        String discountText = discountMsg.getText(); 
+	        String discountValue = discountText.replaceAll("[^0-9]", "");
+
+	        System.out.println( "💰 Discount Applied: ₹" + discountValue );
+
+	    } catch (TimeoutException e) {
+	        System.out.println( "❌ Discount amount not found!" );
+	        Assert.fail("Discount amount not detected!");
+	    }
+	    
+	    
+	    
+//	 // Check for coupon heading text anywhere in coupon list
+//	    List<WebElement> couponElements = driver.findElements(
+//	        By.xpath("//div[@class='coupon_list_wrap eligible_coupons']//div[contains(@class,'coupon_heading') and normalize-space(text())='" + couponName + "']")
+//	    );
+//
+//	    if (!couponElements.isEmpty()) {
+//	        System.out.println("✅ Coupon '" + couponName + "' is visible on available for you section.");
+//	    } else {
+//	        System.out.println("❌ Coupon '" + couponName + "' is NOT visible on the page.");
+//	        Assert.fail("Coupon not available in the app.");
+//	    }
 	    
 	
 	 }
@@ -559,7 +604,16 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    Common.waitForElement(2);
 	        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBox));
 	        couponTypeBox.clear();
-	        type(couponTypeBox, "Specific Product Item" + Keys.ENTER);
+	        type(couponTypeBox, "Special Specific" + Keys.ENTER);
+		    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+		 // Select  Specific Product Item  Coupon
+	        Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(menuBtn));
+		    click(menuBtn); 
+		    Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(menuBtn));
+	        menuBtn.clear();
+	        type(menuBtn, "Product Item" + Keys.ENTER);
 		    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
 		    Common.waitForElement(3);
 		    wait.until(ExpectedConditions.elementToBeClickable(productBox));
@@ -567,8 +621,16 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    Common.waitForElement(2);
 	        wait.until(ExpectedConditions.elementToBeClickable(productBox));
 	        waitFor(productBox);
-		    type(productBox, "Test by Auto");
-		    Common.waitForElement(4);
+		    type(productBox, "Test by Auto1");
+		    Common.waitForElement(2);
+		    productBox.sendKeys(Keys.ENTER);
+		    wait.until(ExpectedConditions.elementToBeClickable(productBox));
+		    click(productBox); 
+		    Common.waitForElement(2);
+	        wait.until(ExpectedConditions.elementToBeClickable(productBox));
+	        waitFor(productBox);
+		    type(productBox, "Test by Auto2");
+		    Common.waitForElement(2);
 		    productBox.sendKeys(Keys.ENTER);
 		    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
 		    Common.waitForElement(3);
@@ -601,11 +663,12 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 
 	            // ✅ Click on search icon / box
 	            WebElement searchBox = wait.until(ExpectedConditions.visibilityOfElementLocated(
-	                By.xpath("//input[@id='search__product']")
+	                By.xpath("//input[contains(@class, 'navigation_search_input_field') and @type='text']")
 	            ));
 	            
 	         // Search in user app
 	            wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+	            searchBox.click();
 	            searchBox.clear();
 	            searchBox.sendKeys(productName);
 	            System.out.println("✅ Searched for listing: " + productName);

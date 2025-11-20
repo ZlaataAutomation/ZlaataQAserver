@@ -40,64 +40,59 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
     	LoginPage login = new LoginPage(driver);
 		login.userLogin();
 	}
-public void deleteAllProductFromCart() {
-	
-//	AdminEmailVerifyOrderFlowPage mail= new AdminEmailVerifyOrderFlowPage(driver);
-//	mail.deleteAllProductsFromCart();
-	// Open cart
-    driver.findElement(By.xpath("//a[@class='Cls_cart_btn Cls_redirect_restrict']")).click();
-    Common.waitForElement(1);
+	public void deleteAllProductFromCart() {
 
-    // ✅ STEP 1: Check if cart is already empty
-    try {
-        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
-            System.out.println("🛍️ Cart already empty. No delete action needed.");
-            return; // Stop method immediately
-        }
-    } catch (NoSuchElementException ignored) {
-        // Cart is NOT empty, proceed to delete
-    }
+	    // Open cart
+	    driver.findElement(By.xpath("//a[@class='Cls_cart_btn Cls_redirect_restrict']")).click();
+	    Common.waitForElement(1);
 
-    // ✅ STEP 2: Delete products one by one
-    while (true) {
-        try {
-            WebElement deleteBtn = driver.findElement(By.xpath("//div[@title='Delete']"));
-            deleteBtn.click();
-            System.out.println("🗑️ Product delete initiated");
+	    // STEP 1: Check if cart is empty
+	    try {
+	        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
+	            System.out.println("🛍️ Cart already empty.");
+	            return;
+	        }
+	    } catch (NoSuchElementException ignored) {}
 
-            // Check if confirmation pop-up appears for gift card
-            try {
-                WebElement confirmDeleteBtn = driver.findElement(By.xpath("//button[contains(@class, 'Cls_gc_remove_btn')]"));
-                if (confirmDeleteBtn.isDisplayed()) {
-                    System.out.println("⚠️ Gift card detected. Confirming deletion...");
-                    confirmDeleteBtn.click(); // Confirm gift card deletion
-                    Common.waitForElement(1); // Wait for deletion to complete
-                }
-            } catch (NoSuchElementException ignored) {
-                // No confirmation for normal product, proceed with deletion
-                Common.waitForElement(1); // Wait for deletion to complete
-            }
-        } catch (NoSuchElementException e) {
-            System.out.println("✅ No more products to delete.");
-            break;
-        } catch (Exception e) {
-            System.out.println("⚠️ Error while deleting: " + e.getMessage());
-            break;
-        }
-    }
+	    // STEP 2: Delete all products
+	    while (true) {
 
-    // ✅ STEP 3: Final confirmation
-    try {
-        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
-            System.out.println("🛍️ Cart is empty, Continue Shopping displayed.");
-        }
-    } catch (NoSuchElementException e) {
-        System.out.println("ℹ️ Bag is not empty message not found.");
-    }
-	
-	
-	
-}
+	        // Find ALL delete icons every time
+	        List<WebElement> deleteBtns = driver.findElements(By.xpath("//div[@title='Delete']"));
+
+	        if (deleteBtns.isEmpty()) {
+	            System.out.println("✅ No more products to delete.");
+	            break;
+	        }
+
+	        // Click the first delete button
+	        WebElement deleteBtn = deleteBtns.get(0);
+	        deleteBtn.click();
+	        System.out.println("🗑️ Deleting product...");
+
+	        Common.waitForElement(1);
+
+	        // Special handling for Gift Card confirmation
+	        try {
+	            WebElement confirmDeleteBtn = driver.findElement(By.xpath("//button[contains(@class, 'Cls_gc_remove_btn')]"));
+	            if (confirmDeleteBtn.isDisplayed()) {
+	                System.out.println("⚠️ Gift card confirmation detected. Confirming delete...");
+	                confirmDeleteBtn.click();
+	            }
+	        } catch (NoSuchElementException ignored) {}
+
+	        Common.waitForElement(1);
+	    }
+
+	    // Final confirmation
+	    try {
+	        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
+	            System.out.println("🛍️ Cart is now empty.");
+	        }
+	    } catch (NoSuchElementException e) {
+	        System.out.println("ℹ️ Warning: Empty bag message not found.");
+	    }
+	}
 	
 	
 	String productlistingName;
@@ -1291,7 +1286,7 @@ public void deleteAllProductFromCart() {
              (calcPayableAmount + uiGiftWrapFee + uiShippingCharges);
         System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
         System.out.println(LINE);
-        System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + calcTotalAmount + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
+        System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + totalMRP_P1 + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
         int calcYouSaved =
                 (totalMRP_P1 + customFee_P1)
                 - calcPayableAmount;
@@ -1538,7 +1533,7 @@ public void validatePriceBreakupDetails_P1() {
             - (threadValue1 + giftCardAmount1 + couponDiscount1);
     
     int calcYouSaved =
-            totalMRP1 - calcTotalAmount1;
+    		customFee1 + totalMRP1 - calcTotalAmount1;
 
     calcPayableAmount1 =
   		  calcTotalAmount1 + giftCardAmount1;
@@ -1610,6 +1605,7 @@ int customFee2;
 int giftCardAmount2;
 int couponDiscount2;
 int threadValue2;
+int calcPayableAmount_P2;
 public void validatePriceBreakupDetails_P2() {
 	 String GREEN  = "\u001B[32m";
 	    String RED    = "\u001B[31m";
@@ -1674,9 +1670,10 @@ public void validatePriceBreakupDetails_P2() {
             - (threadValue2 + giftCardAmount2 + couponDiscount2);
     
     int calcYouSaved =
-            totalMRP2 - calcTotalAmount2;
+    		customFee2 + totalMRP2 - calcTotalAmount2;
 
-     
+    calcPayableAmount_P2 =
+    		  calcTotalAmount2 + giftCardAmount2;
 
     // -------------------------------
     // 🔹 PRINT CALCULATIONS
@@ -1893,6 +1890,9 @@ public void validateOrderSummaryForTwoProduct_P1() {
 
     System.out.println(LINE);
 }  
+
+
+
 int calcPayableAmount2;
 public void validateOrderSummaryForTwoProduct_P2() {
 
@@ -2109,6 +2109,70 @@ public void verifyCouponSplit_P1() {
 	
 	
 }
+public void verifyThreeProductCouponSplit_P1() {
+	String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 COUPON DISTRIBUTION CALCULATION" + RESET);
+	// =============================
+	// COUPON CALCULATION
+	// =============================
+	System.out.println(CYAN + "🧮 Performing Coupon Calculation..." + RESET);
+
+	// Formula: (Product Discounted Amount / Total Discounted MRP) * Coupon Discount Amount
+	System.out.println(GREEN + "Formula: (ProductDiscountedAmount / TotalDiscountedMRP-accPrice) * TotalCouponDiscount" + RESET);
+
+	// Avoid divide-by-zero
+	double calcCouponRaw = 0.0;
+	if (discountedMRP1 > 0) {
+	    calcCouponRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * couponDiscount;
+	}
+
+	// ROUNDING OPTIONS
+	int calcCouponFloor = (int) Math.floor(calcCouponRaw);
+	int calcCouponCeil  = (int) Math.ceil(calcCouponRaw);
+
+	System.out.println(YELLOW + "Calculated Coupon Raw:      " + calcCouponRaw + RESET);
+	System.out.println(YELLOW + "Calculated Coupon Floor:    " + calcCouponFloor + RESET);
+	System.out.println(YELLOW + "Calculated Coupon Ceil:     " + calcCouponCeil + RESET);
+	System.out.println(LINE);
+	System.out.println(YELLOW + "UI Coupon Discount:         " + couponDiscount1 + RESET);
+
+	System.out.println(LINE);
+
+	// =============================
+	// VALIDATION WITH TOLERANCE
+	// =============================
+	if (couponDiscount1 == calcCouponFloor || couponDiscount1 == calcCouponCeil) {
+
+	    System.out.println(GREEN +
+	        "✅ COUPON DISCOUNT MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+	    RESET);
+
+	} else {
+
+	    System.out.println(RED +
+	        "❌ COUPON DISCOUNT MISMATCH — UI: " + couponDiscount1 +
+	        " | CalcFloor: " + calcCouponFloor +
+	        " | CalcCeil: " + calcCouponCeil +
+	        RESET);
+
+	    Assert.fail("❌ COUPON DISCOUNT MISMATCH — UI: " + couponDiscount1 +
+	        " | CalcFloor: " + calcCouponFloor +
+	        " | CalcCeil: " + calcCouponCeil);
+	}
+
+	System.out.println(LINE);
+	
+	
+}
 
 public void verifyCouponSplit_P2() {
 	String GREEN  = "\u001B[32m";
@@ -2134,6 +2198,71 @@ public void verifyCouponSplit_P2() {
 	double calcCouponRaw = 0.0;
 	if (discountedMRP1 > 0) {
 	    calcCouponRaw = ((double) discountedMRP2 / (double) discountedMRP) * couponDiscount;
+	}
+
+	// ROUNDING OPTIONS
+	int calcCouponFloor = (int) Math.floor(calcCouponRaw);
+	int calcCouponCeil  = (int) Math.ceil(calcCouponRaw);
+
+	System.out.println(YELLOW + "Calculated Coupon Raw:      " + calcCouponRaw + RESET);
+	System.out.println(YELLOW + "Calculated Coupon Floor:    " + calcCouponFloor + RESET);
+	System.out.println(YELLOW + "Calculated Coupon Ceil:     " + calcCouponCeil + RESET);
+	System.out.println(LINE);
+	System.out.println(YELLOW + "UI Coupon Discount:         " + couponDiscount2 + RESET);
+
+	System.out.println(LINE);
+
+	// =============================
+	// VALIDATION WITH TOLERANCE
+	// =============================
+	if (couponDiscount2 == calcCouponFloor || couponDiscount2 == calcCouponCeil) {
+
+	    System.out.println(GREEN +
+	        "✅ COUPON DISCOUNT MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+	    RESET);
+
+	} else {
+
+	    System.out.println(RED +
+	        "❌ COUPON DISCOUNT MISMATCH — UI: " + couponDiscount2 +
+	        " | CalcFloor: " + calcCouponFloor +
+	        " | CalcCeil: " + calcCouponCeil +
+	        RESET);
+
+	    Assert.fail("❌ COUPON DISCOUNT MISMATCH — UI: " + couponDiscount2 +
+	        " | CalcFloor: " + calcCouponFloor +
+	        " | CalcCeil: " + calcCouponCeil);
+	}
+
+	System.out.println(LINE);
+	
+	
+}
+
+public void verifyThreeProductCouponSplit_P2() {
+	String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 COUPON DISTRIBUTION CALCULATION" + RESET);
+	// =============================
+	// COUPON CALCULATION
+	// =============================
+	System.out.println(CYAN + "🧮 Performing Coupon Calculation..." + RESET);
+
+	// Formula: (Product Discounted Amount / Total Discounted MRP) * Coupon Discount Amount
+	System.out.println(GREEN + "Formula: (ProductDiscountedAmount / TotalDiscountedMRP-accPrice) * TotalCouponDiscount" + RESET);
+
+	// Avoid divide-by-zero
+	double calcCouponRaw = 0.0;
+	if (discountedMRP1 > 0) {
+	    calcCouponRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * couponDiscount;
 	}
 
 	// ROUNDING OPTIONS
@@ -2252,6 +2381,82 @@ public void verifyThreadSplit_P1() {
 
     System.out.println(LINE);
 }
+public void verifyThreeThreadSplit_P1() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 THREAD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If threadValue2 is ZERO
+    // ============================================
+    if (threadValue == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING THREAD SPLIT VALIDATION — UI Thread Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any thread validation
+    }
+
+    // ============================================
+    // THREAD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Thread Split Calculation..." + RESET);
+    System.out.println(GREEN +
+            "Formula: (ProductDiscountedMRP / TotalDiscountedMRP-accPrice) * TotalThreadAmount"
+            + RESET);
+
+    double calcThreadRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcThreadRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * threadValue;
+    }
+
+    int calcThreadFloor = (int) Math.floor(calcThreadRaw);
+    int calcThreadCeil  = (int) Math.ceil(calcThreadRaw);
+
+    System.out.println(YELLOW + "Calculated Thread Raw:      " + calcThreadRaw + RESET);
+    System.out.println(YELLOW + "Calculated Thread Floor:    " + calcThreadFloor + RESET);
+    System.out.println(YELLOW + "Calculated Thread Ceil:     " + calcThreadCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Thread Value:            " + threadValue1 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (threadValue1 == calcThreadFloor || threadValue1 == calcThreadCeil) {
+
+        System.out.println(GREEN +
+                "✅ THREAD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+                RESET);
+
+    } else {
+
+        System.out.println(RED +
+                "❌ THREAD DISTRIBUTION MISMATCH — UI: " + threadValue1 +
+                " | CalcFloor: " + calcThreadFloor +
+                " | CalcCeil: " + calcThreadCeil +
+                RESET);
+
+        Assert.fail("❌ THREAD DISTRIBUTION MISMATCH — UI: " +
+        		threadValue1 + " | CalcFloor: " + calcThreadFloor +
+                " | CalcCeil: " + calcThreadCeil);
+    }
+
+    System.out.println(LINE);
+}
 		
 
 
@@ -2295,6 +2500,83 @@ public void verifyThreadSplit_P2() {
 
     if (discountedMRP > 0) {
         calcThreadRaw = ((double) discountedMRP2 / (double) discountedMRP) * threadValue;
+    }
+
+    int calcThreadFloor = (int) Math.floor(calcThreadRaw);
+    int calcThreadCeil  = (int) Math.ceil(calcThreadRaw);
+
+    System.out.println(YELLOW + "Calculated Thread Raw:      " + calcThreadRaw + RESET);
+    System.out.println(YELLOW + "Calculated Thread Floor:    " + calcThreadFloor + RESET);
+    System.out.println(YELLOW + "Calculated Thread Ceil:     " + calcThreadCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Thread Value:            " + threadValue2 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (threadValue2 == calcThreadFloor || threadValue2 == calcThreadCeil) {
+
+        System.out.println(GREEN +
+                "✅ THREAD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+                RESET);
+
+    } else {
+
+        System.out.println(RED +
+                "❌ THREAD DISTRIBUTION MISMATCH — UI: " + threadValue2 +
+                " | CalcFloor: " + calcThreadFloor +
+                " | CalcCeil: " + calcThreadCeil +
+                RESET);
+
+        Assert.fail("❌ THREAD DISTRIBUTION MISMATCH — UI: " +
+                threadValue2 + " | CalcFloor: " + calcThreadFloor +
+                " | CalcCeil: " + calcThreadCeil);
+    }
+
+    System.out.println(LINE);
+}
+
+public void verifyThreeThreadSplit_P2() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 THREAD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If threadValue2 is ZERO
+    // ============================================
+    if (threadValue == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING THREAD SPLIT VALIDATION — UI Thread Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any thread validation
+    }
+
+    // ============================================
+    // THREAD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Thread Split Calculation..." + RESET);
+    System.out.println(GREEN +
+            "Formula: (ProductDiscountedMRP / TotalDiscountedMRP-accPrice) * TotalThreadAmount"
+            + RESET);
+
+    double calcThreadRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcThreadRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * threadValue;
     }
 
     int calcThreadFloor = (int) Math.floor(calcThreadRaw);
@@ -2411,6 +2693,84 @@ public void verifyGiftCardSplit_P2() {
 
     System.out.println(LINE);
 }
+
+public void verifyThreeGiftCardSplit_P2() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 GIFT CARD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If giftCardAmount2 is ZERO
+    // ============================================
+    if (giftCardAmount == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING GIFT CARD SPLIT VALIDATION — UI Gift Card Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any validation
+    }
+
+    // ============================================
+    // GIFT CARD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Gift Card Split Calculation..." + RESET);
+
+    System.out.println(GREEN +
+        "Formula: (ProductDiscountedMRP / TotalDiscountedMRP-accPrice) * TotalGiftCardAmount"
+        + RESET);
+
+    double calcGiftCardRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcGiftCardRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * giftCardAmount;
+    }
+
+    int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
+    int calcGiftCardCeil  = (int) Math.ceil(calcGiftCardRaw);
+
+    System.out.println(YELLOW + "Calculated Gift Card Raw:      " + calcGiftCardRaw + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Floor:    " + calcGiftCardFloor + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Ceil:     " + calcGiftCardCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Gift Card Value:            " + giftCardAmount2 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (giftCardAmount2 == calcGiftCardFloor || giftCardAmount2 == calcGiftCardCeil) {
+
+        System.out.println(GREEN +
+            "✅ GIFT CARD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+        RESET);
+
+    } else {
+
+        System.out.println(RED +
+            "❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " + giftCardAmount2 +
+            " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil +
+            RESET);
+
+        Assert.fail("❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " +
+            giftCardAmount2 + " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil);
+    }
+
+    System.out.println(LINE);
+}
 public void verifyGiftCardSplit_P1() {
 
     String GREEN  = "\u001B[32m";
@@ -2489,9 +2849,164 @@ public void verifyGiftCardSplit_P1() {
     System.out.println(LINE);
 }
 
+public void verifyThreeProductGiftCardSplit_P1() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 GIFT CARD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If giftCardAmount2 is ZERO
+    // ============================================
+    if (giftCardAmount == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING GIFT CARD SPLIT VALIDATION — UI Gift Card Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any validation
+    }
+
+    // ============================================
+    // GIFT CARD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Gift Card Split Calculation..." + RESET);
+
+    System.out.println(GREEN +
+        "Formula: (ProductDiscountedMRP / TotalDiscountedMRP-accPrice) * TotalGiftCardAmount"
+        + RESET);
+
+    double calcGiftCardRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcGiftCardRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * giftCardAmount;
+    }
+
+    int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
+    int calcGiftCardCeil  = (int) Math.ceil(calcGiftCardRaw);
+
+    System.out.println(YELLOW + "Calculated Gift Card Raw:      " + calcGiftCardRaw + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Floor:    " + calcGiftCardFloor + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Ceil:     " + calcGiftCardCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Gift Card Value:            " + giftCardAmount1 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (giftCardAmount1 == calcGiftCardFloor || giftCardAmount1 == calcGiftCardCeil) {
+
+        System.out.println(GREEN +
+            "✅ GIFT CARD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+        RESET);
+
+    } else {
+
+        System.out.println(RED +
+            "❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " + giftCardAmount1 +
+            " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil +
+            RESET);
+
+        Assert.fail("❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " +
+        		giftCardAmount1 + " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil);
+    }
+
+    System.out.println(LINE);
+}
+public void verifyGiftCardSplit_AP() {
+
+    String GREEN  = "\u001B[32m";
+    String RED    = "\u001B[31m";
+    String YELLOW = "\u001B[33m";
+    String CYAN   = "\u001B[36m";
+    String RESET  = "\u001B[0m";
+    String BLUE   = "\u001B[34m";
+
+    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+
+    System.out.println(LINE);
+    System.out.println(CYAN + "📘 GIFT CARD DISTRIBUTION CALCULATION" + RESET);
+
+    // ============================================
+    // 🛑 SKIP LOGIC — If giftCardAmount2 is ZERO
+    // ============================================
+    if (giftCardAmount == 0) {
+
+        System.out.println(YELLOW +
+            "⚠ SKIPPING GIFT CARD SPLIT VALIDATION — UI Gift Card Value is 0" +
+        RESET);
+
+        System.out.println(LINE);
+        return;  // EXIT — Do NOT perform any validation
+    }
+
+    // ============================================
+    // GIFT CARD SPLIT CALCULATION
+    // ============================================
+    System.out.println(CYAN + "🧮 Performing Gift Card Split Calculation..." + RESET);
+
+    System.out.println(GREEN +
+        "Formula: (ProductDiscountedMRP / TotalDiscountedMRP) * TotalGiftCardAmount"
+        + RESET);
+
+    double calcGiftCardRaw = 0.0;
+
+    if (discountedMRP > 0) {
+        calcGiftCardRaw = ((double) totalMRP3 / (double) discountedMRP) * giftCardAmount;
+    }
+
+    int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
+    int calcGiftCardCeil  = (int) Math.ceil(calcGiftCardRaw);
+
+    System.out.println(YELLOW + "Calculated Gift Card Raw:      " + calcGiftCardRaw + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Floor:    " + calcGiftCardFloor + RESET);
+    System.out.println(YELLOW + "Calculated Gift Card Ceil:     " + calcGiftCardCeil + RESET);
+    System.out.println(LINE);
+
+    System.out.println(YELLOW + "UI Gift Card Value:            " + giftCardAmount3 + RESET);
+    System.out.println(LINE);
+
+    // ============================================
+    // VALIDATION WITH TOLERANCE
+    // ============================================
+    if (giftCardAmount3 == calcGiftCardFloor || giftCardAmount3 == calcGiftCardCeil) {
+
+        System.out.println(GREEN +
+            "✅ GIFT CARD DISTRIBUTION MATCHED UI (Accepted Floor/Ceil Tolerance)" +
+        RESET);
+
+    } else {
+
+        System.out.println(RED +
+            "❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " + giftCardAmount3 +
+            " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil +
+            RESET);
+
+        Assert.fail("❌ GIFT CARD DISTRIBUTION MISMATCH — UI: " +
+        		giftCardAmount3 + " | CalcFloor: " + calcGiftCardFloor +
+            " | CalcCeil: " + calcGiftCardCeil);
+    }
+
+    System.out.println(LINE);
+}
+
 
 String accessoriesProduct;
-
+int accPrice;
 public String takeRandomAccessoriesProductFromAll() {
     WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
     Actions actions = new Actions(driver);
@@ -2501,10 +3016,17 @@ public String takeRandomAccessoriesProductFromAll() {
             By.xpath("//span[@class='navigation_menu_txt'][normalize-space()='Shop']")));
     actions.moveToElement(shopMenu).perform();
 
+    
     WebElement allButton = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='Accessories']")));
-    allButton.click();
+   
+ // Scroll into view
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].scrollIntoView({block: 'center'});", allButton
+    );
 
+    // JS Click → 100% no interception
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", allButton);
     System.out.println("✅ Clicked on 'All' under Shop menu");
 
     // Collect all product cards
@@ -2547,8 +3069,15 @@ public String takeRandomAccessoriesProductFromAll() {
 
         WebElement productNameElement = productCard.findElement(
                 By.xpath(".//h2[@class='product_list_cards_heading']"));
+        
+        // Scroll into view
+	    ((JavascriptExecutor) driver).executeScript(
+	        "arguments[0].scrollIntoView({block: 'center'});", productNameElement
+	    );
 
-        productNameElement.click(); // Open PDP
+	    // JS Click → 100% no interception
+	    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productNameElement);
+     
 
         productFound = true;
         System.out.println("✅ Selected random in-stock product: " + productlistingName);
@@ -2562,13 +3091,24 @@ public String takeRandomAccessoriesProductFromAll() {
     // Click ADD TO CART button on PDP
     
 
-   
+    String priceText = driver.findElement(By.xpath("//div[@class='prod_current_price']")).getText();
+     accPrice = Integer.parseInt(priceText.replaceAll("[^0-9]", ""));
+    System.out.println("Product Price: " + accPrice);
+    
     WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("(//button[contains(text(),'Add to')])[1]")));
     Common.waitForElement(2);
-    wait.until(ExpectedConditions.elementToBeClickable(addToCart));
+//    wait.until(ExpectedConditions.elementToBeClickable(addToCart));
+    
+ // Scroll into view
+    ((JavascriptExecutor) driver).executeScript(
+        "arguments[0].scrollIntoView({block: 'center'});", addToCart
+    );
 
-    addToCart.click();
+    // JS Click → 100% no interception
+    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCart);
+
+
     
 
     System.out.println("🛒 Add to Cart clicked on PDP for: " + productlistingName);
@@ -2606,7 +3146,15 @@ public void takeCustomizeProduct() {
                 ExpectedConditions.elementToBeClickable(By.xpath(".//h2[@class='product_list_cards_heading']"))
         );
         Common.waitForElement(1);
-        productElement.click();
+     // Scroll into view
+        ((JavascriptExecutor) driver).executeScript(
+            "arguments[0].scrollIntoView({block: 'center'});", productElement
+        );
+
+        // JS Click → 100% no interception
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productElement);
+
+//        productElement.click();
         Common.waitForElement(1);
         // ▌2️⃣ Click CUSTOM SIZE button
         System.out.println(YELLOW + "📏 Clicking Custom Size option..." + RESET);
@@ -2627,14 +3175,28 @@ public void takeCustomizeProduct() {
         WebElement submitBtn = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Submit')]"))
         );
-        submitBtn.click();
+     // Scroll into view
+        ((JavascriptExecutor) driver).executeScript(
+            "arguments[0].scrollIntoView({block: 'center'});", submitBtn
+        );
+
+        // JS Click → 100% no interception
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", submitBtn);
+        
         Common.waitForElement(1);
         // ▌5️⃣ Click ADD TO CART
         System.out.println(YELLOW + "🛍️ Adding product to cart..." + RESET);
         WebElement addToCartBtn = wait.until(
                 ExpectedConditions.elementToBeClickable(By.xpath("(//button[contains(text(),'Add to')])[1]"))
         );
-        addToCartBtn.click();
+     // Scroll into view
+        ((JavascriptExecutor) driver).executeScript(
+            "arguments[0].scrollIntoView({block: 'center'});", addToCartBtn
+        );
+
+        // JS Click → 100% no interception
+        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartBtn);
+       
 
         System.out.println(GREEN + "✅ Product added to cart successfully!" + RESET);
         System.out.println(CYAN + line + RESET);
@@ -2644,6 +3206,601 @@ public void takeCustomizeProduct() {
     }
 }
 
+
+
+
+	int calcTotalAmount3;
+	int totalMRP3;
+	int discountedMRP3;
+	int customFee3;
+	int giftCardAmount3;
+	int couponDiscount3;
+	int threadValue3;
+	int calcPayableAmount3;	
+	public void validatePriceBreakupDetails_AP() {
+		 String GREEN  = "\u001B[32m";
+		    String RED    = "\u001B[31m";
+		    String YELLOW = "\u001B[33m";
+		    String CYAN   = "\u001B[36m";
+		    String BLUE   = "\u001B[34m";
+		    String RESET  = "\u001B[0m";
+
+		    String LINE = BLUE + "──────────────────────────────────────────────────────────────" + RESET;
+		    Common.waitForElement(2);
+		    
+		    // Open Price Breakup
+	        driver.findElement(By.xpath("//button[@class='price_breakup_btn active']")).click();
+
+		 // Helper: returns value or 0 if row missing
+	    Function<String, Integer> getValue = (label) -> {
+	        try {
+	            WebElement ele = driver.findElement(By.xpath(
+	                "//div[@class='price_details_key' and normalize-space(text())='" + label + "']" +
+	                "/following-sibling::div[@class='price_details_pair']"
+	            ));
+	            return Integer.parseInt(ele.getText().replaceAll("[^0-9]", ""));
+	        } catch (Exception e) { return 0; }
+	    };
+
+	    Common.waitForElement(1);
+
+	    // -------------------------------
+	    // 🔹 FETCH UI VALUES 
+	    // -------------------------------
+	      totalMRP3         = getValue.apply("Total MRP");
+	      discountedMRP3    = getValue.apply("Discounted MRP");
+	      customFee3        = getValue.apply("Customisation fee");
+	      giftCardAmount3   = getValue.apply("Gift Card Applied");
+	      couponDiscount3   = getValue.apply("Coupon Discount");
+	      threadValue3      = getValue.apply("Applied Threads");
+
+	    int uiYouSaved       = getValue.apply("You Saved");
+	    int uiTotalAmount    = getValue.apply("Total Amount");
+
+	    // -------------------------------
+	    // 🔹 PRINT UI VALUES
+	    // -------------------------------
+	    System.out.println(LINE);
+	    System.out.println(CYAN + "📌 PRICE DETAILS DISPLAYED IN UI FROM PRICE BREAK UP" + RESET);
+
+	    System.out.println(YELLOW + "Total MRP:            " + totalMRP3 + RESET);
+	    System.out.println(YELLOW + "Discounted MRP:       " + discountedMRP3 + RESET);
+	    System.out.println(YELLOW + "Customisation Fee:    " + customFee3 + RESET);
+	    System.out.println(YELLOW + "Gift Card Applied:    " + giftCardAmount3 + RESET);
+	    System.out.println(YELLOW + "Coupon Discount:      " + couponDiscount3 + RESET);
+	    System.out.println(YELLOW + "Applied Threads:      " + threadValue3 + RESET);
+	    System.out.println(YELLOW + "You Saved (UI):       " + uiYouSaved + RESET);
+	    System.out.println(YELLOW + "Total Amount (UI):    " + uiTotalAmount + RESET);
+	    System.out.println(LINE);
+
+	    // -------------------------------
+	    // 🔹 CALCULATIONS
+	    // -------------------------------
+	    
+	    int effectiveMRP3 = (discountedMRP3 == 0) ? totalMRP3 : discountedMRP3;
+
+	    calcTotalAmount3 =
+	            (effectiveMRP3 + customFee3)
+	            - (threadValue3 + giftCardAmount3 + couponDiscount3);
+//	    
+//	    calcTotalAmount1 =
+//	            (discountedMRP1 + customFee1)
+//	            - (threadValue1 + giftCardAmount1 + couponDiscount1);
+	    
+	    int calcYouSaved =
+	            totalMRP3 - calcTotalAmount3;
+
+	    calcPayableAmount3 =
+	  		  calcTotalAmount3 + giftCardAmount3;
+
+	    // -------------------------------
+	    // 🔹 PRINT CALCULATIONS
+	    // -------------------------------
+	    System.out.println(CYAN + "🧮 DETAILED CALCULATIONS" + RESET);
+
+	    // YOU SAVED
+	    System.out.println(YELLOW + "You Saved Formula:" + RESET);
+	    System.out.println("   (" + totalMRP3 + " - " + calcTotalAmount3);
+	    System.out.println(GREEN + "   = " + calcYouSaved + RESET);
+
+	    System.out.println();
+
+	    // TOTAL AMOUNT
+	    System.out.println(YELLOW + "Total Amount Formula:" + RESET);
+	    System.out.println("   (" + effectiveMRP3 + " + " + customFee3 + ")" +
+	            " - (" + threadValue3 + " + " + giftCardAmount3 + " + " + couponDiscount3 + ")");
+	    System.out.println(GREEN + "   = " + calcTotalAmount3 + RESET);
+
+	    System.out.println(LINE);
+
+	    // -------------------------------
+	    // 🔹 VALIDATIONS
+	    // -------------------------------
+	    System.out.println(CYAN + "🔍 FINAL VALIDATION RESULTS" + RESET);
+
+	    // YOU SAVED
+	    System.out.println(YELLOW + "You Saved Validation:" + RESET);
+	    System.out.println("   Calculated = " + calcYouSaved);
+	    System.out.println("   UI Value   = " + uiYouSaved);
+
+	    if (calcYouSaved == uiYouSaved) {
+	        System.out.println(GREEN + "   ✔ MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "   ✘ MISMATCH — UI: " + uiYouSaved +
+	                " | Calc: " + calcYouSaved + RESET);
+	        Assert.fail("❌ You Saved MISMATCH!");
+	    }
+
+	    System.out.println();
+
+	    // TOTAL AMOUNT
+	    System.out.println(YELLOW + "Total Amount Validation:" + RESET);
+	    System.out.println("   Calculated = " + calcTotalAmount1);
+	    System.out.println("   UI Value   = " + uiTotalAmount);
+
+	    if (calcTotalAmount3 == uiTotalAmount) {
+	        System.out.println(GREEN + "   ✔ MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "   ✘ MISMATCH — UI: " + uiTotalAmount +
+	                " | Calc: " + calcTotalAmount1 + RESET);
+	        Assert.fail("❌ Total Amount MISMATCH!");
+	    }
+
+	    System.out.println(LINE);
+	    
+	    
+	}
+	
+	
+	
+//	int calcPayableAmount4;
+	public void validateOrderSummaryForThreeProduct_AP() {
+
+	    String CYAN = "\u001B[36m";
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String LINE = "──────────────────────────────────────────────";
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    
+	    // =============================
+	    // STEP 1: UI Values
+	    // =============================
+	    
+	   js.executeScript("window.scrollBy(0, 500);");
+	 // Payable Amount - only first text node
+	    Common.waitForElement(2);
+	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+	    String fullText = amountDiv.getText().trim();
+
+	    // Remove the "You have Saved …" part completely
+	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+
+	    // Now cleaned = "₹300"
+
+	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+	   // System.out.println("Order Value: " + uiPayableAmount);
+
+	    // Helper to parse int safely
+	    Function<WebElement, Integer> parseMoney = el ->
+	            Integer.parseInt(el.getText().replaceAll("[^0-9]", ""));
+
+	    // Helper to safely get integer value (returns 0 if not found)
+	    Function<String, Integer> safeGet = (xpath) -> {
+	        try {
+	            WebElement el = driver.findElement(By.xpath(xpath));
+	            return parseMoney.apply(el);
+	        } catch (Exception e) {
+	            return 0;  // element not available
+	        }
+	    };
+
+//	    	// Saved Amount
+//	    	String savedText = driver.findElement(
+//	    	        By.cssSelector(".prod_order_amount_value span")
+//	    	).getText().trim();
+//
+//	    	int uiSavedAmount = parseMoney(savedText);
+	    int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
+	    int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
+	    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+
+	    // =============================
+	    // STEP 2: Print Backend Values
+	    // =============================
+//	    System.out.println(CYAN + "📌 BACKEND / VARIABLES YOU STORED EARLIER" + RESET);
+//
+//	    System.out.println(YELLOW + "Total MRP3:            " + totalMRP3 + RESET);
+//	    System.out.println(YELLOW + "Discounted MRP3:       " + discountedMRP3 + RESET);
+//	    System.out.println(YELLOW + "Customisation Fee3:    " + customFee3 + RESET);
+//	    System.out.println(YELLOW + "Gift Card Applied3:    " + giftCardAmount3 + RESET);
+//	    System.out.println(YELLOW + "Coupon Discount3:      " + couponDiscount3 + RESET);
+//	    System.out.println(YELLOW + "Applied Threads3:      " + threadValue3 + RESET);
+	    System.out.println(LINE);
+
+	    System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
+	    System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
+//	    System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
+	    System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
+	      System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
+	    System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 3: Calculations
+	    // =============================
+	    System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
+//	     calcPayableAmount3 =
+//	  		  calcTotalAmount3 + giftCardAmount3;
+	    
+	      int calcTotalOrderValue =
+	           (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+	      
+//	      int calcYouSaved2 =
+//	              (totalMRP2 + customFee2)
+//	              - calcPayableAmount2;
+	      
+	 
+
+//	    int calcTotalOrderValue =
+//	            (discountedMRP + giftWrapFee + expressShipping + customFee)
+//	                    - (threadValue + couponDiscount);
+
+//	    System.out.println(GREEN + "Formula: (DiscountedMRP + Wrap + Express + Custom) - (Thread + Coupon)" + RESET);
+	    System.out.println(GREEN + "Calculated Payable Amount From First Product: "+ calcPayableAmount1 + RESET);
+	    System.out.println(GREEN + "Calculated Payable Amount From Second Product: "+ calcPayableAmount_P2 + RESET);
+	    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount3 + RESET);
+	    System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
+//	    System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved2 + RESET);
+//	    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount3 + RESET);
+//	    int calcPayableAmount =
+//	            calcTotalOrderValue - (giftWrapFee + expressShipping);
+	//
+//	    System.out.println(GREEN + "Formula: TotalOrderValue - (Wrap + Express)" + RESET);
+	    
+//	    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 4: VALIDATION
+	    // =============================
+	    if (calcTotalOrderValue == uiTotalOrderValue) {
+	        System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+
+	        Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+	    }
+//	    
+//	 // ---- YOUSAVED AMOUNT ----
+//	    if (calcYouSaved2 == uiSavedAmount) {
+//	        System.out.println(GREEN + "✅ YOUSAVED AMOUNT MATCHED UI" + RESET);
+//	    } else {
+//	        System.out.println(RED + "❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+//	        		uiSavedAmount + " | Calc: " + calcYouSaved2 + RESET);
+//
+//	        Assert.fail("❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+//	        		uiSavedAmount + " | Calc: " + calcYouSaved2);
+//	    }
+
+	    // ---- PAYABLE AMOUNT ----
+	    if (calcPayableAmount3 == uiPayableAmount) {
+	        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount3 + RESET);
+
+	        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount3);
+	    }
+
+	    System.out.println(LINE);
+	}  
+	
+	
+	public void validateOrderSummaryForThreeProduct_P2() {
+
+	    String CYAN = "\u001B[36m";
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String LINE = "──────────────────────────────────────────────";
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    
+	    // =============================
+	    // STEP 1: UI Values
+	    // =============================
+	    
+	   js.executeScript("window.scrollBy(0, 500);");
+	 // Payable Amount - only first text node
+	    Common.waitForElement(2);
+	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+	    String fullText = amountDiv.getText().trim();
+
+	    // Remove the "You have Saved …" part completely
+	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+
+	    // Now cleaned = "₹300"
+
+	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+//	    System.out.println("Order Value: " + uiPayableAmount);
+	    // Helper to parse int safely
+	    Function<WebElement, Integer> parseMoney = el ->
+	            Integer.parseInt(el.getText().replaceAll("[^0-9]", ""));
+
+	    // Helper to safely get integer value (returns 0 if not found)
+	    Function<String, Integer> safeGet = (xpath) -> {
+	        try {
+	            WebElement el = driver.findElement(By.xpath(xpath));
+	            return parseMoney.apply(el);
+	        } catch (Exception e) {
+	            return 0;  // element not available
+	        }
+	    };
+	    	
+
+	    	// Saved Amount
+	    	String savedText = driver.findElement(
+	    	        By.cssSelector(".prod_order_amount_value span")
+	    	).getText().trim();
+
+	    	int uiSavedAmount = parseMoney(savedText);
+	    int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
+	    int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
+	  // int uiShippingCharges = parseMoney(driver.findElement(By.xpath("//div[text()=' Shipping Charges ']/following::div[1]")).getText());
+	    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+
+	    // =============================
+	    // STEP 2: Print Backend Values
+	    // =============================
+	    System.out.println(CYAN + "📌 BACKEND / VARIABLES YOU STORED EARLIER" + RESET);
+	    System.out.println(LINE);
+	    System.out.println(CYAN + "📌 PRICE DETAILS DISPLAYED IN UI FROM PRICE BREAK UP" + RESET);
+
+	    System.out.println(YELLOW + "Total MRP2:            " + totalMRP2 + RESET);
+	    System.out.println(YELLOW + "Discounted MRP2:       " + discountedMRP2 + RESET);
+	    System.out.println(YELLOW + "Customisation Fee2:    " + customFee2 + RESET);
+	    System.out.println(YELLOW + "Gift Card Applied2:    " + giftCardAmount2 + RESET);
+	    System.out.println(YELLOW + "Coupon Discount2:      " + couponDiscount2 + RESET);
+	    System.out.println(YELLOW + "Applied Threads2:      " + threadValue2 + RESET);
+	    System.out.println(LINE);
+
+	    System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
+	    System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
+	    System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
+	    System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
+	      System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
+	    System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 3: Calculations
+	    // =============================
+	    System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
+	//   calcPayableAmount1 =
+//			  calcTotalAmount1 + giftCardAmount1;
+	  
+	    int calcTotalOrderValue =
+	         (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+	    
+	    int calcYouSaved1 =
+	            (totalMRP2 + customFee2)
+	            - calcPayableAmount_P2;
+
+//	    int calcTotalOrderValue =
+//	            (discountedMRP + giftWrapFee + expressShipping + customFee)
+//	                    - (threadValue + couponDiscount);
+
+//	    System.out.println(GREEN + "Formula: (DiscountedMRP + Wrap + Express + Custom) - (Thread + Coupon)" + RESET);
+	 //   System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
+	    System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
+	    System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved1 + RESET);
+	    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcPayableAmount_P2 + RESET);
+//	    int calcPayableAmount =
+//	            calcTotalOrderValue - (giftWrapFee + expressShipping);
+	//
+//	    System.out.println(GREEN + "Formula: TotalOrderValue - (Wrap + Express)" + RESET);
+	    
+//	    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 4: VALIDATION
+	    // =============================
+	    if (calcTotalOrderValue == uiTotalOrderValue) {
+	        System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+
+	        Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+	    }
+	 // ---- YOUSAVED AMOUNT ----
+	    if (calcYouSaved1 == uiSavedAmount) {
+	        System.out.println(GREEN + "✅ YOUSAVED AMOUNT MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+	        		uiSavedAmount + " | Calc: " + calcYouSaved1 + RESET);
+
+	        Assert.fail("❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+	        		uiSavedAmount + " | Calc: " + calcYouSaved1);
+	    }
+
+	    // ---- PAYABLE AMOUNT ----
+	    if (calcPayableAmount_P2 == uiPayableAmount) {
+	        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2 + RESET);
+
+	        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2);
+	    }
+
+	    System.out.println(LINE);
+	}  
+	
+	
+	public void validateOrderSummaryForThreeProduct_P1() {
+
+	    String CYAN = "\u001B[36m";
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String LINE = "──────────────────────────────────────────────";
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    
+	    // =============================
+	    // STEP 1: UI Values
+	    // =============================
+	    
+	   js.executeScript("window.scrollBy(0, 500);");
+	 // Payable Amount - only first text node
+	    Common.waitForElement(2);
+	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+	    String fullText = amountDiv.getText().trim();
+
+	    // Remove the "You have Saved …" part completely
+	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+
+	    // Now cleaned = "₹300"
+
+	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+//	    System.out.println("Order Value: " + uiPayableAmount);
+	    // Helper to parse int safely
+	    Function<WebElement, Integer> parseMoney = el ->
+	            Integer.parseInt(el.getText().replaceAll("[^0-9]", ""));
+
+	    // Helper to safely get integer value (returns 0 if not found)
+	    Function<String, Integer> safeGet = (xpath) -> {
+	        try {
+	            WebElement el = driver.findElement(By.xpath(xpath));
+	            return parseMoney.apply(el);
+	        } catch (Exception e) {
+	            return 0;  // element not available
+	        }
+	    };
+	    	
+
+	    	// Saved Amount
+	    	String savedText = driver.findElement(
+	    	        By.cssSelector(".prod_order_amount_value span")
+	    	).getText().trim();
+
+	    	int uiSavedAmount = parseMoney(savedText);
+	    int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
+	    int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
+	  // int uiShippingCharges = parseMoney(driver.findElement(By.xpath("//div[text()=' Shipping Charges ']/following::div[1]")).getText());
+	    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+
+	    // =============================
+	    // STEP 2: Print Backend Values
+	    // =============================
+	    System.out.println(CYAN + "📌 BACKEND / VARIABLES YOU STORED EARLIER" + RESET);
+	    System.out.println(LINE);
+	    System.out.println(CYAN + "📌 PRICE DETAILS DISPLAYED IN UI FROM PRICE BREAK UP" + RESET);
+
+	    System.out.println(YELLOW + "Total MRP1:            " + totalMRP1 + RESET);
+	    System.out.println(YELLOW + "Discounted MRP1:       " + discountedMRP1 + RESET);
+	    System.out.println(YELLOW + "Customisation Fee1:    " + customFee1 + RESET);
+	    System.out.println(YELLOW + "Gift Card Applied1:    " + giftCardAmount1 + RESET);
+	    System.out.println(YELLOW + "Coupon Discount1:      " + couponDiscount1 + RESET);
+	    System.out.println(YELLOW + "Applied Threads1:      " + threadValue1 + RESET);
+	    System.out.println(LINE);
+
+	    System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
+	    System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
+	    System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
+	    System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
+	      System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
+	    System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 3: Calculations
+	    // =============================
+	    System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
+	//   calcPayableAmount1 =
+//			  calcTotalAmount1 + giftCardAmount1;
+	  
+	    int calcTotalOrderValue =
+	         (calcPayableAmount1 + calcPayableAmount_P2 + calcPayableAmount3 + uiGiftWrapFee + uiShippingCharges);
+	    
+	    int calcYouSaved1 =
+	            (totalMRP1 + customFee1)
+	            - calcPayableAmount1;
+
+//	    int calcTotalOrderValue =
+//	            (discountedMRP + giftWrapFee + expressShipping + customFee)
+//	                    - (threadValue + couponDiscount);
+
+//	    System.out.println(GREEN + "Formula: (DiscountedMRP + Wrap + Express + Custom) - (Thread + Coupon)" + RESET);
+	 //   System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
+	    System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
+	    System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved1 + RESET);
+	    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcPayableAmount1 + RESET);
+//	    int calcPayableAmount =
+//	            calcTotalOrderValue - (giftWrapFee + expressShipping);
+	//
+//	    System.out.println(GREEN + "Formula: TotalOrderValue - (Wrap + Express)" + RESET);
+	    
+//	    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+
+	    System.out.println(LINE);
+
+	    // =============================
+	    // STEP 4: VALIDATION
+	    // =============================
+	    if (calcTotalOrderValue == uiTotalOrderValue) {
+	        System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+
+	        Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
+	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+	    }
+	 // ---- YOUSAVED AMOUNT ----
+	    if (calcYouSaved1 == uiSavedAmount) {
+	        System.out.println(GREEN + "✅ YOUSAVED AMOUNT MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+	        		uiSavedAmount + " | Calc: " + calcYouSaved1 + RESET);
+
+	        Assert.fail("❌ YOUSAVED AMOUNT MISMATCH — UI: " +
+	        		uiSavedAmount + " | Calc: " + calcYouSaved1);
+	    }
+
+	    // ---- PAYABLE AMOUNT ----
+	    if (calcPayableAmount1 == uiPayableAmount) {
+	        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount1 + RESET);
+
+	        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+	                uiPayableAmount + " | Calc: " + calcPayableAmount1);
+	    }
+
+	    System.out.println(LINE);
+	}  
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 
 
@@ -2725,7 +3882,7 @@ public void takeCustomizeProduct() {
 		
 		verifyThreadSplit_P2();
 		
-		verifyGiftCardSplit_P1();
+		verifyGiftCardSplit_P2();
 		
 		closeBtn.click();
 		
@@ -2770,11 +3927,11 @@ public void takeCustomizeProduct() {
 		
 			validatePriceBreakupDetails_P1();
 			
-			verifyCouponSplit_P1();
+			verifyThreeProductCouponSplit_P1();
 			
-			verifyThreadSplit_P1();
+			verifyThreeThreadSplit_P1();
 			
-			verifyGiftCardSplit_P1();
+			verifyThreeProductGiftCardSplit_P1();
 		    
 			closeBtn.click();
 		    
@@ -2783,19 +3940,37 @@ public void takeCustomizeProduct() {
 			
 			validatePriceBreakupDetails_P2();
 			
-			verifyCouponSplit_P2();
+			verifyThreeProductCouponSplit_P2();
 			
-			verifyThreadSplit_P2();
+			verifyThreeThreadSplit_P2();
 			
-			verifyGiftCardSplit_P1();
+			verifyThreeGiftCardSplit_P2();
 			
 			closeBtn.click();
 			
-			validateOrderSummaryForTwoProduct_P2();
 			driver.navigate().back();
+			
+			moveToProduct(3);
+			
+			validatePriceBreakupDetails_AP();
+			
+			verifyGiftCardSplit_AP();
+			
+			closeBtn.click();
+			
+			validateOrderSummaryForThreeProduct_AP();
+			
+			driver.navigate().back();
+			
+			moveToProduct(2);
+			
+			validateOrderSummaryForThreeProduct_P2();
+			
+			driver.navigate().back();
+			
 			moveToProduct(1);
 			
-			validateOrderSummaryForTwoProduct_P1();	
+			validateOrderSummaryForThreeProduct_P1();	
 			
 		}
 	

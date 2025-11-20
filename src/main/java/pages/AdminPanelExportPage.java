@@ -905,7 +905,7 @@ public class AdminPanelExportPage extends AdminPanelExportObjRepo {
 	  		  	            "Refund Credited",
 	  		  	            "Return Rejected",
 	  		  	            "Product Out Of Stock",
-		  		  	        "Product Received in Damage State",
+		  		  	        "Product Received in Damaged State",
 			  		  	    "RTO Initiated",
 	  		  	            "Order Delay",
 	  		  	            "RTO In Transit",
