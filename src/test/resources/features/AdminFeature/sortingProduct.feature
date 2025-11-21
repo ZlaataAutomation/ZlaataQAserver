@@ -38,9 +38,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_03   | 
   
-  @Sorting
-  @Stage
-  @Regression
+
     @TC_UI_Zlaata_ASP_04
 Scenario Outline: TC_UI_Zlaata_ASP_04 |Verify Micro Page product sorting between Admin Panel and User Application.| "<TD_ID>"  
  Given admin is logged in

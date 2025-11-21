@@ -1230,8 +1230,80 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 //Special Timer Product
 	
+	public void clickPlusOrResetFlow() throws InterruptedException {
+
+	    // 1️⃣ Click Active Status
+	    Common.waitForElement(3);
+	    waitFor(statusActiveOption);
+	    click(statusActiveOption);
+	    System.out.println("✅ Selected Active status");
+
+	    Common.waitForElement(2);
+
+	    // 2️⃣ TRY clicking Plus button
+	    try {
+	        if (plusButton.isDisplayed() && plusButton.isEnabled()) {
+	            click(plusButton);
+	            System.out.println("✅ Clicked '+' Plus button (Direct)");
+	            return; // SUCCESS, exit method
+	        }
+	    } catch (Exception e) {
+	        System.out.println("⚠️ Plus Button NOT visible, switching to fallback flow...");
+	    }
+
+	    // ---------------------------------------------------------
+	    // 3️⃣ FALLBACK FLOW: Reset → Search Event Name → Enable status → Enable promotional → Click plus
+	    // ---------------------------------------------------------
+
+	    // Click Reset
+	    WebElement resetBtn = driver.findElement(By.id("crudTable_reset_button"));
+	    click(resetBtn);
+	    System.out.println("🔄 Clicked Reset");
+
+	    Common.waitForElement(2);
+
+	    // Click Event Name dropdown
+	    WebElement eventNameDropdown = driver.findElement(By.xpath("//a[contains(text(),'Event Name')]"));
+	    click(eventNameDropdown);
+	    System.out.println("📂 Opened Event Name dropdown");
+
+	    Common.waitForElement(1);
+
+	    // Enter search text
+	    WebElement searchBox = driver.findElement(By.id("text-filter-eventName"));
+	    searchBox.clear();
+	    searchBox.sendKeys("Festiv Sale");
+	    searchBox.sendKeys(Keys.ENTER);
+	    System.out.println("🔍 Entered event name: Festiv Sale");
+
+	    Common.waitForElement(2);
+
+	    // Enable Status toggle
+	    WebElement statusToggle = driver.findElement(By.xpath("//label[@for='V_status_54']"));
+	    if (!statusToggle.isSelected()) {
+	    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", statusToggle);
+	        System.out.println("🔘 Enabled EVENT Status");
+	    }
+
+	    Common.waitForElement(2);
+
+	    // Enable Promotional Offer toggle
+	    WebElement promoToggle = driver.findElement(By.xpath("//label[@for='V_promotional_offer_54']"));
+	    if (!promoToggle.isSelected()) {
+	    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", promoToggle);
+	        System.out.println("🎁 Enabled Promotional Offer");
+	    }
+
+	    Common.waitForElement(2);
+
+	    // Click PLUS button again
+	    //waitFor(plusButton);
+	    Common.waitForElement(2);
+	    click(plusButton);
+	    System.out.println("🚀 Clicked '+' Plus button (AFTER fallback)");
+	}
 	 // ✅ Upload excel
-    public void uploadTheSpecialTimerProductExcel(String filePath) {
+    public void uploadTheSpecialTimerProductExcel(String filePath) throws InterruptedException {
         Common.waitForElement(2);
         driver.get(Common.getValueFromTestDataMap("ExcelPath"));
         
@@ -1240,17 +1312,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    waitFor(clickStatus);
 	    click(clickStatus);
 
-	    // Select Status -> Active
-	    Common.waitForElement(3);
-	    waitFor(statusActiveOption);
-	    click(statusActiveOption);
-	    System.out.println("✅ Selected Active status");
-	    
-	 // Click Plus Button to add products
-	 		Common.waitForElement(2);
-	 		waitFor(plusButton);
-	 		click(plusButton);
-	 		System.out.println("✅ Clicked '+'Plus button");
+	    clickPlusOrResetFlow();
 
         Common.waitForElement(2);
         waitFor(importButton);
@@ -1268,7 +1330,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
         System.out.println("✅ Excel uploaded successfully");
         
       //Clear Catch
-	    Common.waitForElement(2);
+	    Common.waitForElement(4);
 	    waitFor(clearCatchButton);
 	    click(clearCatchButton);
 	    System.out.println("✅ Successfull click Clear Catch Button");
@@ -1345,6 +1407,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             }
         }
 
+        Common.waitForElement(4);
+	    waitFor(clearCatchButton);
+	    click(clearCatchButton);
+	    System.out.println("✅ Successfull click Clear Catch Button");
         // ✅ Step 3: Switch to User App
         HomePage home = new HomePage(driver);
 		home.homeLaunch();
@@ -1379,6 +1445,21 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             productElement.click();
 
             System.out.println("✅ Product found in User App: " + productColorName);
+         // ✅ SPECIAL TIMER CHECK
+            try {
+                WebElement specialTimer = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[@id='prodTimer' and contains(@class,'prod_category_timer')]")
+                ));
+
+                if (specialTimer.isDisplayed()) {
+                    System.out.println("⏳ Special Timer is displayed on Product Detail Page.");
+                } else {
+                    throw new RuntimeException("❌ Special Timer element is present but NOT visible.");
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("❌ Special Timer is NOT displayed on Product Detail Page!", e);
+            }
 
             // ✅ Verify price details
             try {
