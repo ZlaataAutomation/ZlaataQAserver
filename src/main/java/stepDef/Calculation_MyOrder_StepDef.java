@@ -45,6 +45,23 @@ public class Calculation_MyOrder_StepDef {
 			}
 
 
+//TC-04
+		@Given("user adds a product priced less than the admin panel price-check value, the system should display the shipping charge.")
+		public void user_adds_a_product_priced_less_than_the_admin_panel_price_check_value_the_system_should_display_the_shipping_charge() throws InterruptedException {
+			calculation.verifyAccessoriesProductsShippingChargesAndMyOrderPage();
+		}
+
+		@When("the user adds a product priced more than the admin panel price-check value, the system should not display the shipping charge, and the gift card should also be applied.")
+		public void the_user_adds_a_product_priced_more_than_the_admin_panel_price_check_value_the_system_should_not_display_the_shipping_charge_and_the_gift_card_should_also_be_applied() {
+		   
+		}
+
+@Given("user adds a product priced less than the admin panel price-check value, the system should display the shipping chargeand my order page.")
+			public void user_adds_a_product_priced_less_than_the_admin_panel_price_check_value_the_system_should_display_the_shipping_chargeand_my_order_page() throws InterruptedException {
+	calculation.verifyAccessoriesProductsShippingCharges();
+			}
+
+
 
 
 

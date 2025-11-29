@@ -61,3 +61,29 @@ Scenario Outline: TC_UI_Zlaata_ASP_05 |Verify All product sorting between Admin 
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_ASP_05   | 
+  
+   @Sorting
+  @Stage
+  @Regression
+   @TC_UI_Zlaata_ASP_06
+Scenario Outline: TC_UI_Zlaata_ASP_06 |Verify Search Collection sorting between Admin Panel and User Application.| "<TD_ID>"  
+ Given admin is logged in
+    When I sort the products in a Search Collection
+    Then I should see the same product appear first in the User Application Search Collection 
+
+Examples:  
+  | TD_ID                  |  
+  | TD_UI_Zlaata_ASP_06   | 
+  
+  @Sorting
+  @Stage
+  @Regression
+   @TC_UI_Zlaata_ASP_07
+Scenario Outline: TC_UI_Zlaata_ASP_07 |Verify Search Style sorting between Admin Panel and User Application.| "<TD_ID>"  
+ Given admin is logged in
+    When I sort the products in a Search Style
+    Then I should see the same product appear first in the User Application Search Style 
+
+Examples:  
+  | TD_ID                  |  
+  | TD_UI_Zlaata_ASP_07   | 

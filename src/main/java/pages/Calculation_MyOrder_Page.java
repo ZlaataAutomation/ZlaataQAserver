@@ -19,7 +19,12 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import manager.FileReaderManager;
+
 import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import objectRepo.AdminEmailVerifyOrderFlowObjRepo;
 import objectRepo.Calculation_MyOrder_ObjRepo;
@@ -40,57 +45,91 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
     	LoginPage login = new LoginPage(driver);
 		login.userLogin();
 	}
+	public void deleteAllProductsFromCart() {
+	AdminEmailVerifyOrderFlowPage delete = new AdminEmailVerifyOrderFlowPage(driver);
+	delete.deleteAllProductsFromCart();
+	}
+	
 	public void deleteAllProductFromCart() {
+
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 
 	    // Open cart
 	    driver.findElement(By.xpath("//a[@class='Cls_cart_btn Cls_redirect_restrict']")).click();
 	    Common.waitForElement(1);
 
-	    // STEP 1: Check if cart is empty
+	    System.out.println(YELLOW + "🛒 Checking cart items..." + RESET);
+
+	    // Check if cart is empty
 	    try {
 	        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
-	            System.out.println("🛍️ Cart already empty.");
+	            System.out.println(GREEN + "🛍️ Cart already empty." + RESET);
 	            return;
 	        }
 	    } catch (NoSuchElementException ignored) {}
 
-	    // STEP 2: Delete all products
+	    // Normal product delete locator
+	    By normalDeleteLocator = By.cssSelector(".cp_remove_btn");
+
+	    // Gift card delete locator
+	    By gcDeleteLocator = By.cssSelector(".gc_delete_btn");
+
 	    while (true) {
 
-	        // Find ALL delete icons every time
-	        List<WebElement> deleteBtns = driver.findElements(By.xpath("//div[@title='Delete']"));
+	        // Check if ANY delete buttons exist
+	        List<WebElement> gcDeletes = driver.findElements(gcDeleteLocator);
+	        List<WebElement> normalDeletes = driver.findElements(normalDeleteLocator);
 
-	        if (deleteBtns.isEmpty()) {
-	            System.out.println("✅ No more products to delete.");
+	        if (gcDeletes.isEmpty() && normalDeletes.isEmpty()) {
+	            System.out.println(GREEN + "✅ All items deleted successfully." + RESET);
 	            break;
 	        }
 
-	        // Click the first delete button
-	        WebElement deleteBtn = deleteBtns.get(0);
-	        deleteBtn.click();
-	        System.out.println("🗑️ Deleting product...");
+	        try {
+	            // 1️⃣ Delete gift card FIRST if present
+	            if (!gcDeletes.isEmpty()) {
+	                System.out.println(YELLOW + "🗑️ Deleting Gift Card..." + RESET);
+	                wait.until(ExpectedConditions.elementToBeClickable(gcDeletes.get(0))).click();
+	            }
+	            // 2️⃣ Then delete normal product
+	            else if (!normalDeletes.isEmpty()) {
+	                System.out.println(YELLOW + "🗑️ Deleting Normal Product..." + RESET);
+	                wait.until(ExpectedConditions.elementToBeClickable(normalDeletes.get(0))).click();
+	            }
+
+	        } catch (Exception e) {
+	            System.out.println(RED + "❌ ERROR: Unable to click delete button!" + RESET);
+	            Assert.fail("Delete button click failed.");
+	        }
 
 	        Common.waitForElement(1);
 
-	        // Special handling for Gift Card confirmation
+	        // Handle Gift Card confirmation popup (Optional)
 	        try {
-	            WebElement confirmDeleteBtn = driver.findElement(By.xpath("//button[contains(@class, 'Cls_gc_remove_btn')]"));
-	            if (confirmDeleteBtn.isDisplayed()) {
-	                System.out.println("⚠️ Gift card confirmation detected. Confirming delete...");
-	                confirmDeleteBtn.click();
+	            List<WebElement> popupBtn = driver.findElements(By.cssSelector(".Cls_gc_remove_btn"));
+	            if (!popupBtn.isEmpty() && popupBtn.get(0).isDisplayed()) {
+	                popupBtn.get(0).click();
+	                System.out.println(YELLOW + "⚠️ Gift card delete confirmation clicked." + RESET);
 	            }
-	        } catch (NoSuchElementException ignored) {}
+	        } catch (Exception ignored) {}
 
 	        Common.waitForElement(1);
 	    }
 
-	    // Final confirmation
+	    // Final check
 	    try {
-	        if (driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]")).isDisplayed()) {
-	            System.out.println("🛍️ Cart is now empty.");
+	        WebElement emptyMsg = driver.findElement(By.xpath("//h5[contains(text(),'Your bag is empty')]"));
+	        if (emptyMsg.isDisplayed()) {
+	            System.out.println(GREEN + "🛍️ Cart is EMPTY now." + RESET);
 	        }
-	    } catch (NoSuchElementException e) {
-	        System.out.println("ℹ️ Warning: Empty bag message not found.");
+	    } catch (Exception e) {
+	        System.out.println(RED + "❌ Cart is NOT empty even after delete attempts!" + RESET);
+	        Assert.fail("Cart is not empty!");
 	    }
 	}
 	
@@ -3793,23 +3832,506 @@ public void takeCustomizeProduct() {
 	    System.out.println(LINE);
 	}  
 	
+	int accessoriesLimitAmount;
+	public void copyAccessoriesLimit() {
+
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String BLUE = "\u001B[34m";
+	    String CYAN = "\u001B[36m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+
+	    System.out.println(CYAN + "─────────────────────────────────────────────" + RESET);
+	    System.out.println(BLUE + "🔍 Fetching Accessories Limit Amount..." + RESET);
+
+	    // 1️⃣ Navigate to settings
+	    Common.waitForElement(2);
+	    waitFor(generalSettingsMenu);
+	    click(generalSettingsMenu);
+
+	    Common.waitForElement(2);
+	    waitFor(clickSetKey);
+	    click(clickSetKey);
+
+	    Common.waitForElement(2);
+
+	    // 2️⃣ Search for 'courier_fee_apply'
+	    waitFor(productSearchBox);
+	    click(productSearchBox);
+	    type(productSearchBox, "courier_fee_apply");
+	    productSearchBox.sendKeys(Keys.ENTER);
+
+	    System.out.println(BLUE + "🔍 Searched for 'courier_fee_apply'" + RESET);
+
+	    Common.waitForElement(5);
+//	    waitFor(topSellingEdit);
+//	    click(topSellingEdit);
+//
+//	    System.out.println(GREEN + "✅ Opened edit section" + RESET);
+
+	    // 3️⃣ Now locate the span containing JSON value
+	    WebElement jsonSpan = driver.findElement(By.xpath("//tr[contains(@class,'odd')]/td[2]/span"));
+
+	    String jsonText = jsonSpan.getText().trim();
+	    System.out.println(YELLOW + "📄 Found JSON: " + jsonText + RESET);
+
+	    // 4️⃣ Extract only accessories value using REGEX
+	    Pattern pattern = Pattern.compile("\"accessories\":(\\d+)");
+	    Matcher matcher = pattern.matcher(jsonText);
+
+	    if (matcher.find()) {
+	        accessoriesLimitAmount = Integer.parseInt(matcher.group(1));
+	        System.out.println(GREEN + "✅ Accessories Limit Amount = " + accessoriesLimitAmount + RESET);
+	    } else {
+	        System.out.println(RED + "❌ ERROR: Could not find accessories limit in JSON!" + RESET);
+	        Assert.fail("Accessories limit not found in courier_fee_apply value!");
+	    }
+
+	    System.out.println(CYAN + "─────────────────────────────────────────────" + RESET);
+	}
+
+	
+	public void takeAccessoriesProduct() {
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String CYAN = "\u001B[36m";
+	    String line = "──────────────────────────────────────────────────────────────";
+	    String productName = Common.getValueFromTestDataMap("ProductListingName");
+	    
+	    // Home
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(homeBtn)).click();
+	    System.out.println(GREEN + "🏠 Successfully navigated to Home page" + RESET);
+	    Common.waitForElement(2);
+	    try {
+	        System.out.println(CYAN + line + RESET);
+	        System.out.println(GREEN + "🛒 Selecting Accessories Product..." + RESET);
+	        System.out.println(CYAN + line + RESET);
+	        
+	        System.out.println(YELLOW + "🔍 Searching for Accessories: " + productName + RESET);
+		    wait.until(ExpectedConditions.elementToBeClickable(userSearchBox));
+		   // userSearchBox.click();
+		    userSearchBox.clear();
+		    userSearchBox.sendKeys(productName);
+		    userSearchBox.sendKeys(Keys.ENTER);
+		    Common.waitForElement(2);
+
+	        // ▌1️⃣ Click product from listing
+	        System.out.println(YELLOW + "👉 Clicking product: " + productName + RESET);
+	        WebElement productElement = wait.until(
+	                ExpectedConditions.elementToBeClickable(By.xpath(".//h2[@class='product_list_cards_heading']"))
+	        );
+	        Common.waitForElement(1);
+	     // Scroll into view
+	        ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({block: 'center'});", productElement
+	        );
+
+	        // JS Click → 100% no interception
+	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productElement);
+
+//	        productElement.click();
+	         
+	        Common.waitForElement(1);
+	        // ▌5️⃣ Click ADD TO CART
+	        System.out.println(YELLOW + "🛍️ Adding product to cart..." + RESET);
+	        WebElement addToCartBtn = wait.until(
+	                ExpectedConditions.elementToBeClickable(By.xpath("(//button[contains(text(),'Add to')])[1]"))
+	        );
+	     // Scroll into view
+	        ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({block: 'center'});", addToCartBtn
+	        );
+
+	        // JS Click → 100% no interception
+	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", addToCartBtn);
+	       
+
+	        System.out.println(GREEN + "✅ Product added to cart successfully!" + RESET);
+	        System.out.println(CYAN + line + RESET);
+
+	    } catch (Exception e) {
+	        System.out.println(RED + "❌ Failed during Custom Size Add-to-Cart flow: " + e.getMessage() + RESET);
+	    }
+	}
 	
 	
-	
-	
-	
-	
-	
-	
+	public void validateShippingCharges() {
+
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    
+	 // Open cart
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
+	    click(clickCartBtn);
+	    System.out.println(  "🛒 Opened Cart" );
 
 
+	    // 1️⃣ Read Total MRP
+	    WebElement totalMrpElement = driver.findElement(By.cssSelector(".Cls_cart_total_mrp"));
+	    int totalMRP = Integer.parseInt(totalMrpElement.getAttribute("data-total_mrp"));
 
+	    System.out.println(YELLOW + "📌 Total MRP = " + totalMRP + RESET);
+	    System.out.println(YELLOW + "📌 Accessories Limit Amount = " + accessoriesLimitAmount + RESET);
+
+	    // 2️⃣ Condition
+	    if (totalMRP < accessoriesLimitAmount) {
+
+	        System.out.println(YELLOW + "➡ Total MRP is LESS than limit → Shipping must be 99" + RESET);
+
+	        WebElement shippingElement = driver.findElement(By.cssSelector(".Cls_convency_fee_extra"));
+
+	        int shippingCharge = Integer.parseInt(shippingElement.getAttribute("data-extra_charge"));
+
+	        if (shippingCharge == 99) {
+	            System.out.println(GREEN + "🟢 PASS: Shipping charge is correctly 99" + RESET);
+	        } else {
+	            System.out.println(RED + "❌ FAIL: Expected Shipping = 99, but found = " + shippingCharge + RESET);
+	            Assert.fail("Expected Shipping Charge 99 but found " + shippingCharge);
+	        }
+
+	    } else {
+
+	        System.out.println(YELLOW + "➡ Total MRP is GREATER or EQUAL to limit → Shipping must NOT be displayed" + RESET);
+
+	        List<WebElement> extraShipping = driver.findElements(By.cssSelector(".Cls_convency_fee_extra"));
+
+	        if (extraShipping.size() == 0 || !extraShipping.get(0).isDisplayed()) {
+	            System.out.println(GREEN + "🟢 PASS: Shipping 99 is correctly hidden" + RESET);
+	        } else {
+	            System.out.println(RED + "❌ FAIL: Shipping 99 is VISIBLE but should be hidden!" + RESET);
+	            Assert.fail("Shipping Charge 99 is visible but it should be hidden.");
+	        }
+	    }
+
+	}
+	
+	public void increaseQuantityUntilLimitAndValidate() {
+
+	    // ANSI COLORS
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String CYAN = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+	 // Open cart
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
+	    click(clickCartBtn);
+	    System.out.println(  "🛒 Opened Cart" );
+	    Common.waitForElement(2);
+	    // LOCATORS
+	    By increaseBtn = By.cssSelector(".cp_quantity_increase_btn");
+	    By totalMrpLocator = By.cssSelector(".Cls_cart_total_mrp");
+	    By shippingChargeLocator = By.cssSelector(".checkout_shipping_charge");
+
+	    int totalMRP = 0;
+
+	    System.out.println(CYAN + "---------------- Increasing Quantity Until Limit ----------------" + RESET);
+
+	    while (true) {
+
+	        WebElement totalMrpElement = wait.until(
+	                ExpectedConditions.visibilityOfElementLocated(totalMrpLocator));
+
+	        String totalText = totalMrpElement.getText().replaceAll("[^0-9]", "");
+	        totalMRP = Integer.parseInt(totalText);
+
+	        System.out.println(YELLOW + "Current Total MRP: " + totalMRP + RESET);
+
+	        if (totalMRP > accessoriesLimitAmount) {
+	            System.out.println(GREEN + "✔ Limit reached! Total MRP > " + accessoriesLimitAmount + RESET);
+	            break;
+	        }
+
+	        WebElement plusBtn = wait.until(ExpectedConditions.elementToBeClickable(increaseBtn));
+	        plusBtn.click();
+
+	        System.out.println(CYAN + "➕ Increased quantity..." + RESET);
+
+	        Common.waitForElement(1);
+	    }
+
+	    System.out.println(CYAN + "---------------- Checking Shipping Charge ----------------" + RESET);
+
+	    try {
+	        WebElement shipping = driver.findElement(shippingChargeLocator);
+
+	        if (shipping.isDisplayed()) {
+	            System.out.println(RED 
+	                + "❌ FAIL: Shipping charge is still VISIBLE!" + RESET);
+	            System.out.println(RED 
+	                + "❌ ERROR: Shipping charge should disappear after MRP > limit." 
+	                + RESET);
+	         // 🔥 HARD TEST FAILURE
+	            Assert.fail("Shipping charge is visible but should NOT be!");
+	        }
+
+	    } catch (NoSuchElementException e) {
+	        System.out.println(GREEN + "✔ PASS: Shipping charge removed successfully!" + RESET);
+	    }
+
+	    System.out.println(CYAN + "---------------------------------------------------------" + RESET);
+	}
+	
+	public void adminLoginApp() {
+		 driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
+	        type(adminEmail, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminName"));
+	        type(adminPassword, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminPassword"));
+	        click(adminLogin);
+	        System.out.println( "✅ Admin Login Successful" );
+
+	    
+	}
+	
+	public void validateRazorpayAccessories() {
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+	    String CYAN = "\u001B[36m";
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String LINE = "────────────────────────────────────────────";
+
+	    // Scroll into view
+	    ((JavascriptExecutor) driver).executeScript(
+	        "arguments[0].scrollIntoView({block: 'center'});", placeOrderBtn
+	    );
+
+	    // JS click
+	    ((JavascriptExecutor) driver).executeScript("arguments[0].click();", placeOrderBtn);
+	    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
+
+	    Common.waitForElement(4);
+
+	    // Switch to Razorpay iframe
+	    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
+	        By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
+	    ));
+	    System.out.println(GREEN + "✅ Switched to Razorpay iframe" + RESET);
+
+	    // Click summary
+	    wait.until(ExpectedConditions.elementToBeClickable(
+	        By.xpath("//button[@data-testid='order-summary-widget-multiple']"))
+	    ).click();
+
+	    System.out.println(GREEN + "✅ Expanded Summary Section" + RESET);
+	    Common.waitForElement(2);
+
+	    System.out.println(CYAN + LINE + RESET);
+	    System.out.println(CYAN + "📦 Reading Razorpay Summary Details..." + RESET);
+
+	    // =====================================================================================
+	    // 1️⃣ PRODUCT AMOUNT
+	    // =====================================================================================
+	    int productAmount = 0;
+
+	    try {
+	        WebElement productAmountElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("(//div[@data-testid='summary-line-item'])[1]//span[contains(text(),'₹')]")
+	            )
+	        );
+
+	        productAmount = Integer.parseInt(
+	                productAmountElement.getText().replaceAll("[^0-9]", "")
+	        );
+
+	        System.out.println(GREEN + "🟩 Product Amount: " + productAmount + RESET);
+
+	    } catch (Exception e) {
+	        Assert.fail("❌ Product amount not found in Razorpay summary!");
+	    }
+
+	    // =====================================================================================
+	    // 2️⃣ SHIPPING CHARGE (STRICT — MUST BE DISPLAYED)
+	    // =====================================================================================
+	    int shippingCharge = 0;
+
+	    try {
+	        WebElement shippingElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//p[contains(text(),'Shipping Charges')]/../../div[last()]//span[contains(text(),'₹')]")
+	            )
+	        );
+
+	        String shippingText = shippingElement.getText().replaceAll("[^0-9]", "");
+	        shippingCharge = Integer.parseInt(shippingText);
+
+	        System.out.println(GREEN + "🟩 Shipping Charge: " + shippingCharge + RESET);
+
+	        // STRICT VALIDATION
+	        if (shippingCharge != 99) {
+	            Assert.fail("❌ Shipping charge is NOT 99! Found: " + shippingCharge);
+	        }
+
+	    } catch (Exception e) {
+	        Assert.fail("❌ Shipping charge is NOT displayed (Expected: ₹99)");
+	    }
+
+	    // =====================================================================================
+	    // 3️⃣ TOTAL AMOUNT VERIFICATION
+	    // =====================================================================================
+	    int displayedTotal = 0;
+
+	    try {
+	        WebElement totalElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//span[text()='Grand Total']/following-sibling::span")
+	            )
+	        );
+
+	        displayedTotal = Integer.parseInt(
+	                totalElement.getText().replaceAll("[^0-9]", "")
+	        );
+
+	        System.out.println(GREEN + "🟩 Displayed Total: " + displayedTotal + RESET);
+
+	    } catch (Exception e) {
+	        Assert.fail("❌ Total amount not found in Razorpay summary!");
+	    }
+
+	    // Expected
+	    int expectedTotal = productAmount + shippingCharge;
+
+	    System.out.println(YELLOW + "🔢 Calculated Expected Total = Product(" 
+	                       + productAmount + ") + Shipping(" + shippingCharge + ") = " 
+	                       + expectedTotal + RESET);
+
+	    // Final Validation
+	    if (displayedTotal != expectedTotal) {
+	        Assert.fail("❌ Total mismatch! Expected: " + expectedTotal + " | Found: " + displayedTotal);
+	    }
+
+	    System.out.println(GREEN + "✅ Total Amount Verified Successfully!" + RESET);
+	    System.out.println(CYAN + LINE + RESET);
+	}
+	
+	
+	public void validateAccessoriesOrderSummaryPage() {
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+
+	    String GREEN = "\u001B[32m";
+	    String RED = "\u001B[31m";
+	    String YELLOW = "\u001B[33m";
+	    String RESET = "\u001B[0m";
+
+	    System.out.println(YELLOW + "📘 Validating Order Summary Page..." + RESET);
+
+	    // =======================
+	    // 1️⃣ PAYABLE AMOUNT
+	    // =======================
+	    int payableAmount = 0;
+	    try {
+	        WebElement payableAmountEle = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.cssSelector(".prod_order_amount_value")
+	            )
+	        );
+
+	        payableAmount = Integer.parseInt(
+	                payableAmountEle.getText().replaceAll("[^0-9]", "")
+	        );
+
+	        System.out.println(GREEN + "✔ Payable Amount: " + payableAmount + RESET);
+	    } catch (Exception e) {
+	        Assert.fail("❌ Payable Amount NOT FOUND on Order Summary Page");
+	    }
+
+	    // =======================
+	    // 2️⃣ SHIPPING CHARGES (STRICT = MUST BE ₹99)
+	    // =======================
+	    int shippingCharge = 0;
+	    try {
+	        WebElement shippingEle = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//div[text()=' Shipping Charges ']/parent::td/following-sibling::td/div")
+	            )
+	        );
+
+	        shippingCharge = Integer.parseInt(
+	                shippingEle.getText().replaceAll("[^0-9]", "")
+	        );
+
+	        System.out.println(GREEN + "✔ Shipping Charge: " + shippingCharge + RESET);
+
+	        if (shippingCharge != 99) {
+	            Assert.fail("❌ Shipping Charge is NOT ₹99 (Found: " + shippingCharge + ")");
+	        }
+
+	    } catch (Exception e) {
+	        Assert.fail("❌ Shipping Charge section NOT DISPLAYED (Expected: ₹99)");
+	    }
+
+	    // =======================
+	    // 3️⃣ TOTAL ORDER VALUE
+	    // =======================
+	    int totalOrderValue = 0;
+	    try {
+	        WebElement totalEle = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//div[text()=' Total Order Value ']/parent::td/following-sibling::td/div")
+	            )
+	        );
+
+	        totalOrderValue = Integer.parseInt(
+	                totalEle.getText().replaceAll("[^0-9]", "")
+	        );
+
+	        System.out.println(GREEN + "✔ Total Order Value: " + totalOrderValue + RESET);
+
+	    } catch (Exception e) {
+	        Assert.fail("❌ Total Order Value NOT FOUND on Order Summary Page");
+	    }
+
+	    // =======================
+	    // 4️⃣ FINAL VALIDATION
+	    // =======================
+	    int expectedTotal = payableAmount + shippingCharge;
+
+	    System.out.println(YELLOW +
+	            "🔢 Expected Total = Payable(" + payableAmount + ") + Shipping(" + shippingCharge + ") = " + expectedTotal
+	            + RESET);
+
+	    if (totalOrderValue != expectedTotal) {
+	        Assert.fail("❌ TOTAL ORDER VALUE MISMATCH! Expected: " + expectedTotal + " | Found: " + totalOrderValue);
+	    }
+
+	    System.out.println(GREEN + "🎉 All Order Summary Calculations Verified Successfully!" + RESET);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 //TC-01 For one Product	
 	public void verify_P1_With_GW_C_GC_GA_T() throws InterruptedException {
 		
 		userLoginApp();
 		
-		deleteAllProductFromCart();
+//		deleteAllProductFromCart();
+		
+		deleteAllProductsFromCart();
 		
 		takeRandomProductFromAll();
 		
@@ -3839,7 +4361,9 @@ public void takeCustomizeProduct() {
 		
         userLoginApp();
 		
-		deleteAllProductFromCart();
+//		deleteAllProductFromCart();
+		
+		deleteAllProductsFromCart();
 		
 		takeRandomProductFromAll();
 		
@@ -3899,7 +4423,9 @@ public void takeCustomizeProduct() {
 			
 	        userLoginApp();
 			
-			deleteAllProductFromCart();
+//			deleteAllProductFromCart();
+			
+			deleteAllProductsFromCart();
 			
 			takeRandomProductFromAll();
 			
@@ -3975,8 +4501,63 @@ public void takeCustomizeProduct() {
 		}
 	
 	
-	
-	
+//TC-04 For Accessories product checking shipping charge.	
+	public void verifyAccessoriesProductsShippingCharges() throws InterruptedException{
+		adminLoginApp();
+		
+		copyAccessoriesLimit();
+		
+		userLoginApp();
+		
+//		deleteAllProductFromCart();
+		
+		deleteAllProductsFromCart();
+		
+		takeAccessoriesProduct();
+		
+		validateShippingCharges();
+		
+		validateRazorpayAccessories();
+		
+		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		
+		increaseQuantityUntilLimitAndValidate();
+		
+		deleteAllProductsFromCart();
+		
+		addGiftCardInCart();
+		
+		takeAccessoriesProduct();
+		
+		validateShippingCharges();
+		
+		validateRazorpayAccessories();
+		
+					
+	}
+					
+	//TC-05 For Accessories product checking shipping charge.	
+		public void verifyAccessoriesProductsShippingChargesAndMyOrderPage() throws InterruptedException{
+			adminLoginApp();
+			
+			copyAccessoriesLimit();
+			
+			userLoginApp();
+			
+//			deleteAllProductFromCart();
+			
+			deleteAllProductsFromCart();
+			
+			takeAccessoriesProduct();
+			
+			validateShippingCharges();
+			
+			validateRazorpayAccessories();
+			
+			placeOrderAndCheckOrderConfirmation();
+			
+			validateAccessoriesOrderSummaryPage();		
+		}
 	
 	
 	

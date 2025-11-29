@@ -69,9 +69,30 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
    	@FindBy(xpath = "//input[@id='search_input']")
 	protected WebElement userSearchBox;
     
+    @FindBy(xpath = "//i[@class='bi bi-gear']") 
+    protected  WebElement generalSettingsMenu;
     
+    @FindBy(xpath = "//i[@class='las la-edit']")
+    protected  WebElement topSellingEdit;
+    
+    @FindBy(xpath = "//a[normalize-space()='Set Key']") 
+    protected WebElement clickSetKey;
+    
+    @FindBy(xpath = "(//input[@role='searchbox'])[1]") 
+    protected WebElement productSearchBox;
+    
+    @FindBy(xpath = "//i[@class='las la-edit']")
+    protected WebElement editProductButton;
     
 	
+   	@FindBy(name = "email")
+	protected WebElement adminEmail;
+	
+	@FindBy(id = "password")
+	protected WebElement adminPassword;
+	
+	@FindBy(xpath = "//button[@type='submit']")
+	protected WebElement adminLogin;
 	
 	
 	

@@ -92,7 +92,7 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "//button[normalize-space()='View Coupons']")
 	protected WebElement viewCoupon;
    	
-   	@FindBy(xpath = "(//input[@placeholder='Enter Coupon Code'])[2]")
+   	@FindBy(xpath = "//input[@placeholder='Enter Coupon Code']")
 	protected WebElement searchBox;
   
    	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[2]")
