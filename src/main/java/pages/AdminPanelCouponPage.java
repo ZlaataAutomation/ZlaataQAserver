@@ -764,6 +764,144 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	}
 	    
 	    
+	//TC-04
+	//Specific Product Item
+		    public void verifySpecificProductItemCoupon1() throws InterruptedException {
+
+		    	Common.waitForElement(4);
+			    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+			    System.out.println("✅ Successfull redirect to Adimn Coupon page");
+			    Common.waitForElement(2);
+			  // ✅ Step 1: Click on "Add Coupon" button
+			    wait.until(ExpectedConditions.elementToBeClickable(addCouponButton));
+			    click(addCouponButton);
+		        // ✅ Step 2: Generate a unique random coupon name
+		         int randomNum = (int) (Math.random() * 10000); // creates 0–9999
+		        couponName = "Specific100Flat" + randomNum;
+
+		        // ✅ Step 3: Enter Title
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(titleBox));
+		        titleBox.clear();
+		        titleBox.sendKeys(couponName);
+		        System.out.println("Title: " + couponName);
+		        // ✅ Step 4: Enter Coupon Code
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(codeBox));
+		        codeBox.clear();
+		        codeBox.sendKeys(couponName);
+		        System.out.println("Coupon Code: " + couponName);
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(shortDesriptionBox));
+		        shortDesriptionBox.clear();
+		        shortDesriptionBox.sendKeys("Applicable only Specific Product above ₹499");
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(maxDiscountBox));
+		        maxDiscountBox.clear();
+		        maxDiscountBox.sendKeys("100");
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(maxUsageLimitBox));
+		        maxUsageLimitBox.clear();
+		        maxUsageLimitBox.sendKeys("1");
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(percentageBox));
+		        percentageBox.clear();
+		        percentageBox.sendKeys("10");
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(minimumPurchaseBox));
+		        minimumPurchaseBox.clear();
+		        minimumPurchaseBox.sendKeys("499");
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(isAlwaysBtn));
+		        isAlwaysBtn.click();
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(statusBtn));
+		        statusBtn.click();
+		        // Select  Specific Product Item  Coupon
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBtn));
+			    click(couponTypeBtn); 
+			    Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBox));
+		        couponTypeBox.clear();
+		        type(couponTypeBox, "Specific" + Keys.ENTER);
+			    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+			 // Select  Specific Product Item  Coupon
+		        Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(menuBtn));
+			    click(menuBtn); 
+			    Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(menuBtn));
+		        menuBtn.clear();
+		        type(menuBtn, "Product Item" + Keys.ENTER);
+			    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+			    Common.waitForElement(3);
+			    wait.until(ExpectedConditions.elementToBeClickable(productBox));
+			    click(productBox); 
+			    Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(productBox));
+		        waitFor(productBox);
+			    type(productBox, "Test by Auto1");
+			    Common.waitForElement(2);
+			    productBox.sendKeys(Keys.ENTER);
+			    wait.until(ExpectedConditions.elementToBeClickable(productBox));
+			    click(productBox); 
+			    Common.waitForElement(2);
+		        wait.until(ExpectedConditions.elementToBeClickable(productBox));
+		        waitFor(productBox);
+			    type(productBox, "Test by Auto2");
+			    Common.waitForElement(2);
+			    productBox.sendKeys(Keys.ENTER);
+			    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
+			    Common.waitForElement(3);
+			     wait.until(ExpectedConditions.elementToBeClickable(saveAndBackButton));
+			    click(saveAndBackButton); 
+		        System.out.println("Created coupon: " + couponName);
+		        Common.waitForElement(2);
+			    waitFor(clearCatchButton);
+			    click(clearCatchButton);
+			    System.out.println("✅ Successfull click Clear Catch Button");
+			    Common.waitForElement(2);
+		      
+		    
+		}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	    
 	    
 	    
