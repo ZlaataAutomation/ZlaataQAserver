@@ -36,7 +36,7 @@
 <a href="#"><span class="badge badge-primary">Zlaata_Automation_Reports</span></a>
 </li>
 <li class="m-r-10">
-<a href="#"><span class="badge badge-primary">Nov 21, 2025 12:17:17 PM</span></a>
+<a href="#"><span class="badge badge-primary">Nov 29, 2025 04:14:24 PM</span></a>
 </li>
 </ul>
 </div>
@@ -58,6 +58,11 @@
 <span class="ico"><i class="fa fa-tag"></i></span>
 </a>
 </li>
+<li class="nav-item dropdown" onclick="toggleView('exception-view')">
+<a id="nav-exception" class="dropdown-toggle" href="#">
+<span class="ico"><i class="fa fa-bug"></i></span>
+</a>
+</li>
 </ul>
 </div>
 </div>      <div class="vcontainer">
@@ -67,25 +72,25 @@
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0">Started</p>
-<h3>Nov 21, 2025 12:17:17 PM</h3>
+<h3>Nov 29, 2025 04:14:24 PM</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0">Ended</p>
-<h3>Nov 21, 2025 12:19:21 PM</h3>
+<h3>Nov 29, 2025 04:24:10 PM</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0 text-pass">Features Passed</p>
-<h3>1</h3>
+<h3>0</h3>
 </div></div>
 </div>
 <div class="col-md-3">
 <div class="card"><div class="card-body">
 <p class="m-b-0 text-fail">Features Failed</p>
-<h3>0</h3>
+<h3>1</h3>
 </div></div>
 </div>
 </div>
@@ -101,12 +106,12 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'>
-<b>1</b> features passed
+<div><small data-tooltip='0%'>
+<b>0</b> features passed
 </small>
 </div>
 <div>
-<small data-tooltip='0%'><b>0</b> features failed,
+<small data-tooltip='100%'><b>1</b> features failed,
 <b>0</b> skipped, <b data-tooltip='0%'>0</b> others
 </small>
 </div>
@@ -124,9 +129,9 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'><b>1</b> scenarios passed</small></div>
+<div><small data-tooltip='20%'><b>1</b> scenarios passed</small></div>
 <div>
-<small data-tooltip='0%'><b>0</b> scenarios failed,
+<small data-tooltip='80%'><b>4</b> scenarios failed,
 <b>0</b> skipped, <b data-tooltip='%'>0</b> others
 </small>
 </div>
@@ -144,10 +149,10 @@
 </div>
 </div>
 <div class="card-footer">
-<div><small data-tooltip='100%'><b>4</b> steps passed</small></div>
+<div><small data-tooltip='46%'><b>6</b> steps passed</small></div>
 <div>
-<small data-tooltip='0%'><b>0</b> steps failed,
-<b>0</b> skipped, <b data-tooltip='%'>0</b> others
+<small data-tooltip='30%'><b>4</b> steps failed,
+<b>3</b> skipped, <b data-tooltip='%'>0</b> others
 </small>
 </div>
 </div>
@@ -163,7 +168,7 @@
 </div></div>
 <script>
 var timeline = {
-"Home Page Banner upload verification admin panel":122.76
+"Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread":585.445
 };
 </script>
 <div class="row">
@@ -173,7 +178,31 @@ var timeline = {
 <div class="card-body pb-0 pt-0"><table class="table table-sm table-bordered">
 <thead><tr class="bg-gray"><th>Name</th><th>Passed</th><th>Failed</th><th>Skipped</th><th>Others</th><th>Passed %</th></tr></thead><tbody>
 <tr>
-<td>@Home</td>
+<td>@TC_UI_Zlaata_Calculate_02</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>@TC_UI_Zlaata_Calculate_05</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0%</td>
+</tr>
+<tr>
+<td>@Calculation</td>
+<td>1</td>
+<td>4</td>
+<td>0</td>
+<td>0</td>
+<td>20%</td>
+</tr>
+<tr>
+<td>@TC_UI_Zlaata_Calculate_01</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
@@ -181,20 +210,20 @@ var timeline = {
 <td>100%</td>
 </tr>
 <tr>
-<td>@Regression</td>
+<td>@TC_UI_Zlaata_Calculate_03</td>
+<td>0</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0</td>
-<td>100%</td>
+<td>0%</td>
 </tr>
 <tr>
-<td>@TC_UI_Zlaata_ADM_07</td>
+<td>@TC_UI_Zlaata_Calculate_04</td>
+<td>0</td>
 <td>1</td>
 <td>0</td>
 <td>0</td>
-<td>0</td>
-<td>100%</td>
+<td>0%</td>
 </tr>
 </tbody>
 </table></div>
@@ -205,21 +234,21 @@ var timeline = {
 <script>
 var statusGroup = {
 parentCount: 5,
-passParent: 1,
-failParent: 0,
+passParent: 0,
+failParent: 1,
 warningParent: 0,
 skipParent: 0,
 childCount: 5,
 passChild: 1,
-failChild: 0,
+failChild: 4,
 warningChild: 0,
 skipChild: 0,
 infoChild: 0,
 grandChildCount: 5,
-passGrandChild: 4,
-failGrandChild: 0,
+passGrandChild: 6,
+failGrandChild: 4,
 warningGrandChild: 0,
-skipGrandChild: 0,
+skipGrandChild: 3,
 infoGrandChild: 0,
 eventsCount: 5,
 };
@@ -233,7 +262,7 @@ eventsCount: 5,
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-exclamation-circle"></i></a>
 <ul id="status-toggle" class="dropdown-menu dropdown-md p-v-0">
-<a class="dropdown-item" status="pass" href="#"><span>Pass</span><span class="status success"></span></a>
+<a class="dropdown-item" status="fail" href="#"><span>Fail</span><span class="status danger"></span></a>
 <div class="dropdown-divider"></div>
 <a status="clear" class="dropdown-item" href="#"><span>Clear</span><span class="pull-right"><i class="fa fa-close"></i></span></a>
 </ul>
@@ -241,31 +270,31 @@ eventsCount: 5,
 <li class="dropdown">
 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-tag"></i></a>
 <ul id="tag-toggle" class="dropdown-menu dropdown-md p-v-0">
-<a class="dropdown-item" href="#">@Home</a><a class="dropdown-item" href="#">@Regression</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_ADM_07</a>
+<a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_02</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_05</a><a class="dropdown-item" href="#">@Calculation</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_01</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_03</a><a class="dropdown-item" href="#">@TC_UI_Zlaata_Calculate_04</a>
 </ul>
 </li>
 </ul>
 </div>    <div class="test-list-wrapper scrollable">
       <ul class="test-list-item">
-        <li class="test-item"  status="pass" test-id="1"
+        <li class="test-item"  status="fail" test-id="1"
           author=""
           tag=""
           device="">
           <div class="test-detail">
-            <p class="name">Home Page Banner upload verification admin panel</p>
+            <p class="name">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread</p>
             <p class="text-sm">
-              <span>12:17:18 PM</span> / <span>00:02:02:760</span>
-              <span class="badge pass-bg log float-right">Pass</span>
+              <span>4:14:25 PM</span> / <span>00:09:45:445</span>
+              <span class="badge fail-bg log float-right">Fail</span>
             </p>
           </div>
           <div class="test-contents d-none">
 <div class="detail-head">
 <div class="p-v-10">
 <div class="info">
-<h5 class="test-status text-pass">Home Page Banner upload verification admin panel</h5>
-<span class='badge badge-success'>11.21.2025 12:17:18 PM</span>
-<span class='badge badge-danger'>11.21.2025 12:19:21 PM</span>
-<span class='badge badge-default'>00:02:02:760</span>
+<h5 class="test-status text-fail">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread</h5>
+<span class='badge badge-success'>11.29.2025 4:14:25 PM</span>
+<span class='badge badge-danger'>11.29.2025 4:24:10 PM</span>
+<span class='badge badge-default'>00:09:45:445</span>
 &middot; <span class='uri-anchor badge badge-default'>#test-id=1</span>
 <span class='badge badge-default pointer float-right ml-1 et'><i class="fa fa-chevron-down"></i></span>
 <span class='badge badge-default pointer float-right ct'><i class="fa fa-chevron-up"></i></span>
@@ -277,34 +306,287 @@ eventsCount: 5,
   <div class="card">
     <div class="card-header" role="tab">
       <div class="card-title">
-        <div class="node" id="2"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "<TD_ID>"</div>
+        <div class="node" id="2"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "<TD_ID>"</div>
       </div>
     </div>
         <div class="scenario_outline collapse">
             <div class="card-body l1">
               <div class="card-header">
                 <div class="card-title outline-child">
-                  <div class="node" id="3"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</div>
+                  <div class="node" id="3"><span class="badge log pass-bg mr-2">Pass</span>TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_01"</div>
                 </div>
               </div>
               <div class="card-body mt-3 collapse">
                   <div class="step pass-bg">
-                    <span>Given admin is logged in</span>
+                    <span>Given User adds Product P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
       <div>
       </div>
                   </div>
                   <div class="step pass-bg">
-                    <span>When I upload the special product excel "Test.xlsx"</span>
+                    <span>When Verify Razorpay popup details and My Orders price breakup after placing the order.</span>
       <div>
       </div>
                   </div>
-                  <div class="step pass-bg">
-                    <span>Then I verify products in Admin panel with "Test.xlsx"</span>
+              </div>
+            </div>
+        </div>
+  </div>
+  <div class="card">
+    <div class="card-header" role="tab">
+      <div class="card-title">
+        <div class="node" id="13"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "<TD_ID>"</div>
+      </div>
+    </div>
+        <div class="scenario_outline ">
+            <div class="card-body l1">
+              <div class="card-header">
+                <div class="card-title outline-child">
+                  <div class="node" id="14"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</div>
+                </div>
+              </div>
+              <div class="card-body mt-3 ">
+                  <div class="step fail-bg">
+                    <span>Given User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
       <div>
+        <textarea disabled class="code-block">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element to be clickable: By.xpath: //button[@data-testid='order-summary-widget-multiple'] (tried for 10 second(s) with 500 milliseconds interval)
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: net.bytebuddy.renamed.java.lang.Object$ByteBuddy$FlRxqnsV
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:65468}, goog:processID: 20124, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:65468/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: 272c25b7eb1f7a38d5cfa43183c7cdcf
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at pages.Calculation_MyOrder_Page.validateRazorpaySummaryCalculation(Calculation_MyOrder_Page.java:818)
+	at pages.Calculation_MyOrder_Page.verify_P1_P2_With_GC_C_GW_GCA_T_E(Calculation_MyOrder_Page.java:4384)
+	at stepDef.Calculation_MyOrder_StepDef.user_adds_product_p1_p2_with_gift_wrap_coupon_gift_card_amount_and_thread(Calculation_MyOrder_StepDef.java:29)
+	at ✽.User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread(file:///C:/Users/Sarojkumar/git/ZlaataQAsever/src/test/resources/features/Calculation_MyOrder/Calculation_MyOrder.feature:17)
+</textarea>
+      
+      </div>
+                  </div>
+                  <div class="step skip-bg">
+                    <span>When Verify Product P1 & P2 checkout page, Razorpay popup details and My Orders price breakup after placing the order.</span>
+      <div>Step skipped
       </div>
                   </div>
                   <div class="step pass-bg">
-                    <span>And verify products from "Test.xlsx" should be visible in user app</span>
+                    <span>stepDef.Hooks.afterScenario(io.cucumber.java.Scenario)</span>
+      <div>❌ Failed to capture screenshot in @After hook: Session ID is null. Using WebDriver after calling quit()?
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:65468}, goog:processID: 20124, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:65468/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+      </div>
+      <div>
+      </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+  </div>
+  <div class="card">
+    <div class="card-header" role="tab">
+      <div class="card-title">
+        <div class="node" id="24"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "<TD_ID>"</div>
+      </div>
+    </div>
+        <div class="scenario_outline ">
+            <div class="card-body l1">
+              <div class="card-header">
+                <div class="card-title outline-child">
+                  <div class="node" id="25"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03"</div>
+                </div>
+              </div>
+              <div class="card-body mt-3 ">
+                  <div class="step fail-bg">
+                    <span>Given User adds Product P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
+      <div>
+        <textarea disabled class="code-block">org.openqa.selenium.TimeoutException: Expected condition failed: waiting for element to be clickable: By.xpath: //div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES'] (tried for 20 second(s) with 500 milliseconds interval)
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: net.bytebuddy.renamed.java.lang.Object$ByteBuddy$1OKnVAtN
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:50858}, goog:processID: 17912, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:50858/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Session ID: e847482c0ec573f8f67dacd517fc6f3d
+	at org.openqa.selenium.support.ui.WebDriverWait.timeoutException(WebDriverWait.java:84)
+	at org.openqa.selenium.support.ui.FluentWait.until(FluentWait.java:228)
+	at pages.Calculation_MyOrder_Page.takeRandomProductFromAll(Calculation_MyOrder_Page.java:148)
+	at pages.Calculation_MyOrder_Page.verify_P1_CP_AP_With_GC_C_GW_GCA_T_E(Calculation_MyOrder_Page.java:4430)
+	at stepDef.Calculation_MyOrder_StepDef.user_adds_product_p1_cp_ap_with_gift_wrap_coupon_gift_card_amount_and_thread(Calculation_MyOrder_StepDef.java:39)
+	at ✽.User adds Product P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread(file:///C:/Users/Sarojkumar/git/ZlaataQAsever/src/test/resources/features/Calculation_MyOrder/Calculation_MyOrder.feature:27)
+</textarea>
+      
+      </div>
+                  </div>
+                  <div class="step skip-bg">
+                    <span>When Verify Product P1 & CP & AP checkout page, Razorpay popup details and My Orders price breakup after placing the order.</span>
+      <div>Step skipped
+      </div>
+                  </div>
+                  <div class="step pass-bg">
+                    <span>stepDef.Hooks.afterScenario(io.cucumber.java.Scenario)</span>
+      <div>❌ Failed to capture screenshot in @After hook: Session ID is null. Using WebDriver after calling quit()?
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:50858}, goog:processID: 17912, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:50858/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+      </div>
+      <div>
+      </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+  </div>
+  <div class="card">
+    <div class="card-header" role="tab">
+      <div class="card-title">
+        <div class="node" id="35"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "<TD_ID>"</div>
+      </div>
+    </div>
+        <div class="scenario_outline ">
+            <div class="card-body l1">
+              <div class="card-header">
+                <div class="card-title outline-child">
+                  <div class="node" id="36"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04"</div>
+                </div>
+              </div>
+              <div class="card-body mt-3 ">
+                  <div class="step fail-bg">
+                    <span>Given user adds a product priced less than the admin panel price-check value, the system should display the shipping charge.</span>
+      <div>
+        <textarea disabled class="code-block">org.openqa.selenium.ElementClickInterceptedException: element click intercepted: Element <a href="/" class="navigation_menu_txt" style="">...</a> is not clickable at point (295, 146). Other element would receive the click: <div class="delete_giftcard_popup popup_containers active">...</div>
+  (Session info: chrome=142.0.7444.176)
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [27460fea7abed16af31ce9eeccb896a5, clickElement {id=f.9E4E306CA19C0ECC75B7D92E8070A154.d.6321A1C2811B3EE7B17378DCEAFB12D9.e.490}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:55997}, goog:processID: 12132, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:55997/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Element: [[ChromeDriver: chrome on windows (27460fea7abed16af31ce9eeccb896a5)] -> xpath: (//a[normalize-space()='Home'])[1]]
+Session ID: 27460fea7abed16af31ce9eeccb896a5
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:215)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:544)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:223)
+	at org.openqa.selenium.remote.RemoteWebElement.click(RemoteWebElement.java:76)
+	at jdk.internal.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.call(WebDriverDecorator.java:315)
+	at org.openqa.selenium.support.decorators.DefaultDecorated.call(DefaultDecorated.java:48)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.lambda$createProxyFactory$3(WebDriverDecorator.java:405)
+	at net.bytebuddy.renamed.java.lang.Object$ByteBuddy$riGop4pX.click(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy50.click(Unknown Source)
+	at pages.Calculation_MyOrder_Page.takeAccessoriesProduct(Calculation_MyOrder_Page.java:3909)
+	at pages.Calculation_MyOrder_Page.verifyAccessoriesProductsShippingChargesAndMyOrderPage(Calculation_MyOrder_Page.java:4551)
+	at stepDef.Calculation_MyOrder_StepDef.user_adds_a_product_priced_less_than_the_admin_panel_price_check_value_the_system_should_display_the_shipping_charge(Calculation_MyOrder_StepDef.java:51)
+	at ✽.user adds a product priced less than the admin panel price-check value, the system should display the shipping charge.(file:///C:/Users/Sarojkumar/git/ZlaataQAsever/src/test/resources/features/Calculation_MyOrder/Calculation_MyOrder.feature:37)
+</textarea>
+      
+      </div>
+                  </div>
+                  <div class="step skip-bg">
+                    <span>When the user adds a product priced more than the admin panel price-check value, the system should not display the shipping charge, and the gift card should also be applied.</span>
+      <div>Step skipped
+      </div>
+                  </div>
+                  <div class="step pass-bg">
+                    <span>stepDef.Hooks.afterScenario(io.cucumber.java.Scenario)</span>
+      <div>❌ Failed to capture screenshot in @After hook: Session ID is null. Using WebDriver after calling quit()?
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:55997}, goog:processID: 12132, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:55997/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+      </div>
+      <div>
+      </div>
+                  </div>
+              </div>
+            </div>
+        </div>
+  </div>
+  <div class="card">
+    <div class="card-header" role="tab">
+      <div class="card-title">
+        <div class="node" id="46"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "<TD_ID>"</div>
+      </div>
+    </div>
+        <div class="scenario_outline ">
+            <div class="card-body l1">
+              <div class="card-header">
+                <div class="card-title outline-child">
+                  <div class="node" id="47"><span class="badge log fail-bg mr-2">Fail</span>TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05"</div>
+                </div>
+              </div>
+              <div class="card-body mt-3 ">
+                  <div class="step fail-bg">
+                    <span>Given user adds a product priced less than the admin panel price-check value, the system should display the shipping chargeand my order page.</span>
+      <div>
+        <textarea disabled class="code-block">org.openqa.selenium.ElementClickInterceptedException: element click intercepted: Element <a href="/" class="navigation_menu_txt" style="">...</a> is not clickable at point (295, 146). Other element would receive the click: <div class="delete_giftcard_popup popup_containers active">...</div>
+  (Session info: chrome=142.0.7444.176)
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [09dc2caa510c615d0f5c8dca50b59b2d, clickElement {id=f.3D0C84628B4F521C529181B02B93CAAC.d.D0A30F723A1BF53FEA710528BBB52850.e.489}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54663}, goog:processID: 4392, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:54663/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+Element: [[ChromeDriver: chrome on windows (09dc2caa510c615d0f5c8dca50b59b2d)] -> xpath: (//a[normalize-space()='Home'])[1]]
+Session ID: 09dc2caa510c615d0f5c8dca50b59b2d
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at java.base/jdk.internal.reflect.NativeConstructorAccessorImpl.newInstance(NativeConstructorAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingConstructorAccessorImpl.newInstance(DelegatingConstructorAccessorImpl.java:45)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:490)
+	at org.openqa.selenium.remote.ErrorCodec.decode(ErrorCodec.java:167)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:138)
+	at org.openqa.selenium.remote.codec.w3c.W3CHttpResponseCodec.decode(W3CHttpResponseCodec.java:50)
+	at org.openqa.selenium.remote.HttpCommandExecutor.execute(HttpCommandExecutor.java:215)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.invokeExecute(DriverCommandExecutor.java:216)
+	at org.openqa.selenium.remote.service.DriverCommandExecutor.execute(DriverCommandExecutor.java:174)
+	at org.openqa.selenium.remote.RemoteWebDriver.execute(RemoteWebDriver.java:544)
+	at org.openqa.selenium.remote.RemoteWebElement.execute(RemoteWebElement.java:223)
+	at org.openqa.selenium.remote.RemoteWebElement.click(RemoteWebElement.java:76)
+	at jdk.internal.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.call(WebDriverDecorator.java:315)
+	at org.openqa.selenium.support.decorators.DefaultDecorated.call(DefaultDecorated.java:48)
+	at org.openqa.selenium.support.decorators.WebDriverDecorator.lambda$createProxyFactory$3(WebDriverDecorator.java:405)
+	at net.bytebuddy.renamed.java.lang.Object$ByteBuddy$q7fvnTrn.click(Unknown Source)
+	at jdk.internal.reflect.GeneratedMethodAccessor92.invoke(Unknown Source)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at org.openqa.selenium.support.pagefactory.internal.LocatingElementHandler.invoke(LocatingElementHandler.java:51)
+	at com.sun.proxy.$Proxy50.click(Unknown Source)
+	at pages.Calculation_MyOrder_Page.takeAccessoriesProduct(Calculation_MyOrder_Page.java:3909)
+	at pages.Calculation_MyOrder_Page.verifyAccessoriesProductsShippingCharges(Calculation_MyOrder_Page.java:4516)
+	at stepDef.Calculation_MyOrder_StepDef.user_adds_a_product_priced_less_than_the_admin_panel_price_check_value_the_system_should_display_the_shipping_chargeand_my_order_page(Calculation_MyOrder_StepDef.java:61)
+	at ✽.user adds a product priced less than the admin panel price-check value, the system should display the shipping chargeand my order page.(file:///C:/Users/Sarojkumar/git/ZlaataQAsever/src/test/resources/features/Calculation_MyOrder/Calculation_MyOrder.feature:47)
+</textarea>
+      
+      </div>
+                  </div>
+                  <div class="step pass-bg">
+                    <span>stepDef.Hooks.afterScenario(io.cucumber.java.Scenario)</span>
+      <div>❌ Failed to capture screenshot in @After hook: Session ID is null. Using WebDriver after calling quit()?
+Build info: version: '4.34.0', revision: '707dcb4246*'
+System info: os.name: 'Windows 11', os.arch: 'amd64', os.version: '10.0', java.version: '11.0.28'
+Driver info: org.openqa.selenium.chrome.ChromeDriver
+Command: [null, screenshot {}]
+Capabilities {acceptInsecureCerts: true, browserName: chrome, browserVersion: 142.0.7444.176, chrome: {chromedriverVersion: 142.0.7444.175 (302067f14a4..., userDataDir: C:\Users\SAROJK~1\AppData\L...}, fedcm:accounts: true, goog:chromeOptions: {debuggerAddress: localhost:54663}, goog:processID: 4392, networkConnectionEnabled: false, pageLoadStrategy: normal, platformName: windows, proxy: Proxy(), se:cdp: ws://localhost:54663/devtoo..., se:cdpVersion: 142.0.7444.176, setWindowRect: true, strictFileInteractability: false, timeouts: {implicit: 0, pageLoad: 300000, script: 30000}, unhandledPromptBehavior: dismiss and notify, webauthn:extension:credBlob: true, webauthn:extension:largeBlob: true, webauthn:extension:minPinLength: true, webauthn:extension:prf: true, webauthn:virtualAuthenticators: true}
+      </div>
       <div>
       </div>
                   </div>
@@ -328,22 +610,96 @@ eventsCount: 5,
 <div class="test-list">
 <div class="test-list-tools">
 <ul class="tools pull-left"><li><a href=""><span class="font-size-14">Category</span></a></li></ul>
-<ul class="tools text-right"><li><a href="#"><span class="badge badge-primary">3</span></a></li></ul>
+<ul class="tools text-right"><li><a href="#"><span class="badge badge-primary">6</span></a></li></ul>
 </div>
 <div class="test-list-wrapper scrollable">
 <ul class="test-list-item">
 <li class="test-item">
 <div class="test-detail">
 <span class="meta">
-<span class='badge log pass-bg'>1</span>
+<span class='badge log badge-danger'>1</span>
 </span>
-<p class="name">@Home</p>
+<p class="name">@TC_UI_Zlaata_Calculate_02</p>
 <p class="duration text-sm">1 tests</p>
 </div>
 <div class="test-contents d-none">
 <div class="info">
-<h4>@Home</h4>
+<h4>@TC_UI_Zlaata_Calculate_02</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:17:56 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='14'>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log badge-danger'>1</span>
+</span>
+<p class="name">@TC_UI_Zlaata_Calculate_05</p>
+<p class="duration text-sm">1 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>@TC_UI_Zlaata_Calculate_05</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:23:35 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='47'>TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05"</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log pass-bg'>1</span>
+<span class='badge log badge-danger'>4</span>
+</span>
+<p class="name">@Calculation</p>
+<p class="duration text-sm">5 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>@Calculation</h4>
 <span status="pass" class='badge log pass-bg'>1 passed</span>
+<span status="fail" class='badge log badge-danger'>4 failed</span>
 </div>
 <table class='table table-sm mt-4'>
 <thead>
@@ -356,11 +712,51 @@ eventsCount: 5,
 <tbody>
 <tr class="tag-test-status" status="pass">
 <td><span class="badge log pass-bg">Pass</span></td>
-<td>12:17:18 PM</td>
+<td>16:14:25 PM</td>
 <td>
-<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</a>
+<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_01"</a>
 <div class="">
-<span class="badge badge-default">Home Page Banner upload verification admin panel.TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</span>
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_01"</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:17:56 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='14'>TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02"</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:21:56 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='25'>TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03"</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:22:45 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='36'>TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04"</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:23:35 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='47'>TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05"</span>
 </div>
 </td>
 </tr>
@@ -373,12 +769,12 @@ eventsCount: 5,
 <span class="meta">
 <span class='badge log pass-bg'>1</span>
 </span>
-<p class="name">@Regression</p>
+<p class="name">@TC_UI_Zlaata_Calculate_01</p>
 <p class="duration text-sm">1 tests</p>
 </div>
 <div class="test-contents d-none">
 <div class="info">
-<h4>@Regression</h4>
+<h4>@TC_UI_Zlaata_Calculate_01</h4>
 <span status="pass" class='badge log pass-bg'>1 passed</span>
 </div>
 <table class='table table-sm mt-4'>
@@ -392,11 +788,11 @@ eventsCount: 5,
 <tbody>
 <tr class="tag-test-status" status="pass">
 <td><span class="badge log pass-bg">Pass</span></td>
-<td>12:17:18 PM</td>
+<td>16:14:25 PM</td>
 <td>
-<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</a>
+<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_01"</a>
 <div class="">
-<span class="badge badge-default">Home Page Banner upload verification admin panel.TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</span>
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_01 |Verify price breakup for P1 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_01"</span>
 </div>
 </td>
 </tr>
@@ -407,15 +803,15 @@ eventsCount: 5,
 <li class="test-item">
 <div class="test-detail">
 <span class="meta">
-<span class='badge log pass-bg'>1</span>
+<span class='badge log badge-danger'>1</span>
 </span>
-<p class="name">@TC_UI_Zlaata_ADM_07</p>
+<p class="name">@TC_UI_Zlaata_Calculate_03</p>
 <p class="duration text-sm">1 tests</p>
 </div>
 <div class="test-contents d-none">
 <div class="info">
-<h4>@TC_UI_Zlaata_ADM_07</h4>
-<span status="pass" class='badge log pass-bg'>1 passed</span>
+<h4>@TC_UI_Zlaata_Calculate_03</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
 </div>
 <table class='table table-sm mt-4'>
 <thead>
@@ -426,13 +822,157 @@ eventsCount: 5,
 </tr>
 </thead>
 <tbody>
-<tr class="tag-test-status" status="pass">
-<td><span class="badge log pass-bg">Pass</span></td>
-<td>12:17:18 PM</td>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:21:56 PM</td>
 <td>
-<a href="#" class="linked" test-id='1' id='3'>TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</a>
+<a href="#" class="linked" test-id='1' id='25'>TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03"</a>
 <div class="">
-<span class="badge badge-default">Home Page Banner upload verification admin panel.TC_UI_Zlaata_ADM_07 |Verify all uploaded Special Timer products appear in Admin and User App.| "TD_UI_Zlaata_ADM_07"</span>
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03"</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log badge-danger'>1</span>
+</span>
+<p class="name">@TC_UI_Zlaata_Calculate_04</p>
+<p class="duration text-sm">1 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>@TC_UI_Zlaata_Calculate_04</h4>
+<span status="fail" class='badge log badge-danger'>1 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:22:45 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='36'>TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04"</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04"</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="test-content scrollable">
+<div class="test-content-detail">
+<div class="detail-body"></div>
+</div>
+</div>
+</div><div class="test-wrapper row view exception-view attributes-view">
+<div class="test-list">
+<div class="test-list-tools">
+<ul class="tools pull-left"><li><a href=""><span class="font-size-14">Exception</span></a></li></ul>
+<ul class="tools text-right"><li><a href="#"><span class="badge badge-primary">2</span></a></li></ul>
+</div>
+<div class="test-list-wrapper scrollable">
+<ul class="test-list-item">
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log badge-danger'>2</span>
+</span>
+<p class="name">org.openqa.selenium.ElementClickInterceptedException</p>
+<p class="duration text-sm">2 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>org.openqa.selenium.ElementClickInterceptedException</h4>
+<span status="fail" class='badge log badge-danger'>2 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:22:49 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='39'>Given user adds a product priced less than the admin panel price-check value, the system should display the shipping charge.</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_04 |Verify price calculation for Acessories product shipping charge with gift card.| "TD_UI_Zlaata_Calculate_04".Given user adds a product priced less than the admin panel price-check value, the system should display the shipping charge.</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:23:36 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='50'>Given user adds a product priced less than the admin panel price-check value, the system should display the shipping chargeand my order page.</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_05 |Verify price calculation for Acessories product shipping charge and my order page.| "TD_UI_Zlaata_Calculate_05".Given user adds a product priced less than the admin panel price-check value, the system should display the shipping chargeand my order page.</span>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</li>
+<li class="test-item">
+<div class="test-detail">
+<span class="meta">
+<span class='badge log badge-danger'>2</span>
+</span>
+<p class="name">org.openqa.selenium.TimeoutException</p>
+<p class="duration text-sm">2 tests</p>
+</div>
+<div class="test-contents d-none">
+<div class="info">
+<h4>org.openqa.selenium.TimeoutException</h4>
+<span status="fail" class='badge log badge-danger'>2 failed</span>
+</div>
+<table class='table table-sm mt-4'>
+<thead>
+<tr>
+<th class="status-col">Status</th>
+<th class="timestamp-col">Timestamp</th>
+<th>TestName</th>
+</tr>
+</thead>
+<tbody>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:18:00 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='17'>Given User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_02 |Verify price breakup for P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_02".Given User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
+</div>
+</td>
+</tr>
+<tr class="tag-test-status" status="fail">
+<td><span class="badge log fail-bg">Fail</span></td>
+<td>16:22:02 PM</td>
+<td>
+<a href="#" class="linked" test-id='1' id='28'>Given User adds Product P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread</a>
+<div class="">
+<span class="badge badge-default">Verify product order with Gift Wrap, Coupon, Gift Card, Gift Card Amount and Thread.TC_UI_Zlaata_Calculate_03 |Verify price breakup for P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread.| "TD_UI_Zlaata_Calculate_03".Given User adds Product P1 & CP & AP with Gift Wrap, Coupon, Gift Card Amount, and Thread</span>
 </div>
 </td>
 </tr>
