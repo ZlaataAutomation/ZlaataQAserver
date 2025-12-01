@@ -40,6 +40,8 @@ public final class ProductDetailsPage extends ProductDetailsPageObjRepo {
 
 		Actions actions = new Actions(driver);
 		actions.moveToElement(shopMenu);
+		actions.moveToElement(category).click().build().perform();
+
 		actions.moveToElement(sortBy).click().build().perform();
 		Common.waitForElement(5);
 		click(sortByPriceHightoLow);

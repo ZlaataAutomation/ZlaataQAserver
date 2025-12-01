@@ -107,26 +107,26 @@ public final class NegativeSignupPages extends SignupObjRepository {
 
 
 	}
-//	public void signUp() throws TimeoutException {
-//		// Open application
-//		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//
-//		// Enter access code and submit
-////		type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-////		click(submit);
-//		Common.waitForElement(2);
-//		// Open profile and signup
-//		click(profile);
-//		click(signupButton);
-//		// Enter name
-//		type(name, FileReaderManager.getInstance().getJsonReader().getValueFromJson("UserName"));
-//		// Try entering phone number, retry once if validation fails
-//		userNumber();
-//		click(continueButton);
-//		otp.sendKeys(FileReaderManager.getInstance().getJsonReader().getValueFromJson("OTP"));
-//		click(verify);
-//		System.out.println("✅ OTP entered and verified");
-//	}
+	public void signUp() throws TimeoutException {
+		// Open application
+		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+
+		// Enter access code and submit
+//		type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+//		click(submit);
+		Common.waitForElement(2);
+		// Open profile and signup
+		click(profile);
+		click(signupButton);
+		// Enter name
+		type(name, FileReaderManager.getInstance().getJsonReader().getValueFromJson("UserName"));
+		// Try entering phone number, retry once if validation fails
+		userNumber();
+		click(continueButton);
+		otp.sendKeys(FileReaderManager.getInstance().getJsonReader().getValueFromJson("OTP"));
+		click(verify);
+		System.out.println("✅ OTP entered and verified");
+	}
 
 
 	public void nametxtBoxEmpty() {
