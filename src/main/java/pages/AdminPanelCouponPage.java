@@ -824,7 +824,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 			    Common.waitForElement(2);
 		        wait.until(ExpectedConditions.elementToBeClickable(couponTypeBox));
 		        couponTypeBox.clear();
-		        type(couponTypeBox, "Special Specific" + Keys.ENTER);
+		        type(couponTypeBox, "Specific" + Keys.ENTER);
 			    System.out.println("✅ Successfull Typed Specific Product Item Coupon");
 			 // Select  Specific Product Item  Coupon
 		        Common.waitForElement(2);
