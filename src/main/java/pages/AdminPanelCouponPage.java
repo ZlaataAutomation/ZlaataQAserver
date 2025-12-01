@@ -766,7 +766,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	    
 	//TC-04
 	//Specific Product Item
-		    public void verifySpecificProductItemCoupon() throws InterruptedException {
+		    public void verifySpecificProductItemCoupon1() throws InterruptedException {
 
 		    	Common.waitForElement(4);
 			    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
