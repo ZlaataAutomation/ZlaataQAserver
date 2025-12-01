@@ -32,9 +32,9 @@ public final class HomePage extends HomePageObjRepo {
 	}
 	public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-//				click(submit);
-		//popup();
+				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+				click(submit);
+//		popup();
 
 
 	}
@@ -885,6 +885,110 @@ public final class HomePage extends HomePageObjRepo {
 
 
 
+	
+	
+	
+	
+	
+	
+	//Mouse Over Product
+	
+	 public void mouseoverTopSelling() {
+		 driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+	        // you probably already launch the homepage in @Given step
+	        Actions action = new Actions(driver);
+	        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+	        try {
+	            // ✅ Wait for & scroll into the Top Selling section
+	            WebElement topSellingSection = wait.until(
+	                    ExpectedConditions.presenceOfElementLocated(
+	                            By.cssSelector(".top_selling_container"))
+	            );
+	            ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", topSellingSection);
+	            Thread.sleep(2000);
+
+	            // ✅ Locators
+	            By productCardLocator = By.xpath("//div[contains(@class,'top_selling')]//div[contains(@class,'products_cards')]");
+	            By nextButtonLocator = By.xpath("//*[@class='swiper-button-next top_selling_swiper_next']");
+
+	            int productIndex = 1;
+	            Set<String> visited = new HashSet<>();
+
+	            while (true) {
+	                // Find all product cards currently in DOM
+	                List<WebElement> products = driver.findElements(productCardLocator);
+	                if (products.isEmpty()) {
+	                    Assert.fail("❌ No product cards found in Top Selling section!");
+	                }
+
+	                for (WebElement product : products) {
+	                    // get unique index for this product
+	                    String prodId = product.getAttribute("data-swiper-slide-index");
+	                    if (prodId == null) {
+	                        prodId = String.valueOf(product.hashCode());
+	                    }
+	                    if (visited.contains(prodId)) continue;
+
+	                    try {
+	                        // get main & hover image elements
+	                        WebElement mainImg = product.findElement(By.cssSelector(".prod_main_img img"));
+	                        WebElement hoverImg = product.findElement(By.cssSelector(".prod_hover_img img"));
+
+	                        // scroll & hover
+	                        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", product);
+	                        action.moveToElement(product).perform();
+	                        Thread.sleep(1200);
+
+	                        boolean hoverDisplayed = hoverImg.isDisplayed()
+	                                && hoverImg.getAttribute("src") != null
+	                                && !hoverImg.getAttribute("src").contains("placeholder-img");
+
+	                        if (hoverDisplayed) {
+	                            System.out.println("✅ Hover image displayed for product " + productIndex +
+	                                    ": " + hoverImg.getAttribute("src"));
+	                        } else {
+	                            System.out.println("❌ Hover image NOT displayed for product " + productIndex);
+	                            Assert.fail("Hover image not visible for product " + productIndex);
+	                        }
+
+	                    } catch (NoSuchElementException nse) {
+	                        System.out.println("⚠️ Product " + productIndex + " is missing expected image elements.");
+	                        Assert.fail("Main or hover image missing for product " + productIndex);
+	                    } catch (Exception ex) {
+	                        System.out.println("⚠️ Error verifying product " + productIndex + ": " + ex.getMessage());
+	                        Assert.fail("Unexpected error for product " + productIndex);
+	                    }
+
+	                    visited.add(prodId);
+	                    productIndex++;
+	                }
+
+	                // ✅ Pagination – click Next button if available
+	                try {
+	                    WebElement nextBtn = driver.findElement(nextButtonLocator);
+	                    if (nextBtn.isDisplayed() && nextBtn.isEnabled()) {
+	                        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", nextBtn);
+	                        Thread.sleep(1500);
+	                    } else {
+	                        break; // no more next button
+	                    }
+	                } catch (Exception e) {
+	                    break; // next button not present
+	                }
+	            }
+
+	            System.out.println("🎯 Total products verified: " + visited.size());
+
+	            if (visited.isEmpty()) {
+	                Assert.fail("❌ No products were verified in Top Selling section!");
+	            }
+
+	        } catch (Exception e) {
+	            System.out.println("Caught an exception: " + e.getMessage());
+	            throw new NoSuchElementException("Top Selling hover verification failed");
+	        }
+	    }
 
 
 

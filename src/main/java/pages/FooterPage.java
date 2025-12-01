@@ -239,7 +239,9 @@ public  final class FooterPage  extends FooterObjRepo{
 	}
 	
 	public void footerSubscribe() {
-		scrollUsingJSWindow();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
+		js.executeScript("window.scrollTo(0, 4500);");
 		Common.waitForElement(1);
 		click(mailId);
 		Common.waitForElement(1);
@@ -254,7 +256,9 @@ public  final class FooterPage  extends FooterObjRepo{
 	}
 	
 	public void footerSubscribeAlready() {
-		scrollUsingJSWindow();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
+		js.executeScript("window.scrollTo(0, 4500);");
 		Common.waitForElement(1);
 		click(mailId);
 		Common.waitForElement(1);
@@ -266,7 +270,9 @@ public  final class FooterPage  extends FooterObjRepo{
         System.out.println("\u001B[32m✅ SUCCESS: Validation Message = " + actualMessage + "\u001B[0m");
 	}
 	public void invalidMail() {
-		scrollUsingJSWindow();
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
+		js.executeScript("window.scrollTo(0, 4500);");
 		Common.waitForElement(1);
 		click(mailId);
 		Common.waitForElement(1);

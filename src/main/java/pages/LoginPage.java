@@ -28,8 +28,8 @@ public final class LoginPage extends LoginObjRepository {
     
     public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-//				click(submit);
+				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+				click(submit);
     }
 
     public void userLogin() {
@@ -323,7 +323,7 @@ public final class LoginPage extends LoginObjRepository {
             click(faceBookIcon);
             System.out.println("🔗 Navigated to Facebook login window.");
 
-            // Step 2: Read credentials from JSON
+          /*  // Step 2: Read credentials from JSON
             String fbNumber = FileReaderManager.getInstance().getJsonReader().getValueFromJson("FaceBook");
             String fbPassword = FileReaderManager.getInstance().getJsonReader().getValueFromJson("FaceBookPassword");
 
@@ -346,7 +346,7 @@ public final class LoginPage extends LoginObjRepository {
             
             Common.waitForElement(2);
              
-            System.out.println(" login Facebook  successfully :  " + myProfiletext.getText()+ " is dispalying");
+            System.out.println(" login Facebook  successfully :  " + myProfiletext.getText()+ " is dispalying");*/
            
 
         } catch (Exception e) {

@@ -104,7 +104,7 @@ public final class CheckoutPage extends CheckOutPageObjRepo{
 		Common.waitForElement(2);
 		performCheckoutCalculationAndExcelLog("After Decrease");
 
-		// 5️⃣ Save Excel report at end
+		// 5️ Save Excel report at end
 		ExcelReportUtil.generateExcelReport();
 	}
 

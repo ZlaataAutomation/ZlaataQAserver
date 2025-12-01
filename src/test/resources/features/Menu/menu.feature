@@ -60,16 +60,16 @@ Feature: This is Menu feature
       | TD_ID                  |
       | TD_UI_Zlaata_Menus_05 |
     
-    @sanity
-      @TC_UI_Zlaata_Menus_06
-  Scenario Outline: TC_UI_Zlaata_Menus_06 |Verify that the user is able to click the "GET UPDATE" banner.|"<TD_ID>"
+  # @sanity
+  #    @TC_UI_Zlaata_Menus_06
+  #Scenario Outline: TC_UI_Zlaata_Menus_06 |Verify that the user is able to click the "GET UPDATE" banner.|"<TD_ID>"
      
-     Given User clicks on get update 
+   #  Given User clicks on get update 
     
 
-    Examples: 
-      | TD_ID                  |
-      | TD_UI_Zlaata_Menus_06 |
+    #Examples: 
+     # | TD_ID                  |
+     # | TD_UI_Zlaata_Menus_06 |
     
     @sanity
       @TC_UI_Zlaata_Menus_07

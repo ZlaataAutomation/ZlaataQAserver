@@ -100,7 +100,7 @@ public abstract  class AdminPanelObjRepo extends BasePage {
 	    @FindBy(xpath = "//i[@class='bi bi-gear']") 
 	    protected  WebElement generalSettingsMenu;
 	    
-	    @FindBy(xpath = "(//i[@class='las la-edit'])[2]")
+	    @FindBy(xpath = "//i[@class='las la-edit']")
 	    protected  WebElement topSellingEdit;
 	    
 	    @FindBy(xpath = "//textarea[@name='set_value']") 
@@ -233,7 +233,7 @@ public abstract  class AdminPanelObjRepo extends BasePage {
 		 @FindBy(xpath = "(//div[@class='col-sm-0 col-md-4 text-center'])[1]")
 		 protected WebElement clickBlankSpace;
 
-	    @FindBy(xpath = "//input[@id='search__product']")
+	    @FindBy(xpath = "//input[@id='search_input']")
 	    protected WebElement userSearchBox;
 
 

@@ -43,7 +43,7 @@ public class CouponFunctionality {
 	@And("User should get login popup")
 	public void user_should_get_login_popup() {
 		try {
-			
+
 			coupon.verifyLoginPopupAppears();
 		}
 		catch (Exception e) {
@@ -52,19 +52,17 @@ public class CouponFunctionality {
 		}
 	}
 
-	//2 FeedBack before order
-//	@Given("User is on the checkout page with items in the cart")
-//	public void user_is_on_the_checkout_page_with_items_in_the_cart() throws Exception {
-//		try {
-//			signup.signUp();
-//			coupon.CheckOutNavigation();
-//		}
-//		catch (Exception e) {
-//			ExceptionTracker.capture(e); // Capture the exact exception
-//			throw e; // re-throw so test still fails
-//		}
-//	}
-
+	@Given("User is on the checkout page with items in the cart")
+	public void user_is_on_the_checkout_page_with_items_in_the_cart() throws Exception {
+		try {
+			signup.signUp();
+			coupon.CheckOutNavigation();
+		}
+		catch (Exception e) {
+			ExceptionTracker.capture(e); // Capture the exact exception
+			throw e; // re-throw so test still fails
+		}
+	}
 	@And("User enters the Feedback coupon code")
 	public void user_enters_the_feedback_coupon_code() {
 		try {
@@ -246,17 +244,17 @@ public class CouponFunctionality {
 
 
 	//8th test case
-//	@Given("User adding lowest product to the cart")
-//	public void user_adding_lowest_product_to_the_cart() throws Exception {
-//		try {
-//			signup.signUp();			
-//
-//		}
-//		catch (Exception e) {
-//			ExceptionTracker.capture(e); // Capture the exact exception
-//			throw e; // re-throw so test still fails
-//		}
-//	}
+	//	@Given("User adding lowest product to the cart")
+	//	public void user_adding_lowest_product_to_the_cart() throws Exception {
+	//		try {
+	//			signup.signUp();			
+	//
+	//		}
+	//		catch (Exception e) {
+	//			ExceptionTracker.capture(e); // Capture the exact exception
+	//			throw e; // re-throw so test still fails
+	//		}
+	//	}
 
 
 	@And("User try to apply normal percentage coupon and calculating")
@@ -271,7 +269,7 @@ public class CouponFunctionality {
 	}
 
 
-	//gowtham
+	//gowtham kjhdxz
 
 
 	//14		
@@ -339,12 +337,12 @@ public class CouponFunctionality {
 
 
 
-		@And("user checking apply and remove button")
-		public void user_checking_apply_and_remove_button() {
-			coupon.CouponAppliedValidationMessage();
-			coupon.removeCouponFunctionality("Coupon removed successfully!");
-			coupon.CouponRemovedOrNot();
-		}
+	@And("user checking apply and remove button")
+	public void user_checking_apply_and_remove_button() {
+		coupon.CouponAppliedValidationMessage();
+		coupon.removeCouponFunctionality("Coupon removed successfully!");
+		coupon.CouponRemovedOrNot();
+	}
 
 
 
@@ -411,12 +409,12 @@ public class CouponFunctionality {
 	}
 	//10
 
-//	@Given("User enters a valid Special Coupon code with a percentage discount")
-//	public void user_enters_a_valid_special_coupon_code_with_a_percentage_discount() {
-//
-//		coupon.specialCouponCodeWithPercentageAmount();
-//
-//	}
+	//	@Given("User enters a valid Special Coupon code with a percentage discount")
+	//	public void user_enters_a_valid_special_coupon_code_with_a_percentage_discount() {
+	//
+	//		coupon.specialCouponCodeWithPercentageAmount();
+	//
+	//	}
 
 
 	@Then("Special Coupon with percentage discount should be applied successfully")
@@ -441,6 +439,60 @@ public class CouponFunctionality {
 		coupon.fixedAmountAppliedSuccessfullForNormalCoupon();
 
 	}
+
+	//19
+	
+	@Given("I sign up with a new phone number")
+	public void i_sign_up_with_a_new_phone_number() throws TimeoutException {
+		coupon.signupAllCoupon();
+	}
+
+	@When("user adds a random product to the cart.")
+	public void userAddsRandomProductToCart() throws Exception {
+			coupon.afterSignUpFirstBuy();
+	}
+
+	@Then("apply the FirstBuy coupon and verify if the coupon is applied or not.")
+	public void applyFirstBuyCouponAndVerify() {
+		try {
+			coupon.verifyAppliedMessageForFirstBuy("Coupon applied");  // Verify coupon application
+		} catch (Exception e) {
+			ExceptionTracker.capture(e);  // Log the exception details
+			throw e;  // Re-throw the exception to ensure the test fails
+		}
+	}
+
+	//20
+
+
+	
+	@Given("I subscribe to the newsletter with a random email")
+	public void i_subscribe_to_the_newsletter_with_a_random_email() {
+		coupon.subscribeForNewsletter();
+	}
+	@Then("I add a product to the cart and apply the coupon")
+	public void i_add_a_product_to_the_cart_and_apply_the_coupon() {
+		coupon.verifyEmailAndNewsletterSubscription();
+	}
+
+	//21
+
+	@Given("I subscribe to the feedback with a random email")
+	public void i_subscribe_to_the_feedback_with_a_random_email() {
+		
+		coupon.subscribeForfeedback();
+		
+	}
+
+		@Then("I add a products to the cart and apply the feedback coupon")
+	public void i_add_a_products_to_the_cart_and_apply_the_feedback_coupon() {
+		coupon.verifyEmailAndNewsforfeedback();
+	}
+
+
+
+
+
 
 
 

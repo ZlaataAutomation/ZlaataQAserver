@@ -285,12 +285,14 @@ public  final class AddressPage  extends AddressPageObjRepo
 			        if (card.equals(oldDefaultCard)) continue;
 			        try {
 			            card.findElement(By.xpath(".//button[contains(@class,'Cls_address_card_edit_btn')]")).click();
-			            Common.waitForElement(1);
+			            Common.waitForElement(2);
+			            
 
 			            WebElement checkbox = new WebDriverWait(driver, Duration.ofSeconds(5))
 			                    .until(ExpectedConditions.elementToBeClickable(By.name("address_default_checkbox")));
 			            if (!checkbox.isSelected()) checkbox.click();
 
+			            Common.waitForElement(2);
 			            driver.findElement(By.xpath("//button[contains(@class,'Cls_address_form_submit_btn')]")).click();
 			            Common.waitForElement(2);
 			            break;

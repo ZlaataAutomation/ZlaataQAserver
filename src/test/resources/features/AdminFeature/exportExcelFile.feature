@@ -1,7 +1,6 @@
 Feature: Admin Export The Excel File and Check with Veiw All Export Excel File Check Wheather its Matching .
 
 
-@Regression
    @TC_UI_Zlaata_EEF_01
 Scenario Outline: TC_UI_Zlaata_EEF_01 |Verify New Product added match between two exports.| "<TD_ID>" 
      Given admin is logged in

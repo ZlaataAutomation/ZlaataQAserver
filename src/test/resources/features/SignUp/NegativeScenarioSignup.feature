@@ -6,7 +6,7 @@ Feature: This is Negative SignUp feature
   #ScenarioDescription : User Negative signup scenario
   #============================================================================
   
-  @Regression
+  
    @TC_UI_Zlaata_Signup_01
 Scenario Outline: TC_UI_Zlaata_Signup_01 | User  signup scenario |"<TD_ID>"
     Given User Signup with all valid data

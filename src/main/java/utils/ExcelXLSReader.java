@@ -791,7 +791,7 @@ public class ExcelXLSReader {
 	                List<String> names = Arrays.stream(value.split(","))
 	                                           .map(String::trim)
 	                                           .filter(s -> !s.isEmpty())
-	                                           .toList();
+	                                           .collect(Collectors.toList());
 	                product.put(header, names);
 	            } else {
 	                product.put(header, value);

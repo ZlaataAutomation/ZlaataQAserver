@@ -22,8 +22,14 @@ public abstract class CouponObjRepo extends BasePage {
 	@FindBy(name = "couponInputField")
 	protected WebElement couponTextBox;
 
-	@FindBy(xpath = "//input[@class='coupon_input Cls_coupon_input ']")
+	@FindBy(xpath = "//div[@class='popup_containers_content']//input[@class='coupon_input Cls_coupon_input']")
 	protected WebElement couponPopupTextBox;
+	
+ 	@FindBy(xpath = "(//input[@placeholder='Enter Coupon Code'])[1]")
+	protected WebElement searchBox;
+ 	
+	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[1]")
+	protected WebElement applyBtn;
 
 
 	@FindBy(xpath = "//div[@class='coupon_popup popup_containers active']//button[@class='coupon_input_apply_btn ']")
@@ -44,7 +50,7 @@ public abstract class CouponObjRepo extends BasePage {
 	@FindBy(xpath = "//div[@class='snackbar-container  snackbar-pos top-right']")
 	protected WebElement minimumPurchase;
 
-	@FindBy(xpath = "(//div[@class='popup_containers_cls_btn'])[4]")
+	@FindBy(xpath = "//div[@class='coupon_popup popup_containers active']//div[@class='popup_containers_cls_btn']//*[name()='svg']")
 	protected WebElement closePopUp;
 
 	@FindBy(xpath = "//div[@class='coupon_list_wrap non_eligible_coupons']")
@@ -110,7 +116,7 @@ public abstract class CouponObjRepo extends BasePage {
 	@FindBy(xpath = "//div[@class='navigation_cta_icon_list account_icon_btn open__popup ']")
 	protected WebElement profile;
 	
-	@FindBy(xpath = "//a[.='Account Settings']")
+	@FindBy(xpath = "//a[@class='account_sidebar_user_profile_link_acc_settings']")
 	protected WebElement accountsSideMenuButton;
 	
 	@FindBy(name = "email")
@@ -231,8 +237,8 @@ public abstract class CouponObjRepo extends BasePage {
 	@FindBy(xpath = "//button[@class='prod_buy_now_btn btn___2 Cls_Buy_now_To_Cart']")
 	protected WebElement buyNowbutton;
 	
-//	@FindBy(xpath = ".//div[@class='offer_list_item_details_wrap']")
-//	protected List <WebElement> couponListElements;
+	@FindBy(xpath = "//h2[normalize-space()='My Coupons']")
+	protected  WebElement couponsideMenu;
 	
 	@FindBy(xpath = ".//button[@class='offer_list_item_apply_btn Cls_apply_coupon']")
 	protected WebElement applyCouponBtn;
@@ -242,6 +248,7 @@ public abstract class CouponObjRepo extends BasePage {
 	
 	@FindBy(xpath = ".//button[@class='coupon_apply_btn Cls_coupon_apply_rmv_btn']")
 	protected List <WebElement> removeCouponBtn;
+	
 	
 	@FindBy(xpath ="(//header[@class='popup_containers_header']//div[@class='popup_containers_cls_btn'])[2]")
 	protected WebElement closeBag;
@@ -452,6 +459,7 @@ public abstract class CouponObjRepo extends BasePage {
    protected    WebElement couponPopupcloseButton;
    
 
-	
+	@FindBy(xpath = "//li[@class='navigation_menu_list home']")
+	protected WebElement homePageLink;
 
 }

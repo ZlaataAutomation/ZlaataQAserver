@@ -38,7 +38,7 @@ public class AdminPanelExportExcelStepDef {
 		}
 		@Then("I verify both exported files {string} and {string} have matching product names")
 		public void i_verify_both_exported_files_and_have_matching_product_names(String file1, String file2) throws IOException, InterruptedException {
-			String downloadDir = "C:\\Users\\Ranjith\\Downloads\\";
+			String downloadDir = "C:\\Users\\Sarojkumar\\Downloads\\";
 		    String file1Path = downloadDir + file1;
 		    String file2Path = downloadDir + file2;
 		    adminExport.verifyExportedProductsMatch(file1Path, file2Path);		   
@@ -57,7 +57,7 @@ public class AdminPanelExportExcelStepDef {
 		}
 		@Then("I verify both exported active products files {string} and {string} have matching product names")
 		public void i_verify_both_exported_active_products_files_and_have_matching_product_names(String file1, String file2) throws IOException {
-			String downloadDir = "C:\\Users\\Ranjith\\Downloads\\";
+			String downloadDir = "C:\\Users\\Sarojkumar\\Downloads\\";
 		    String file1Path = downloadDir + file1;
 		    String file2Path = downloadDir + file2;
 		    adminExport.verifyExportedActiveProductsMatch(file1Path, file2Path);		   
@@ -76,7 +76,7 @@ public class AdminPanelExportExcelStepDef {
 			}
 			@Then("I verify both exported sold out products files {string} and {string} have matching product names")
 			public void i_verify_both_exported_sold_out_products_files_and_have_matching_product_names(String file1, String file2) throws IOException {
-				String downloadDir = "C:\\Users\\Ranjith\\Downloads\\";
+				String downloadDir = "C:\\Users\\Sarojkumar\\Downloads\\";
 			    String file1Path = downloadDir + file1;
 			    String file2Path = downloadDir + file2;
 			    adminExport.verifyExportedSoldOutProductsMatch(file1Path, file2Path);
@@ -96,7 +96,7 @@ public class AdminPanelExportExcelStepDef {
 				}
 				@Then("I verify both exported inactive products files {string} and {string} have matching product names")
 				public void i_verify_both_exported_inactive_products_files_and_have_matching_product_names(String file1, String file2) throws IOException {
-					String downloadDir = "C:\\Users\\Ranjith\\Downloads\\";
+					String downloadDir = "C:\\Users\\Sarojkumar\\Downloads\\";
 				    String file1Path = downloadDir + file1;
 				    String file2Path = downloadDir + file2;
 				    adminExport.verifyExportedInactiveProductsMatch(file1Path, file2Path);
