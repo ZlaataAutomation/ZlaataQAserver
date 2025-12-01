@@ -63,7 +63,6 @@ public class CouponFunctionality {
 			throw e; // re-throw so test still fails
 		}
 	}
-//this mew
 	@And("User enters the Feedback coupon code")
 	public void user_enters_the_feedback_coupon_code() {
 		try {
