@@ -36,5 +36,22 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADC_03   |
 
+   @Coupon
+  @Regression
+  @TC_UI_Zlaata_ADC_04
+Scenario Outline: TC_UI_Zlaata_ADC_04 |Verify with One specific product and  with Normal product.| "<TD_ID>" 
+    When specific coupon is created in admin with one associated product.
+    Then they should be redirected to the listing page showing the linked product and see the coupon as SELECT after adding it to cart
+Examples:  
+  | TD_ID                  |  
+  | TD_UI_Zlaata_ADC_04   |
 
+  @Coupon
+  @Regression
+  @TC_UI_Zlaata_ADC_05
+Scenario Outline: TC_UI_Zlaata_ADC_05 |Verify with Two Specific Products Coupon Verification.| "<TD_ID>" 
+    When Coupon displays both linked products and applies discount correctly after order placement
+Examples:  
+  | TD_ID                  |  
+  | TD_UI_Zlaata_ADC_05   |
 

@@ -16,7 +16,7 @@ features = {"src/test/resources/features/"},
 glue = "stepDef",	
 monochrome = true,	
 dryRun = false,
-tags= "@Calculation"
+tags= "@TC_UI_Zlaata_ADC_05"
 )
 
 		

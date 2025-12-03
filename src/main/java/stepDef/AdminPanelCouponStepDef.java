@@ -59,6 +59,26 @@ public class AdminPanelCouponStepDef {
 					adminCoupon.searchAndAddThatProductsToCart("Test By Auto1", "Test By Auto2");
 				}
 
+//TC-04
+//Specific  Item Coupon
+					@When("specific coupon is created in admin with one associated product.")
+					public void specific_coupon_is_created_in_admin_with_one_associated_product() throws InterruptedException {
+						adminCoupon.validateOneSpecificProductWithNormalProduct();
+					}
+
+					@Then("they should be redirected to the listing page showing the linked product and see the coupon as SELECT after adding it to cart")
+					public void they_should_be_redirected_to_the_listing_page_showing_the_linked_product_and_see_the_coupon_as_select_after_adding_it_to_cart() {
+					    
+					}
+//TC-05
+//Specific  Item Coupon
+						@When("Coupon displays both linked products and applies discount correctly after order placement")
+						public void coupon_displays_both_linked_products_and_applies_discount_correctly_after_order_placement() throws InterruptedException {
+							adminCoupon.validateTwoSpecificProductCoupon();
+						}
+
+
+
 
 
 

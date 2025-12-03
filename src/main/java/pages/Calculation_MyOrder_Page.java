@@ -187,7 +187,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        }
 
 	        // Found in-stock product
-	        productlistingName = name;
+	        String  productName = name;
 
 	        WebElement productNameElement = productCard.findElement(
 	                By.xpath(".//h2[@class='product_list_cards_heading']"));
@@ -196,7 +196,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", productNameElement);
 
 	        productFound = true;
-	        System.out.println("✅ Selected random in-stock product: " + productlistingName);
+	        System.out.println("✅ Selected random in-stock product: " + productName);
 	        break;
 	    }
 
@@ -206,7 +206,11 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    }
 	    // Click ADD TO CART button on PDP
 	    
-
+	    productlistingName = driver.findElement(
+	            By.xpath("//h4[@class='prod_name']")
+	    ).getText().trim();
+	    System.out.println("Product Name: " + productlistingName);
+	    
 	    Common.waitForElement(2);
 	    WebElement addToCart = wait.until(ExpectedConditions.elementToBeClickable(
 	            By.xpath("(//button[contains(text(),'Add to')])[1]")));
