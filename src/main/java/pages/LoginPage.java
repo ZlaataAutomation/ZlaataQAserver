@@ -28,8 +28,9 @@ public final class LoginPage extends LoginObjRepository {
     
     public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-//				click(submit);
+				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+				click(submit);
+		popup();
     }
 
     public void userLogin() {
@@ -53,7 +54,7 @@ public final class LoginPage extends LoginObjRepository {
         }
     private void popup() {
 		try {
-			WebElement popUp = driver.findElement(By.xpath("//button[@class='close-btn']"));
+			WebElement popUp = driver.findElement(By.xpath("//div[@class='chrismas_closebtn popup_containers_cls_btn Cls_christmas_closebtn']"));
 			Common.waitForElement(5);
 			
 			

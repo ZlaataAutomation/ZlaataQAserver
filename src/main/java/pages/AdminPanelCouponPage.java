@@ -984,7 +984,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		login.userLogin();
         Common.waitForElement(2);
         
-        deleteAllProductsFromCart();
+       // deleteAllProductsFromCart();
 		
  
 	}
@@ -1700,14 +1700,14 @@ Common.waitForElement(2);
             searchBox.clear();
             searchBox.sendKeys(productName);
             System.out.println("✅ Searched for listing: " + productName);
-
+            Common.waitForElement(1);
             // Wait for product to appear
             By productLocator = By.xpath("//h6[normalize-space()='" + productName + "']");
             wait.until(ExpectedConditions.visibilityOfElementLocated(productLocator));
 
             WebElement productElement = driver.findElement(productLocator);
             Assert.assertTrue("❌ Listing name not found in User App: " + productName, productElement.isDisplayed());
-
+            Common.waitForElement(1);
             // Click product
             productElement.click();
             System.out.println("✅ Product opened in User App: "+ productName);
@@ -1724,6 +1724,7 @@ Common.waitForElement(2);
                 By.xpath("//button[contains(text(),'Add to')]")
             ));
             addToCartBtn.click();
+            Common.waitForElement(3);
             System.out.println("🛒 Added product to cart: " + productName);
         }
 

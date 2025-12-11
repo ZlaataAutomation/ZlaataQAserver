@@ -191,63 +191,79 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 
 
 		    Common.waitForElement(2);
+		    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+		    click(continueBtn);
+		    System.out.println(GREEN + "✅ Clicked Continue Button" + RESET);
+		    
+		    Common.waitForElement(2);
+		    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+		    click(continueBtn);
+		    System.out.println(GREEN + "✅ Clicked Address Page Continue Button" + RESET);
+		    
+		    Common.waitForElement(2);
+		    wait.until(ExpectedConditions.elementToBeClickable(selectNetBank));
+		    click(selectNetBank);
+		    System.out.println(GREEN + "✅ Select Netbanking" + RESET);
+		    
+		    Common.waitForElement(2);
 		    wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn));
 		    click(placeOrderBtn);
 		    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
-
+		    
 		    Thread.sleep(5000);    
 		 // ✅ 1. Switch to Razorpay iframe (you already have this)
 		    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
 		            By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
 		    ));
 		    System.out.println("✅ Switched to Razorpay iframe");
-
-		    // ✅ 2. Click Continue button
-		    wait.until(ExpectedConditions.elementToBeClickable(
-		            By.xpath("//button[contains(.,'Continue')]")
-		    )).click();
-		    System.out.println("✅ Continue clicked");
 //
+//		    // ✅ 2. Click Continue button
+//		    wait.until(ExpectedConditions.elementToBeClickable(
+//		            By.xpath("//button[contains(.,'Continue')]")
+//		    )).click();
+//		    System.out.println("✅ Continue clicked");
+////
 //		    // ✅ 3. Click Skip OTP
 //		    wait.until(ExpectedConditions.elementToBeClickable(
 //		            By.xpath("//button[contains(text(),'Skip OTP')]")
 //		    )).click();
 //		    System.out.println("✅ Skipped OTP");
-
-		    // ✅ 4. Enter Pincode
-		    wait.until(ExpectedConditions.visibilityOfElementLocated(
-		            By.id("zipcode")
-		    )).sendKeys("560001");
-
-		    // ✅ 5. Enter City auto-filled → skip  
-		    // ✅ 6. Enter Name
-		    driver.findElement(By.id("name")).sendKeys("Saroj Test");
-
-		    // ✅ 7. Enter House / Building
-		    driver.findElement(By.id("line1")).sendKeys("Bangalore");
-
-		    // ✅ 8. Enter Area / Street
-		    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
-
-		    
-		    // ✅ 9. Click Continue (Address Submit)
-		    Common.waitForElement(3);
-		    wait.until(ExpectedConditions.elementToBeClickable(
-		            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
-		    )).click();
-
-		    System.out.println("✅ Address submitted successfully");
+//
+//		    // ✅ 4. Enter Pincode
+//		    wait.until(ExpectedConditions.visibilityOfElementLocated(
+//		            By.id("zipcode")
+//		    )).sendKeys("560001");
+//
+//		    // ✅ 5. Enter City auto-filled → skip  
+//		    // ✅ 6. Enter Name
+//		    driver.findElement(By.id("name")).sendKeys("Saroj Test");
+//
+//		    // ✅ 7. Enter House / Building
+//		    driver.findElement(By.id("line1")).sendKeys("Bangalore");
+//
+//		    // ✅ 8. Enter Area / Street
+//		    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
+//
+//		    
+//		    // ✅ 9. Click Continue (Address Submit)
+//		    Common.waitForElement(3);
+//		    wait.until(ExpectedConditions.elementToBeClickable(
+//		            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
+//		    )).click();
+//
+//		    System.out.println("✅ Address submitted successfully");
 		    
 		    
 		    
 
 		    // ✅ 3. Select Netbanking option
-		    Common.waitForElement(3);
+		    Common.waitForElement(4);
 		    wait.until(ExpectedConditions.elementToBeClickable(
 		            By.xpath("//span[@data-testid='Netbanking']")
 		    )).click();
 
 		    // ✅ 4. Select HDFC Bank
+		    Common.waitForElement(2);
 		    wait.until(ExpectedConditions.elementToBeClickable(
 		            By.xpath("(//div[@role='button' and .//span[contains(text(),'HDFC Bank')]])[1]")
 		    )).click();
@@ -322,7 +338,7 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		         // Build full address (same format as email)
 		          uiAddress = house + ", " + street + ", " + city + ", " + state + " - " + pincode;
 
-		         
+		          
 		    	    // Step 13: Price Breakup
 		    	    driver.findElement(By.xpath("//button[@class='price_breakup_btn active']")).click();
 		    	    Common.waitForElement(1);

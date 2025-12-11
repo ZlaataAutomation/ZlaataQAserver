@@ -69,6 +69,7 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	@FindBy(xpath = "//button[contains(@class,'place_order_btn') and normalize-space(text())='Place order']")
 	protected WebElement placeOrderBtn;
 	
+	
 	@FindBy(xpath = "(//input[@id='net-banking'])[1]")
 	protected WebElement selectNetBank;
 	

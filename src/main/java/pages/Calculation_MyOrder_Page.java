@@ -619,6 +619,8 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	int threadValue;
 	int giftCardAmount;
 	int couponDiscount;
+	int cartPageCalcTotalAmount;
+	int cartPageCalcYouSaved;
 	public void verifyPriceDetailsCalculation() {
 
 	    String GREEN  = "\u001B[32m";
@@ -727,7 +729,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        	     
 	        	);
 
-	        int calcTotalAmount =
+	        cartPageCalcTotalAmount =
 	            (giftCardMRP + discountedMRP + giftWrapFee + expressShipping + customFee)
 	                    - (threadValue + giftCardAmount + couponDiscount);
 	        System.out.println(LINE);
@@ -742,12 +744,12 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        	        
 	        	);
 	        // Calculate Saved: (TotalMRP - DiscountedMRP) + coupon + thread 
-	        int calcSaved = (totalMRP - discountedMRP)
+	        cartPageCalcYouSaved = (totalMRP - discountedMRP)
 	                + threadValue + couponDiscount;
 
 	        System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
-	        System.out.println(GREEN + "Calculated Saved Amount: " + calcSaved + RESET);
-	        System.out.println(GREEN + "Calculated Total Amount: " + calcTotalAmount + RESET);
+	        System.out.println(GREEN + "Calculated Saved Amount: " + cartPageCalcYouSaved + RESET);
+	        System.out.println(GREEN + "Calculated Total Amount: " + cartPageCalcTotalAmount + RESET);
 	        System.out.println(LINE);
 
 	        // -----------------------------
@@ -756,30 +758,30 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	     // Validation of "You Saved" amount
 	        System.out.println(CYAN + "📌 Expected vs Actual Saved Amount:" + RESET);
 	        System.out.println(YELLOW + "Expected Saved Amount (UI): " + uiSavedAmount + RESET);
-	        System.out.println(YELLOW + "Calculated Saved Amount: " + calcSaved + RESET);
+	        System.out.println(YELLOW + "Calculated Saved Amount: " + cartPageCalcYouSaved + RESET);
 
-	        if (calcSaved == uiSavedAmount) {
+	        if (cartPageCalcYouSaved == uiSavedAmount) {
 	            System.out.println(GREEN + "✅ Saved Amount MATCHES UI" + RESET);
 	        } else {
 	            System.out.println(RED + "❌ Saved Amount MISMATCH — UI: " + uiSavedAmount +
-	                    " | Calc: " + calcSaved + RESET);
+	                    " | Calc: " + cartPageCalcYouSaved + RESET);
 
 	            Assert.fail("❌ Saved Amount MISMATCH — UI: " + uiSavedAmount +
-	                    " | Calc: " + calcSaved);
+	                    " | Calc: " + cartPageCalcYouSaved);
 	        }
 	     // Validation of "Total Amount"
 	        System.out.println(CYAN + "📌 Expected vs Actual Total Amount:" + RESET);
 	        System.out.println(YELLOW + "Expected Total Amount (UI): " + uiTotalAmount + RESET);
-	        System.out.println(YELLOW + "Calculated Total Amount: " + calcTotalAmount + RESET);
+	        System.out.println(YELLOW + "Calculated Total Amount: " + cartPageCalcTotalAmount + RESET);
 
-	        if (calcTotalAmount == uiTotalAmount) {
+	        if (cartPageCalcTotalAmount == uiTotalAmount) {
 	            System.out.println(GREEN + "✅ Total Amount MATCHES UI" + RESET);
 	        } else {
 	            System.out.println(RED + "❌ Total Amount MISMATCH — UI: " + uiTotalAmount +
-	                    " | Calc: " + calcTotalAmount + RESET);
+	                    " | Calc: " + cartPageCalcTotalAmount + RESET);
 
 	            Assert.fail("❌ Total Amount MISMATCH — UI: " + uiTotalAmount +
-	                    " | Calc: " + calcTotalAmount);
+	                    " | Calc: " + cartPageCalcTotalAmount);
 	        }
 
 	        System.out.println(LINE);
@@ -789,6 +791,74 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    }
 	}
 	
+	public void validateAddressAndPaymentPagePriceWithCart() {
+
+	    String GREEN  = "\u001B[32m";
+	    String RED    = "\u001B[31m";
+	    String YELLOW = "\u001B[33m";
+	    String CYAN   = "\u001B[36m";
+	    String RESET  = "\u001B[0m";
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+	    click(continueBtn);
+	    System.out.println(GREEN + "✅ Clicked Continue Button" + RESET);
+
+	    // ✅ Fetch "You Saved" from Address Page UI
+	    WebElement addressYouSavedElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                    By.xpath("(//div[contains(@class,'Cls_cart_saved_amount')])[2]")
+	            ));
+
+	    int addressUiSavedAmount = Integer.parseInt(
+	            addressYouSavedElement.getText().replaceAll("[^0-9]", "").trim()
+	    );
+
+	    // ✅ Fetch "Total Amount" from Address Page UI
+	    WebElement addressTotalAmountElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                    By.xpath("(//div[contains(@class,'Cls_cart_total_amount')])[2]")
+	            ));
+
+	    int addressUiTotalAmount = Integer.parseInt(
+	            addressTotalAmountElement.getText().replaceAll("[^0-9]", "").trim()
+	    );
+
+	    // ==============================
+	    // ✅ VALIDATE "YOU SAVED"
+	    // ==============================
+	    System.out.println(CYAN + "📌 Cart vs Address Page — You Saved:" + RESET);
+	    System.out.println(YELLOW + "Cart Page Saved: " + cartPageCalcYouSaved + RESET);
+	    System.out.println(YELLOW + "Address Page UI Saved: " + addressUiSavedAmount + RESET);
+
+	    if (cartPageCalcYouSaved == addressUiSavedAmount) {
+	        System.out.println(GREEN + "✅ You Saved MATCHES on Address Page" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ You Saved MISMATCH — Cart: " + cartPageCalcYouSaved +
+	                " | Address: " + addressUiSavedAmount + RESET);
+
+	        Assert.fail("❌ You Saved MISMATCH — Cart: " + cartPageCalcYouSaved +
+	                " | Address: " + addressUiSavedAmount);
+	    }
+
+	    // ==============================
+	    // ✅ VALIDATE "TOTAL AMOUNT"
+	    // ==============================
+	    System.out.println(CYAN + "📌 Cart vs Address Page — Total Amount:" + RESET);
+	    System.out.println(YELLOW + "Cart Page Total: " + cartPageCalcTotalAmount + RESET);
+	    System.out.println(YELLOW + "Address Page  UI Total: " + addressUiTotalAmount + RESET);
+
+	    if (cartPageCalcTotalAmount == addressUiTotalAmount) {
+	        System.out.println(GREEN + "✅ Total Amount MATCHES on Address Page" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ Total Amount MISMATCH — Cart: " + cartPageCalcTotalAmount +
+	                " | Address: " + addressUiTotalAmount + RESET);
+
+	        Assert.fail("❌ Total Amount MISMATCH — Cart: " + cartPageCalcTotalAmount +
+	                " | Address: " + addressUiTotalAmount);
+	    }
+	}
 	
 	
 	
@@ -1003,40 +1073,57 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    String RESET = "\u001B[0m";
 	    String LINE = "──────────────────────────────────────────────────────────────";
 
+//	    Common.waitForElement(2);
+//	    wait.until(ExpectedConditions.elementToBeClickable(
+//	            By.xpath("//button[contains(@class,'flex items-center') and contains(@class,'-mr-2')]")
+//	    )).click();
+//	    System.out.println("✅ Close clicked");
+//
+//	    // Click Continue
+//	    Common.waitForElement(1);
+//	    wait.until(ExpectedConditions.elementToBeClickable(
+//	            By.xpath("//button[contains(.,'Continue')]")
+//	    )).click();
+//	    System.out.println("✅ Continue clicked");
+//
+//	    // Enter Pincode
+//	    wait.until(ExpectedConditions.visibilityOfElementLocated(
+//	            By.id("zipcode")
+//	    )).sendKeys("560001");
+//
+//	    // Enter Name
+//	    driver.findElement(By.id("name")).sendKeys("Saroj Test");
+//
+//	    // Enter House / Building
+//	    driver.findElement(By.id("line1")).sendKeys("Bangalore");
+//
+//	    // Enter Area / Street
+//	    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
+//
+//	    // Address Submit
+//	    Common.waitForElement(3);
+//	    wait.until(ExpectedConditions.elementToBeClickable(
+//	            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
+//	    )).click();
+//
+//	    System.out.println("✅ Address submitted successfully");
+	    
 	    Common.waitForElement(2);
-	    wait.until(ExpectedConditions.elementToBeClickable(
-	            By.xpath("//button[contains(@class,'flex items-center') and contains(@class,'-mr-2')]")
-	    )).click();
-	    System.out.println("✅ Close clicked");
-
-	    // Click Continue
-	    Common.waitForElement(1);
-	    wait.until(ExpectedConditions.elementToBeClickable(
-	            By.xpath("//button[contains(.,'Continue')]")
-	    )).click();
-	    System.out.println("✅ Continue clicked");
-
-	    // Enter Pincode
-	    wait.until(ExpectedConditions.visibilityOfElementLocated(
-	            By.id("zipcode")
-	    )).sendKeys("560001");
-
-	    // Enter Name
-	    driver.findElement(By.id("name")).sendKeys("Saroj Test");
-
-	    // Enter House / Building
-	    driver.findElement(By.id("line1")).sendKeys("Bangalore");
-
-	    // Enter Area / Street
-	    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
-
-	    // Address Submit
-	    Common.waitForElement(3);
-	    wait.until(ExpectedConditions.elementToBeClickable(
-	            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
-	    )).click();
-
-	    System.out.println("✅ Address submitted successfully");
+	    wait.until(ExpectedConditions.elementToBeClickable(selectNetBank));
+	    click(selectNetBank);
+	    System.out.println(GREEN + "✅ Select Netbanking" + RESET);
+	    
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn));
+	    click(placeOrderBtn);
+	    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
+	    
+	    Thread.sleep(5000);    
+	 // ✅ 1. Switch to Razorpay iframe (you already have this)
+	    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
+	            By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
+	    ));
+	    System.out.println("✅ Switched to Razorpay iframe");
 
 	    // Select Netbanking
 	    Common.waitForElement(3);
@@ -1045,6 +1132,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    )).click();
 
 	    // Select HDFC Bank
+	    Common.waitForElement(3);
 	    wait.until(ExpectedConditions.elementToBeClickable(
 	            By.xpath("(//div[@role='button' and .//span[contains(text(),'HDFC Bank')]])[1]")
 	    )).click();
@@ -1254,7 +1342,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         // STEP 1: UI Values
         // =============================
 	    
-	    driver.findElement(By.xpath("(//div[contains(@class,'popup_containers_cls_btn')])[5]")).click();
+	    driver.findElement(By.xpath("(//div[contains(@class,'popup_containers_cls_btn')])[7]")).click();
 	    Common.waitForElement(1);
        js.executeScript("window.scrollBy(0, 500);");
 	 // Payable Amount - only first text node
@@ -1407,41 +1495,56 @@ public void placeOrderAndCheckOrderConfirmation() throws InterruptedException {
     String RESET = "\u001B[0m";
     String LINE = "──────────────────────────────────────────────────────────────";
 
+//    Common.waitForElement(2);
+//    wait.until(ExpectedConditions.elementToBeClickable(
+//            By.xpath("//button[contains(@class,'flex items-center') and contains(@class,'-mr-2')]")
+//    )).click();
+//    System.out.println("✅ Close clicked");
+//
+//    // Click Continue
+//    Common.waitForElement(1);
+//    wait.until(ExpectedConditions.elementToBeClickable(
+//            By.xpath("//button[contains(.,'Continue')]")
+//    )).click();
+//    System.out.println("✅ Continue clicked");
+//
+//    // Enter Pincode
+//    wait.until(ExpectedConditions.visibilityOfElementLocated(
+//            By.id("zipcode")
+//    )).sendKeys("560001");
+//
+//    // Enter Name
+//    driver.findElement(By.id("name")).sendKeys("Saroj Test");
+//
+//    // Enter House / Building
+//    driver.findElement(By.id("line1")).sendKeys("Bangalore");
+//
+//    // Enter Area / Street
+//    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
+//
+//    // Address Submit
+//    Common.waitForElement(3);
+//    wait.until(ExpectedConditions.elementToBeClickable(
+//            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
+//    )).click();
+//
+//    System.out.println("✅ Address submitted successfully");
     Common.waitForElement(2);
-    wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//button[contains(@class,'flex items-center') and contains(@class,'-mr-2')]")
-    )).click();
-    System.out.println("✅ Close clicked");
-
-    // Click Continue
-    Common.waitForElement(1);
-    wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//button[contains(.,'Continue')]")
-    )).click();
-    System.out.println("✅ Continue clicked");
-
-    // Enter Pincode
-    wait.until(ExpectedConditions.visibilityOfElementLocated(
-            By.id("zipcode")
-    )).sendKeys("560001");
-
-    // Enter Name
-    driver.findElement(By.id("name")).sendKeys("Saroj Test");
-
-    // Enter House / Building
-    driver.findElement(By.id("line1")).sendKeys("Bangalore");
-
-    // Enter Area / Street
-    driver.findElement(By.id("line2")).sendKeys("bjvhcgfchvbjkn");
-
-    // Address Submit
-    Common.waitForElement(3);
-    wait.until(ExpectedConditions.elementToBeClickable(
-            By.xpath("//button[contains(.,'Continue') and @name='new_shipping_address_cta']")
-    )).click();
-
-    System.out.println("✅ Address submitted successfully");
-
+    wait.until(ExpectedConditions.elementToBeClickable(selectNetBank));
+    click(selectNetBank);
+    System.out.println(GREEN + "✅ Select Netbanking" + RESET);
+    
+    Common.waitForElement(2);
+    wait.until(ExpectedConditions.elementToBeClickable(placeOrderBtn));
+    click(placeOrderBtn);
+    System.out.println(GREEN + "✅ Clicked Place Order" + RESET);
+    
+    Thread.sleep(5000);    
+ // ✅ 1. Switch to Razorpay iframe (you already have this)
+    wait.until(ExpectedConditions.frameToBeAvailableAndSwitchToIt(
+            By.xpath("//iframe[contains(@name,'razorpay') or contains(@id,'razorpay') or contains(@src,'razorpay')]")
+    ));
+    System.out.println("✅ Switched to Razorpay iframe");
     // Select Netbanking
     Common.waitForElement(3);
     wait.until(ExpectedConditions.elementToBeClickable(
@@ -3965,7 +4068,7 @@ public void takeCustomizeProduct() {
 	    }
 	}
 	
-	
+	int shippingCharge;
 	public void validateShippingCharges() {
 
 	    String GREEN = "\u001B[32m";
@@ -3994,7 +4097,7 @@ public void takeCustomizeProduct() {
 
 	        WebElement shippingElement = driver.findElement(By.cssSelector(".Cls_convency_fee_extra"));
 
-	        int shippingCharge = Integer.parseInt(shippingElement.getAttribute("data-extra_charge"));
+	         shippingCharge = Integer.parseInt(shippingElement.getAttribute("data-extra_charge"));
 
 	        if (shippingCharge == 99) {
 	            System.out.println(GREEN + "🟢 PASS: Shipping charge is correctly 99" + RESET);
@@ -4017,6 +4120,47 @@ public void takeCustomizeProduct() {
 	        }
 	    }
 
+	}
+	
+	public void validateAddressAndPaymentPageShippingCharge() {
+
+	    String GREEN  = "\u001B[32m";
+	    String RED    = "\u001B[31m";
+	    String YELLOW = "\u001B[33m";
+	    String CYAN   = "\u001B[36m";
+	    String RESET  = "\u001B[0m";
+
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+	    click(continueBtn);
+	    System.out.println(GREEN + "✅ Clicked Continue Button" + RESET);
+	    // ✅ Fetch Shipping / Courier Fee from Address Page UI
+	    WebElement courierFeeElement = wait.until(
+	            ExpectedConditions.visibilityOfElementLocated(
+	                    By.xpath("//span[contains(@class,'Cls_convency_fee_extra')]")
+	            ));
+
+	    int addressUiShippingCharge = Integer.parseInt(
+	            courierFeeElement.getText().replaceAll("[^0-9]", "").trim()
+	    );
+
+	    // ==============================
+	    // ✅ VALIDATION
+	    // ==============================
+	    System.out.println(CYAN + "📌 Cart vs Address Page — Shipping Charge:" + RESET);
+	    System.out.println(YELLOW + "Cart Page Shipping: " + shippingCharge + RESET);
+	    System.out.println(YELLOW + "Address Page Shipping: " + addressUiShippingCharge + RESET);
+
+	    if (shippingCharge == addressUiShippingCharge) {
+	        System.out.println(GREEN + "✅ Shipping Charge MATCHES on Address Page" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ Shipping Charge MISMATCH — Cart: " + shippingCharge +
+	                " | Address: " + addressUiShippingCharge + RESET);
+
+	        Assert.fail("❌ Shipping Charge MISMATCH — Cart: " + shippingCharge +
+	                " | Address: " + addressUiShippingCharge);
+	    }
 	}
 	
 	public void increaseQuantityUntilLimitAndValidate() {
@@ -4351,7 +4495,11 @@ public void takeCustomizeProduct() {
 		
 		verifyPriceDetailsCalculation();
 		
-		validateRazorpaySummaryCalculation();
+		validateAddressAndPaymentPagePriceWithCart();
+		
+		validateAddressAndPaymentPagePriceWithCart();
+		
+//		validateRazorpaySummaryCalculation();
 		
 		validatePriceBreakupDetails();
 		
@@ -4385,7 +4533,11 @@ public void takeCustomizeProduct() {
 		
 		verifyPriceDetailsCalculation();
 		
-		validateRazorpaySummaryCalculation();
+        validateAddressAndPaymentPagePriceWithCart();
+		
+		validateAddressAndPaymentPagePriceWithCart();
+		
+	//	validateRazorpaySummaryCalculation();
 		
 		placeOrderAndCheckOrderConfirmation();
 //First Product		
@@ -4449,7 +4601,11 @@ public void takeCustomizeProduct() {
 			
 			verifyPriceDetailsCalculation();
 			
-			validateRazorpaySummaryCalculation();
+			validateAddressAndPaymentPagePriceWithCart();
+			
+			validateAddressAndPaymentPagePriceWithCart();
+			
+//			validateRazorpaySummaryCalculation();
 			
 			placeOrderAndCheckOrderConfirmation();
 //First Product		
@@ -4521,7 +4677,10 @@ public void takeCustomizeProduct() {
 		
 		validateShippingCharges();
 		
-		validateRazorpayAccessories();
+		validateAddressAndPaymentPageShippingCharge();
+		
+		validateAddressAndPaymentPageShippingCharge();
+//		validateRazorpayAccessories();
 		
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
 		
@@ -4556,7 +4715,11 @@ public void takeCustomizeProduct() {
 			
 			validateShippingCharges();
 			
-			validateRazorpayAccessories();
+//			validateRazorpayAccessories();
+			
+			validateAddressAndPaymentPageShippingCharge();
+			
+			validateAddressAndPaymentPageShippingCharge();
 			
 			placeOrderAndCheckOrderConfirmation();
 			

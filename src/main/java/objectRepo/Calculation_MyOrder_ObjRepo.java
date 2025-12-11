@@ -63,7 +63,7 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
    	@FindBy(xpath = "//a[contains(@class,'view_details_btn') and (contains(text(),'View Order Details') or contains(text(),'View Orders'))]")
 	protected WebElement viewOrderDetails;
 	
-   	@FindBy(xpath = "(//div[contains(@class,'popup_containers_cls_btn')])[5]")
+   	@FindBy(xpath = "(//div[contains(@class,'popup_containers_cls_btn')])[7]")
 	protected WebElement closeBtn;
    	
    	@FindBy(xpath = "//input[@id='search_input']")
@@ -94,6 +94,12 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
 	@FindBy(xpath = "//button[@type='submit']")
 	protected WebElement adminLogin;
 	
+	
+	@FindBy(xpath = "//button[contains(@class,'place_order_btn') and normalize-space(text())='Continue']")
+	protected WebElement continueBtn;
+	
+	@FindBy(xpath = "(//input[@id='net-banking'])[1]")
+	protected WebElement selectNetBank;
 	
 	
 	
