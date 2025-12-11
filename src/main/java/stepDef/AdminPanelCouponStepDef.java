@@ -21,9 +21,7 @@ public class AdminPanelCouponStepDef {
 		@When("Admin clicks Add Coupon and enters random title and code.")
 		public void admin_clicks_add_coupon_and_enters_random_title_and_code() throws InterruptedException {
 			adminCoupon.createCouponInAdminPanel();
-
 		}
-
 		@Then("Verify the coupon is visible in Admin coupon list")
 		public void verify_the_coupon_is_visible_in_admin_coupon_list() {
 		 adminCoupon.verifyCouponInAdmin();
@@ -60,6 +58,26 @@ public class AdminPanelCouponStepDef {
 				public void verify_the_same_specific_product_item_coupon_is_visible_in_user_app() throws InterruptedException {
 					adminCoupon.searchAndAddThatProductsToCart("Test By Auto1", "Test By Auto2");
 				}
+
+//TC-04
+//Specific  Item Coupon
+					@When("specific coupon is created in admin with one associated product.")
+					public void specific_coupon_is_created_in_admin_with_one_associated_product() throws InterruptedException {
+						adminCoupon.validateOneSpecificProductWithNormalProduct();
+					}
+
+					@Then("they should be redirected to the listing page showing the linked product and see the coupon as SELECT after adding it to cart")
+					public void they_should_be_redirected_to_the_listing_page_showing_the_linked_product_and_see_the_coupon_as_select_after_adding_it_to_cart() {
+					    
+					}
+//TC-05
+//Specific  Item Coupon
+						@When("Coupon displays both linked products and applies discount correctly after order placement")
+						public void coupon_displays_both_linked_products_and_applies_discount_correctly_after_order_placement() throws InterruptedException {
+							adminCoupon.validateTwoSpecificProductCoupon();
+						}
+
+
 
 
 

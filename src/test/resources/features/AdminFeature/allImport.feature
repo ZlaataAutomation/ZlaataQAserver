@@ -3,6 +3,7 @@ Feature: Import Functionality Verify that different entities (Categories, Produc
 
 Background:
     Given admin is logged in
+    @Import
     @Regression
     @TC_UI_Zlaata_ADI_01
 Scenario Outline: TC_UI_Zlaata_ADI_01 |Verify Categories import uploaded appear in Admin and User App.| "<TD_ID>" 
@@ -14,6 +15,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_01   |
   
+  @Import
     @Regression
   @TC_UI_Zlaata_ADI_02
 Scenario Outline: TC_UI_Zlaata_ADI_02 |Verify Collection import uploaded appear in Admin and User App.| "<TD_ID>" 
@@ -25,6 +27,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_02   |
 
+@Import
 @Regression
   @TC_UI_Zlaata_ADI_03
 Scenario Outline: TC_UI_Zlaata_ADI_03 |Verify Product Style import uploaded appear in Admin and User App.| "<TD_ID>" 
@@ -36,6 +39,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_03   |
   
+  @Import
   @Regression
    @TC_UI_Zlaata_ADI_04
 Scenario Outline: TC_UI_Zlaata_ADI_04 |Verify All Product import uploaded appear in Admin and User App.| "<TD_ID>" 
@@ -58,6 +62,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_05   |
   
+  @Import
   @Regression
   @TC_UI_Zlaata_ADI_06
 Scenario Outline: TC_UI_Zlaata_ADI_06 |Verify Search Keyboard Collection import uploaded appear in Admin and User App.| "<TD_ID>" 
@@ -69,6 +74,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_06   |
   
+  @Import
   @Regression
   @TC_UI_Zlaata_ADI_07
 Scenario Outline: TC_UI_Zlaata_ADI_07 |Verify Search Keyboard Style import uploaded appear in Admin and User App.| "<TD_ID>" 

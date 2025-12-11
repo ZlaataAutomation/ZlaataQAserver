@@ -3,6 +3,7 @@ package pages;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 import org.junit.Assume;
 import org.openqa.selenium.By;
@@ -44,31 +45,70 @@ public class AdminPanelInfluencerPage extends AdminPanelInfluencerObjRepo {
 	}
 	
 	public String takeRandomProductName() {
-		HomePage home = new HomePage(driver);
-		home.homeLaunch();
+
+	    HomePage home = new HomePage(driver);
+	    home.homeLaunch();
 	    Common.waitForElement(3);
+
 	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
 	    Actions actions = new Actions(driver);
 
-	    // ✅ Hover on "Shop" menu
-	    WebElement shopMenu = wait.until(ExpectedConditions
-	            .visibilityOfElementLocated(By.xpath("//span[@class='navigation_menu_txt'][normalize-space()='Shop']")));
+	    // Hover on Shop → Dresses
+	    WebElement shopMenu = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	            By.xpath("//span[@class='navigation_menu_txt'][normalize-space()='Shop']")));
 	    actions.moveToElement(shopMenu).perform();
 
-	    // ✅ Click "All" from dropdown
-	    WebElement allButton = wait.until(ExpectedConditions
-	            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='All']")));
-	    allButton.click();
+	    WebElement dressesButton = wait.until(ExpectedConditions.elementToBeClickable(
+	            By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')='DRESSES']")));
+	    dressesButton.click();
 
-	    System.out.println("✅ Clicked on 'All' under Shop menu");
-	    
-	    // ✅ Wait until first product appears and copy its name
-	    WebElement firstProductName = wait.until(ExpectedConditions
-	            .visibilityOfElementLocated(By.xpath("(//h2[@class='product_list_cards_heading'])[1]")));
+	    System.out.println("✅ Clicked on 'Dresses' menu");
 
-	    String productName = firstProductName.getText().trim();
-	    System.out.println("✅ First product name: " + productName);
+	    // Get all products
+	    List<WebElement> products = wait.until(ExpectedConditions
+	            .visibilityOfAllElementsLocatedBy(By.xpath("//div[contains(@class,'product_list_cards_list')]")));
 
+	    if (products.isEmpty()) {
+	        System.out.println("⚠️ No products found!");
+	        return null;
+	    }
+
+	    Random rand = new Random();
+	    String productName = null;
+
+	    // Try multiple random products until in-stock found
+	    for (int attempt = 1; attempt <= 5; attempt++) {
+
+	        int randomIndex = rand.nextInt(products.size()) + 1;
+	        System.out.println("🎯 Checking product index: " + randomIndex);
+
+	        WebElement productCard = driver.findElement(
+	                By.xpath("(//div[contains(@class,'product_list_cards_list')])[" + randomIndex + "]"));
+
+	        String name = productCard.findElement(
+	                By.xpath(".//h2[@class='product_list_cards_heading']"))
+	                .getText().trim();
+
+	        boolean isOutOfStock = !productCard.findElements(
+	                By.xpath(".//h2[contains(@class,'product_list_cards_out_of_stock_heading') and normalize-space()='OUT OF STOCK']"))
+	                .isEmpty();
+
+	        if (isOutOfStock) {
+	            System.out.println("❌ OUT OF STOCK → " + name);
+	            continue;
+	        }
+
+	        productName = name;   
+	        System.out.println("✅ Selected in-stock product: " + productName);
+	        break;
+	    }
+
+	    if (productName == null) {
+	        System.out.println("⚠️ No in-stock product found after retries");
+	        return null;
+	    }
+
+	    System.out.println("📌 Final Product Name: " + productName);
 	    return productName;
 	}
 	String copiedProductName;

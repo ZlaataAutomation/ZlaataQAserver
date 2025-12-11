@@ -261,7 +261,8 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	        waitFor(submitButton);
 	        submitButton.click();
 	        System.out.println("✅ Excel uploaded successfully");
-		    Common.waitForElement(4);
+	        Common.waitForElement(2);
+		    Common.waitForElement(5);
 		    waitFor(clearCatchButton);
 		    click(clearCatchButton);
 		    System.out.println("✅ Successfull click Clear Catch Button");
@@ -460,7 +461,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	        waitFor(submitButton);
 	        submitButton.click();
 	        System.out.println("✅ Excel uploaded successfully");
-		    Common.waitForElement(5);
+		    Common.waitForElement(8);
 		    waitFor(clearCatchButton);
 		    click(clearCatchButton);
 		    System.out.println("✅ Successful click Clear Catch Button");
@@ -657,7 +658,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	        submitButton.click();
 		    System.out.println("✅ successful saved");
 	        System.out.println("✅ Excel uploaded successfully");
-	        Common.waitForElement(5);
+	        Common.waitForElement(8);
 	        
 	    }
 		
@@ -830,7 +831,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 			        submitButton.click();
 				    System.out.println("✅ successful saved");
 			        System.out.println("✅ Excel uploaded successfully");
-			        Common.waitForElement(5);
+			        Common.waitForElement(8);
 			        
 			    }
 	
@@ -937,7 +938,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 		        submitButton.click();
 			    System.out.println("✅ successful saved");
 		        System.out.println("✅ Excel uploaded successfully");
-		        Common.waitForElement(5);
+		        Common.waitForElement(8);
 		        
 		    }
 
@@ -1041,7 +1042,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 		        submitButton.click();
 			    System.out.println("✅ successful saved");
 		        System.out.println("✅ Excel uploaded successfully");
-		        Common.waitForElement(5);
+		        Common.waitForElement(8);
 		        
 		    }
 

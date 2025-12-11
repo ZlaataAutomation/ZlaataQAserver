@@ -77,6 +77,31 @@ public class AdminPanelSortingStepDef {
 		adminSort.verifyFirstProductInUserAppAllProduct();
 		}
 
+		@When("I sort the products in a Search Collection")
+		public void i_sort_the_products_in_a_search_collection() throws IOException, InterruptedException {
+			adminSort.sortTheSearchCollectionInAdminPanel();
+			adminSort.verifySortingSearchCollectionInUserApp();
+		}
+
+		@Then("I should see the same product appear first in the User Application Search Collection")
+		public void i_should_see_the_same_product_appear_first_in_the_user_application_search_collection() throws IOException, InterruptedException {
+			
+			adminSort.verifyFirstProductInUserAppSearchCollection();
+		}
+
+
+		@When("I sort the products in a Search Style")
+			public void i_sort_the_products_in_a_search_style() throws IOException {
+			adminSort.sortTheSearchStyleInAdminPanel();
+			}
+
+		@Then("I should see the same product appear first in the User Application Search Style")
+			public void i_should_see_the_same_product_appear_first_in_the_user_application_search_style() throws IOException, InterruptedException {
+			adminSort.verifySortingSearchStyleInUserApp();
+			adminSort.verifyFirstProductInUserAppSearchStyle();
+			}
+
+
 
 
 

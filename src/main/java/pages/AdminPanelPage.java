@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,55 +56,102 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		js.executeScript("arguments[0].click();", element);
 	}
 	
-	private String expectedBannerTitle;
+	 String expectedBannerTitle;
 
 
+		public void adminLoginApp() {
+			 driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
+		        type(adminEmail, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminName"));
+		        type(adminPassword, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminPassword"));
+		        click(adminLogin);
+		        System.out.println( "✅ Admin Login Successful" );
+
+		    
+		}
 
 	public void uploadImage(String imagePath) {
-	    driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
-	    type(adminEmail, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminName"));
-	    type(adminPassword, FileReaderManager.getInstance().getJsonReader().getValueFromJson("AdminPassword"));
-	    click(adminLogin);
-	    Common.waitForElement(2);
+	    Scanner sc = new Scanner(System.in);
 
+	    // ANSI color codes for console output
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String BLUE = "\u001B[34m";
+	    String CYAN = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+	    String line = "─────────────────────────────────────────────";
+
+	    // Step 1: Login to Admin
+	    driver.manage().window().minimize();
+
+	 
+
+	    // Step 3: Take banner title input from console
+	    System.out.println(line);
+	    System.out.print(YELLOW + "🖼️ Enter Banner Title: " + RESET);
+	     expectedBannerTitle = sc.nextLine().trim();
+	    System.out.println(CYAN + "📢 You entered Banner Title: " + GREEN + expectedBannerTitle + RESET);
+	    System.out.println(line);
+	    
+	 // ✅ Login once before starting all exports
+        driver.manage().window().maximize();
+        
+        adminLoginApp();
+	    // Step 2: Navigate to Excel path (if needed)
 	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
-	    expectedBannerTitle = Common.getValueFromTestDataMap("Banner Title");
 	    Common.waitForElement(2);
+
+	    // Step 4: Add new homepage banner
 	    click(addHomePageBanner);
-	    
-	        type(bannerTitle,expectedBannerTitle );
-	        Common.waitForElement(2);
-		    waitFor(uploadImageInput);
-	        uploadImageInput.sendKeys(imagePath);
-	        System.out.println("✅ successful image updated");
-	        click(uploadButton);
-	        driver.navigate().refresh();
-	       
-	      
-	        
-	        Common.waitForElement(4);
-	    click(homePageBannerDropDown);
-	    selectHomePageValue.get(0).click();
 	    Common.waitForElement(2);
-		click(status);
-		statusFilterSelect.get(0).click();
-		Common.waitForElement(2);
+	    type(bannerTitle, expectedBannerTitle);
+	    Common.waitForElement(2);
 
-	   
-	        type(sortBy, "1");
-	        Common.waitForElement(2);
-	        click(sortBySave);
+	    // Step 5: Upload image
+	    waitFor(uploadImageInput);
+	    uploadImageInput.sendKeys(imagePath);
+	    System.out.println(GREEN + "✅ Image uploaded successfully!" + RESET);
 
-	        System.out.println("Added new banner and saved with Sort By = 1");
+	    Common.waitForElement(2);
+	    click(uploadButton);
 	    
+	    Common.waitForElement(3);
+	    driver.navigate().refresh();
+//	    Common.waitForElement(4);
+
+	    // Step 6: Select Home Page filter and set status
+//	    click(homePageBannerDropDown);
+//	    selectHomePageValue.get(0).click();
+//	    Common.waitForElement(2);
+//
+//	    click(status);
+//	    statusFilterSelect.get(0).click();
+//	    Common.waitForElement(2);
+//
+//	    // Step 7: Set sort order
+//	    type(sortBy, "1");
+//	    Common.waitForElement(2);
+//	    click(sortBySave);
+	    Common.waitForElement(2);
+	    waitFor(clearCatchButton);
+	    click(clearCatchButton);
+	    System.out.println("✅ Successfull click Clear Catch Button");
+	    Common.waitForElement(2);
+
+	    // Step 8: Final success message
+	    System.out.println(line);
+	    System.out.println(BLUE + "🎯 Added new banner: " + GREEN + expectedBannerTitle + RESET);
+//	    System.out.println(BLUE + "🔢 Sort By: " + YELLOW + "1" + RESET);
+	    System.out.println(GREEN + "✅ Banner upload and setup completed successfully!" + RESET);
+	    System.out.println(line);
 	}
+
 
 
 	public void verifyBannerOnHomePage() {
 		HomePage home = new HomePage(driver);
 		home.homeLaunch();
 
-	    String expectedTitle = Common.getValueFromTestDataMap("Banner Title");
+	  //  String expectedTitle = Common.getValueFromTestDataMap("Banner Title");
 
 	    int timeoutMinutes = 10;
 	    boolean titleFound = false;
@@ -124,7 +172,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            titleElement = wait.until(d -> {
 	                List<WebElement> elements = driver.findElements(
-	                        By.xpath("//a[contains(@class,'carousel_banner Cls_OpenSubscribe')]//img[@alt='" + expectedTitle + "']")
+	                        By.xpath("//a[contains(@class,'carousel_banner')]//img[@alt='" + expectedBannerTitle + "']")
 	                );
 	              
 	                return elements.isEmpty() ? null : elements.get(0);
@@ -149,10 +197,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	    // ✅ Final check
 	    if (titleFound) {
-	        System.out.println("✅ Banner title '" + expectedTitle + "' is visible in User Application.");
+	        System.out.println("✅ Banner title '" + expectedBannerTitle + "' is visible in User Application.");
 	    } else {
-	        System.out.println("❌ Banner title '" + expectedTitle + "' not found within " + timeoutMinutes + " minutes.");
-	        Assert.fail("❌ Banner title '" + expectedTitle + "' not found within " + timeoutMinutes + " minutes.");
+	        System.out.println("❌ Banner title '" + expectedBannerTitle + "' not found within " + timeoutMinutes + " minutes.");
+	        Assert.fail("❌ Banner title '" + expectedBannerTitle + "' not found within " + timeoutMinutes + " minutes.");
 	    }
 	}
 	
@@ -209,25 +257,39 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	}
 	public void putSkuIntoTopSelling(String sku) {
 	    try {
-	    	
-	    	Common.waitForElement(2);
-	    	waitFor(generalSettingsMenu);
+	        // ANSI Colors for better console logs
+	        String GREEN = "\u001B[32m";
+	        String YELLOW = "\u001B[33m";
+	        String BLUE = "\u001B[34m";
+	        String CYAN = "\u001B[36m";
+	        String RED = "\u001B[31m";
+	        String RESET = "\u001B[0m";
+	        String line = "─────────────────────────────────────────────";
+
+	        Common.waitForElement(2);
+	        waitFor(generalSettingsMenu);
 	        click(generalSettingsMenu);
 	        Common.waitForElement(2);
-	        
-//		    waitFor(clickSetKey);
-//		    click(clickSetKey);
-//		    type(clickSetKey, "top_selling");
-//		    clickSetKey.sendKeys(Keys.ENTER);
-//		    System.out.println("✅ Searched for top-selling");
+
+	        waitFor(clickSetKey);
+	        click(clickSetKey);
+	        Common.waitForElement(2);
+	        waitFor(productSearchBox);
+	        click(productSearchBox);
+	        Common.waitForElement(2);
+	        type(productSearchBox, "top_selling");
+	        productSearchBox.sendKeys(Keys.ENTER);
+	        System.out.println(BLUE + "🔍 Searched for 'top_selling'..." + RESET);
+	        Common.waitForElement(3);
 	        waitFor(topSellingEdit);
 	        click(topSellingEdit);
-	        System.out.println("✅ Successfull click the top selling edit button");     
-	        
+	        System.out.println(GREEN + "✅ Opened Top Selling edit section" + RESET);
+
 	        waitFor(topSellingSkuInput);
 	        String current = topSellingSkuInput.getAttribute("value");
 	        String cleaned = (current == null) ? "" : current.trim();
 
+	        // Clean JSON-like format [sku1, sku2, sku3]
 	        if (cleaned.startsWith("[") && cleaned.endsWith("]")) {
 	            cleaned = cleaned.substring(1, cleaned.length() - 1).trim();
 	        }
@@ -240,48 +302,49 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	            }
 	        }
 
+	        System.out.println(CYAN + "📦 Current SKU list: " + skuList + RESET);
+
 	        boolean alreadyExists = skuList.stream()
 	                .anyMatch(s -> s.equalsIgnoreCase(sku));
 
 	        String updated;
 	        String message;
+
+	        // ✅ If already exists → remove and move to first
 	        if (alreadyExists) {
+	            skuList.removeIf(s -> s.equalsIgnoreCase(sku));
+	            skuList.add(0, sku);
 	            updated = "[" + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' already present. No changes made.";
-	        } else if (skuList.isEmpty()) {
-	            updated = "[" + sku + "]";
-	            message = "SKU '" + sku + "' added as the first Top Selling item.";
+	            message = "SKU '" + sku + "' already existed — moved to first position.";
 	        } else {
-	            updated = "[" + sku + ", " + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' prepended to Top Selling list.";
+	            // ✅ If not exist → add to first
+	            skuList.add(0, sku);
+	            updated = "[" + String.join(", ", skuList) + "]";
+	            message = "SKU '" + sku + "' added to Top Selling list.";
 	        }
 
+	        // Update field
 	        topSellingSkuInput.clear();
 	        type(topSellingSkuInput, updated);
-	        Common.waitForElement(5);
+	        Common.waitForElement(2);
 	        click(saveTopSelling);
 
-	     // Wait briefly for possible error page
-	     Common.waitForElement(3);
-
-	     System.out.println("✅ " + message);
-
-	         // No error page found → continue test
-	         System.out.println("✅ Save successful.");
-	        
+	        System.out.println(line);
+	        System.out.println(GREEN + "✅ " + message + RESET);
+	        System.out.println(YELLOW + "💾 Updated Top Selling List: " + CYAN + updated + RESET);
+	        System.out.println(line);
 
 	    } catch (Exception e) {
-	        String error = "❌ Failed to update Top Selling SKU due to: " + e.getMessage();
-	        System.err.println(error);
+	        System.err.println("❌ Failed to update Top Selling SKU due to: " + e.getMessage());
 	        throw e;
 	    }
-	    
+
+	    // ✅ Always clear cache at the end
 	    Common.waitForElement(2);
 	    waitFor(clearCatchButton);
 	    click(clearCatchButton);
-	    System.out.println("✅ Successfull click Clear Catch Button");
+	    System.out.println( "🧹 Cache cleared successfully." );
 	    Common.waitForElement(2);
-	    
 	}
 	
 	
@@ -389,14 +452,25 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	// Remove SKU from Top Selling list
 	public void removeSkuFromTopSelling(String sku) {
 	    try {
-	        Common.waitForElement(2);
-	        waitFor(generalSettingsMenu);
+	    	Common.waitForElement(2);
+	    	waitFor(generalSettingsMenu);
 	        click(generalSettingsMenu);
 	        Common.waitForElement(2);
-
+	        
+		    waitFor(clickSetKey);
+		    click(clickSetKey);
+		    Common.waitForElement(2);
+		    waitFor(productSearchBox);
+		    click(productSearchBox);
+		    
+		    type(productSearchBox, "top_selling");
+		    
+		    productSearchBox.sendKeys(Keys.ENTER);
+		    System.out.println("✅ Searched for top-selling");
+		    Common.waitForElement(3);
 	        waitFor(topSellingEdit);
 	        click(topSellingEdit);
-	        System.out.println("✅ Clicked Top Selling Edit button");
+	        System.out.println("✅ Successfull click the top selling edit button");  
 
 	        waitFor(topSellingSkuInput);
 	        String current = topSellingSkuInput.getAttribute("value");
@@ -827,62 +901,89 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	}
 	
 	//Catagory Section
-	
-	  public void updateCategoryBanner(String imagePathCatagory) {
-		
-		driver.get(Common.getValueFromTestDataMap("ExcelPath"));
-	    System.out.println("✅ Successful redirect to Home page Banner ");
-	    
-      
-        // Click on Home Page Banner menu
-	    Common.waitForElement(2);
-	    waitFor(homePageBannerMenu);
-        click(homePageBannerMenu);
-        Common.waitForElement(2);
-        
+	String expectedTitle;
+	public void updateCategoryBanner(String imagePathCategory) {
+	    Scanner sc = new Scanner(System.in);
 
-        // Search for category
-        Common.waitForElement(2);
-	    waitFor(catagorysearchTextBox);
-	    type(catagorysearchTextBox, "Dazzle Category");
-	    catagorysearchTextBox.sendKeys(Keys.ENTER);
-	    System.out.println("✅ Typed 'Dazzle Category' & pressed Enter");
-	    
-        // Click Edit button
-	    Common.waitForElement(2);
-	    waitFor(editButton);
-        click(editButton);
-        System.out.println("✅ Clicked  editbutton");
-        
+	    // 🎨 Console colors
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String BLUE = "\u001B[34m";
+	    String CYAN = "\u001B[36m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String line = "─────────────────────────────────────────────";
+	    driver.manage().window().minimize();
+	 // Step 5: Get Banner Title from console
+        System.out.print(YELLOW + "🖼️ Enter new Banner Title: " + RESET);
+         expectedTitle = sc.nextLine().trim();
+         
+         driver.manage().window().maximize();
 
-        // Clear and enter new banner title
-        String bannerTitle = Common.getValueFromTestDataMap("Banner Title");
-        Common.waitForElement(2);
-	    waitFor(bannerTitleTextBox);
-	    bannerTitleTextBox.clear();
-	    type(bannerTitleTextBox, bannerTitle);
-	    System.out.println("✅ Typed bannerTitle");
-	    
+	    try {
+	        // Step 1: Open Excel page (or config page)
+	        driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+	        System.out.println(GREEN + "✅ Successfully redirected to Home Page Banner section." + RESET);
 
-        // Upload new banner image
-	    Common.waitForElement(2);
-	    waitFor(desktopBannerUpload);
-        desktopBannerUpload.sendKeys(imagePathCatagory);
-        System.out.println("✅ successful image updated");
-        
+	        // Step 2: Click on Home Page Banner menu
+	        Common.waitForElement(2);
+	        waitFor(homePageBannerMenu);
+	        click(homePageBannerMenu);
+	        Common.waitForElement(2);
+	        System.out.println(BLUE + "📂 Opened 'Home Page Banner' menu." + RESET);
 
-        // Save changes
-        Common.waitForElement(2);
-        waitFor(saveButton);
-        saveButton.click();
-        Common.waitForElement(3);
-      //Clear Catch
-	    Common.waitForElement(2);
-	    waitFor(clearCatchButton);
-	    click(clearCatchButton);
-	    System.out.println("✅ Successfull click Clear Catch Button");
-	    Common.waitForElement(2);
-    }
+	        // Step 3: Search for category
+	        Common.waitForElement(2);
+	        waitFor(catagorysearchTextBox);
+	        type(catagorysearchTextBox, "Dazzle Category");
+	        catagorysearchTextBox.sendKeys(Keys.ENTER);
+	        System.out.println(GREEN + "🔍 Searched for 'Dazzle Category'." + RESET);
+
+	        // Step 4: Click Edit button
+	        Common.waitForElement(2);
+	        waitFor(editButton);
+	        click(editButton);
+	        System.out.println(GREEN + "🖊️ Clicked 'Edit' button for Dazzle Category." + RESET);
+
+	        
+
+	        // Step 6: Clear and set new banner title
+	        Common.waitForElement(2);
+	        waitFor(bannerTitleTextBox);
+	        bannerTitleTextBox.clear();
+	        type(bannerTitleTextBox, expectedTitle);
+	        System.out.println(CYAN + "🏷️  Banner Title set to: " + YELLOW + expectedTitle + RESET);
+
+	        // Step 7: Upload new banner image
+	        Common.waitForElement(2);
+	        waitFor(desktopBannerUpload);
+	        desktopBannerUpload.sendKeys(imagePathCategory);
+	        System.out.println(GREEN + "✅ Banner image uploaded successfully." + RESET);
+
+	        // Step 8: Save changes
+	        Common.waitForElement(2);
+	        waitFor(saveButton);
+	        saveButton.click();
+	        Common.waitForElement(3);
+	        System.out.println(GREEN + "💾 Changes saved successfully." + RESET);
+
+	        // Step 9: Clear cache
+	        Common.waitForElement(2);
+	        waitFor(clearCatchButton);
+	        click(clearCatchButton);
+	        System.out.println(GREEN + "🧹 Cache cleared successfully." + RESET);
+	        Common.waitForElement(2);
+
+	        System.out.println(line);
+	        System.out.println(BLUE + "🎯 Successfully updated category banner with title: " 
+	                           + YELLOW + expectedTitle + RESET);
+	        System.out.println(line);
+
+	    } catch (Exception e) {
+	        System.err.println(RED + "❌ Failed to update category banner: " + e.getMessage() + RESET);
+	        throw e;
+	    }
+	}
 
     // Method 2: Verify Banner in User Application
 	public void verifyBannerUserApp() {
@@ -892,8 +993,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,1300);");
 	    Common.waitForElement(3);
 
-	    // Expected values from test data
-	    String expectedTitle = Common.getValueFromTestDataMap("Banner Title");
+	
 
 	    // ✅ Wait until the expected banner title appears
 	    int timeoutMinutes = 10;  
@@ -1130,8 +1230,80 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 //Special Timer Product
 	
+	public void clickPlusOrResetFlow() throws InterruptedException {
+
+	    // 1️⃣ Click Active Status
+	    Common.waitForElement(3);
+	    waitFor(statusActiveOption);
+	    click(statusActiveOption);
+	    System.out.println("✅ Selected Active status");
+
+	    Common.waitForElement(2);
+
+	    // 2️⃣ TRY clicking Plus button
+	    try {
+	        if (plusButton.isDisplayed() && plusButton.isEnabled()) {
+	            click(plusButton);
+	            System.out.println("✅ Clicked '+' Plus button (Direct)");
+	            return; // SUCCESS, exit method
+	        }
+	    } catch (Exception e) {
+	        System.out.println("⚠️ Plus Button NOT visible, switching to fallback flow...");
+	    }
+
+	    // ---------------------------------------------------------
+	    // 3️⃣ FALLBACK FLOW: Reset → Search Event Name → Enable status → Enable promotional → Click plus
+	    // ---------------------------------------------------------
+
+	    // Click Reset
+	    WebElement resetBtn = driver.findElement(By.id("crudTable_reset_button"));
+	    click(resetBtn);
+	    System.out.println("🔄 Clicked Reset");
+
+	    Common.waitForElement(2);
+
+	    // Click Event Name dropdown
+	    WebElement eventNameDropdown = driver.findElement(By.xpath("//a[contains(text(),'Event Name')]"));
+	    click(eventNameDropdown);
+	    System.out.println("📂 Opened Event Name dropdown");
+
+	    Common.waitForElement(1);
+
+	    // Enter search text
+	    WebElement searchBox = driver.findElement(By.id("text-filter-eventName"));
+	    searchBox.clear();
+	    searchBox.sendKeys("Festiv Sale");
+	    searchBox.sendKeys(Keys.ENTER);
+	    System.out.println("🔍 Entered event name: Festiv Sale");
+
+	    Common.waitForElement(2);
+
+	    // Enable Status toggle
+	    WebElement statusToggle = driver.findElement(By.xpath("//label[@for='V_status_54']"));
+	    if (!statusToggle.isSelected()) {
+	    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", statusToggle);
+	        System.out.println("🔘 Enabled EVENT Status");
+	    }
+
+	    Common.waitForElement(2);
+
+	    // Enable Promotional Offer toggle
+	    WebElement promoToggle = driver.findElement(By.xpath("//label[@for='V_promotional_offer_54']"));
+	    if (!promoToggle.isSelected()) {
+	    	((JavascriptExecutor) driver).executeScript("arguments[0].click();", promoToggle);
+	        System.out.println("🎁 Enabled Promotional Offer");
+	    }
+
+	    Common.waitForElement(2);
+
+	    // Click PLUS button again
+	    //waitFor(plusButton);
+	    Common.waitForElement(2);
+	    click(plusButton);
+	    System.out.println("🚀 Clicked '+' Plus button (AFTER fallback)");
+	}
 	 // ✅ Upload excel
-    public void uploadTheSpecialTimerProductExcel(String filePath) {
+    public void uploadTheSpecialTimerProductExcel(String filePath) throws InterruptedException {
         Common.waitForElement(2);
         driver.get(Common.getValueFromTestDataMap("ExcelPath"));
         
@@ -1140,17 +1312,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    waitFor(clickStatus);
 	    click(clickStatus);
 
-	    // Select Status -> Active
-	    Common.waitForElement(3);
-	    waitFor(statusActiveOption);
-	    click(statusActiveOption);
-	    System.out.println("✅ Selected Active status");
-	    
-	 // Click Plus Button to add products
-	 		Common.waitForElement(2);
-	 		waitFor(plusButton);
-	 		click(plusButton);
-	 		System.out.println("✅ Clicked '+'Plus button");
+	    clickPlusOrResetFlow();
 
         Common.waitForElement(2);
         waitFor(importButton);
@@ -1168,7 +1330,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
         System.out.println("✅ Excel uploaded successfully");
         
       //Clear Catch
-	    Common.waitForElement(2);
+	    Common.waitForElement(4);
 	    waitFor(clearCatchButton);
 	    click(clearCatchButton);
 	    System.out.println("✅ Successfull click Clear Catch Button");
@@ -1245,6 +1407,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             }
         }
 
+        Common.waitForElement(4);
+	    waitFor(clearCatchButton);
+	    click(clearCatchButton);
+	    System.out.println("✅ Successfull click Clear Catch Button");
         // ✅ Step 3: Switch to User App
         HomePage home = new HomePage(driver);
 		home.homeLaunch();
@@ -1270,7 +1436,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             userSearchBox.clear();
             userSearchBox.sendKeys(productColorName);
           
-
+            Common.waitForElement(3);
             By locator = By.xpath("//h6[normalize-space()='" + productColorName + "']");
             wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
 
@@ -1279,6 +1445,21 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
             productElement.click();
 
             System.out.println("✅ Product found in User App: " + productColorName);
+         // ✅ SPECIAL TIMER CHECK
+            try {
+                WebElement specialTimer = wait.until(ExpectedConditions.visibilityOfElementLocated(
+                    By.xpath("//div[@id='prodTimer' and contains(@class,'prod_category_timer')]")
+                ));
+
+                if (specialTimer.isDisplayed()) {
+                    System.out.println("⏳ Special Timer is displayed on Product Detail Page.");
+                } else {
+                    throw new RuntimeException("❌ Special Timer element is present but NOT visible.");
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException("❌ Special Timer is NOT displayed on Product Detail Page!", e);
+            }
 
             // ✅ Verify price details
             try {

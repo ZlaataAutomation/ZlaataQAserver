@@ -111,13 +111,13 @@ public abstract class AdminPanelAllImportObjRepo extends BasePage {
     @FindBy(xpath = "(//div[@class='col-sm-0 col-md-4 text-center'])[1]")
 	 protected WebElement clickBlankSpace;
     
-    @FindBy(xpath = "//input[@id='search__product']")
+    @FindBy(xpath = "//input[@id='search_input']")
     protected WebElement userSearchBox;
  
     @FindBy(xpath = "//a[normalize-space()='Collection Name']")
     protected WebElement clickedCollection;
     
-    @FindBy(xpath = "//input[@id='search__product']")
+    @FindBy(xpath = "//input[@id='search_input']")
     protected WebElement searchBox;
     
     @FindBy(xpath = "//input[@id='text-filter-name']")

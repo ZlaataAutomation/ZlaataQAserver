@@ -32,15 +32,15 @@ public final class HomePage extends HomePageObjRepo {
 	}
 	public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-//				click(submit);
-//		popup();
+				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+				click(submit);
+		popup();
 
 
 	}
 	public void popup() {
 		try {
-			WebElement popUp = driver.findElement(By.xpath("//button[@class='close-btn']"));
+			WebElement popUp = driver.findElement(By.xpath("//div[@class='chrismas_closebtn popup_containers_cls_btn Cls_christmas_closebtn']"));
 			Common.waitForElement(5);
 
 			if (popUp.isDisplayed()) {

@@ -65,9 +65,12 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "//span[@role='combobox' and contains(@aria-labelledby,'select2-coupon_type')]")
 	protected WebElement couponTypeBtn;
 
-   	@FindBy(xpath = "(//input[@role='searchbox'])[2]")
+   	@FindBy(xpath = "(//input[@role='searchbox'])[9]")
 	protected WebElement couponTypeBox;
 
+   	@FindBy(xpath = "(//input[contains(@class, 'select2-search__field') and @type='search'])[2]")
+	protected WebElement menuBtn;
+   	
    	@FindBy(xpath = "//span[@data-value='save_and_back']")
 	protected WebElement saveAndBackButton;
    	
@@ -89,18 +92,60 @@ public abstract class AdminPanelCouponObjRepo extends BasePage {
    	@FindBy(xpath = "//button[normalize-space()='View Coupons']")
 	protected WebElement viewCoupon;
    	
-   	@FindBy(xpath = "(//input[@placeholder='Enter Coupon Code'])[2]")
+   	@FindBy(xpath = "//input[@placeholder='Enter Coupon Code']")
 	protected WebElement searchBox;
   
-   	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[2]")
+   	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[1]")
 	protected WebElement applyBtn;
+   	
+   	@FindBy(xpath = "(//button[@type='submit'][normalize-space()='apply'])[2]")
+	protected WebElement applyBtn2;
 
-   	@FindBy(xpath = "(//input[@placeholder='Select a product'])[1]")
+   	@FindBy(xpath = "(//input[contains(@class, 'select2-search__field') and @type='search'])[7]")
 	protected WebElement productBox;
    	
    	@FindBy(xpath = "//i[@class='fa fa-refresh']") 
     protected WebElement clearCatchButton;
+   	
+   	@FindBy(xpath = "//i[@class='fa fa-trash']") 
+    protected WebElement resetBtn;
     
+   	@FindBy(xpath = "//button[@id='reset-all']") 
+    protected WebElement resetAllBtn;
+   	
+   	@FindBy(xpath = "(//div[contains(@class,'product_list_add_to_cart')])[1]")
+	protected WebElement addToBag;
+	
+	    
+	@FindBy(xpath = "//button[contains(@class,'add_bag_prod_buy_now_btn') and normalize-space()='Add to Bag']")
+	protected WebElement addToCartBtn;
+  
+ 	@FindBy(xpath = "//a[contains(@class,'view_details_btn') and (contains(text(),'View Order Details') or contains(text(),'View Orders'))]")
+	protected WebElement viewOrderDetails;
+ 	
+ 	@FindBy(xpath = "//button[contains(@class,'place_order_btn') and normalize-space(text())='Place order']")
+	protected WebElement placeOrderBtn;
+ 	
+ 	@FindBy(xpath="(//div[@title='User Icon'])[1]")
+    protected WebElement myProfileIcon;
+ 
+ @FindBy(xpath="(//h2[normalize-space()='My Orders'])[1]")
+    protected WebElement myOrdersBtn;
+ 
+ @FindBy(xpath="(//input[@id='myOrdersSearch'])[1]")
+    protected WebElement myOrderSearchBox;
+ 
+ @FindBy(xpath = "(//div[contains(@class,'popup_containers_cls_btn')])[5]")
+	protected WebElement closeBtn;
+ 
+ @FindBy(xpath = "//a[normalize-space()='Order Id']")  
+ protected WebElement orderIdbtn;
+ 
+ @FindBy(xpath = "(//input[@role='searchbox'])[1]")  
+ protected WebElement orderSearchBox;
+ 
+ @FindBy(xpath = "//i[@class='las la-edit']")
+    protected WebElement editBtn;
    	
     
 }

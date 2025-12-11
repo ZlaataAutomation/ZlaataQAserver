@@ -36,7 +36,10 @@ public class PageObjectManager {
     private AdminPanelInfluencerPage adminInflu;
     private AdminPanelCouponPage adminCoupon;
     private AdminPanelExportPage adminExports;
-    
+    private AdminProductSecondaryColorPage adminSColor;
+    private AdminEmailVerifyOrderFlowPage adminEmail;
+    private COD_RazorPay_Page cod;
+    private Calculation_MyOrder_Page calculation;
    
 
     public PageObjectManager(WebDriver driver) {
@@ -144,6 +147,19 @@ public class PageObjectManager {
 		return (adminExports == null) ? adminExports = new AdminPanelExportPage(driver) : adminExports;
 	}
 	
+	public AdminProductSecondaryColorPage getAdminProductSecondaryColorPage() {
+		return (adminSColor == null) ? adminSColor = new AdminProductSecondaryColorPage(driver) : adminSColor;
+	}
 	
+	public AdminEmailVerifyOrderFlowPage getAdminEmailVerifyOrderFlowPage() {
+		return (adminEmail == null) ? adminEmail = new AdminEmailVerifyOrderFlowPage(driver) : adminEmail;
+	}
 	
+	public COD_RazorPay_Page getCOD_RazorPay_Page() {
+		return (cod == null) ? cod = new COD_RazorPay_Page(driver) : cod;
+	}
+	
+	public Calculation_MyOrder_Page getCalculation_MyOrder_Page() {
+		return (calculation == null) ? calculation = new Calculation_MyOrder_Page(driver) : calculation;
+	}
 }

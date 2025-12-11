@@ -152,7 +152,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	    
 
 	    // Clear cache
-	    Common.waitForElement(2);
+	    Common.waitForElement(5);
 	    click(clearCatchButton);
 	    System.out.println("✅ Cleared cache");
 	    Common.waitForElement(6);
@@ -212,48 +212,69 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	
 	// Method to verify that the first product in category is correct
 	public void verifyFirstProductInUserApp() throws InterruptedException {
-	    // Get the expected first product from test data
+
+	    // Expected product name from test data
 	    String expectedFirstProduct = Common.getValueFromTestData("ExpectedFirstProduct").trim(); 
 
-		 // Scroll to make sure products load
-		    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
-		    Common.waitForElement(2);
+	    // Scroll to load products
+	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
+	    Common.waitForElement(2);
 
-		    // ✅ FluentWait for page sync and refresh loop
-		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-		            .withTimeout(Duration.ofMinutes(5))
-		            .pollingEvery(Duration.ofSeconds(3))
-		            .ignoring(NoSuchElementException.class)
-		            .ignoring(StaleElementReferenceException.class);
+	    // FLUENT WAIT
+	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
+	            .withTimeout(Duration.ofMinutes(5))
+	            .pollingEvery(Duration.ofSeconds(3))
+	            .ignoring(NoSuchElementException.class)
+	            .ignoring(StaleElementReferenceException.class);
 
-		    WebElement firstProductImg = wait.until(d -> {
-		        d.navigate().refresh();
-		        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+	    WebElement matchedElement = wait.until(d -> {
+	        d.navigate().refresh();
+	        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
 
-		        List<WebElement> productImgs = d.findElements(By.xpath(
-		            "//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')][1]//div[@class='product_list_card_img']//img"
-		        ));
+	        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+	        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+	        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
 
-		        if (!productImgs.isEmpty()) {
-		            WebElement firstImg = productImgs.get(0);
-		            String altText = firstImg.getAttribute("alt").trim();
-		            System.out.println("👀 First Product ALT text on User App: " + altText);
+	        String altText = "";
+	        if (!productImgs.isEmpty()) {
+	            WebElement firstImg = productImgs.get(0);
+	            altText = firstImg.getAttribute("alt").trim();
+	            System.out.println("🖼 ALT Text (First Product): " + altText);
+	        }
 
-		            // ✅ Case-insensitive partial match
-		            if (altText.toLowerCase().contains(expectedFirstProduct.toLowerCase())) {
-		                return firstImg;
-		            }
-		        }
-		        return null;
-		    });
+	        // ---------- FETCH FIRST PRODUCT HEADING ----------
+	        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+	        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
 
-		    if (firstProductImg != null && firstProductImg.isDisplayed()) {
-		        System.out.println("✅ Verified product sorted correctly by image alt: '" 
-		            + expectedFirstProduct + "' in User App (First Position).");
-		    } else {
-		        throw new RuntimeException("❌ Product with alt containing '" + expectedFirstProduct 
-		            + "' not found in first position on User App Styles page.");
-		    }
+	        String headingText = "";
+	        if (!headingList.isEmpty()) {
+	            headingText = headingList.get(0).getText().trim();
+	            System.out.println("🔤 Heading Text (First Product): " + headingText);
+	        }
+
+	        // ---------- MATCHING LOGIC ----------
+	        boolean altMatch = !altText.isEmpty() &&
+	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        boolean headingMatch = !headingText.isEmpty() &&
+	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        // If either one matches → PASS
+	        if (altMatch || headingMatch) {
+	            System.out.println("✅ Match found! (ALT or Heading)");
+	            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+	        }
+
+	        return null; // keep waiting
+	    });
+
+	    if (matchedElement != null && matchedElement.isDisplayed()) {
+	        System.out.println("🎉 FINAL RESULT: PASS");
+	        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
+	    } else {
+	        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+	                + expectedFirstProduct);
+	    }
 	}
 
 	
@@ -329,7 +350,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	    
 
 	    // Clear cache
-	    Common.waitForElement(2);
+	    Common.waitForElement(5);
 	    click(clearCatchButton);
 	    System.out.println("✅ Cleared cache");
 	    Common.waitForElement(6);
@@ -391,47 +412,66 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	    // Get the expected first product from test data
 	    String expectedFirstProduct = Common.getValueFromTestData("ExpectedCollectionFirstProduct").trim(); 
 
-		 // Scroll to make sure products load
-		    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
-		    Common.waitForElement(2);
+	    // Scroll to load products
+	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
+	    Common.waitForElement(2);
 
-		    // ✅ FluentWait for page sync and refresh loop
-		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-		            .withTimeout(Duration.ofMinutes(5))
-		            .pollingEvery(Duration.ofSeconds(3))
-		            .ignoring(NoSuchElementException.class)
-		            .ignoring(StaleElementReferenceException.class);
+	    // FLUENT WAIT
+	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
+	            .withTimeout(Duration.ofMinutes(5))
+	            .pollingEvery(Duration.ofSeconds(3))
+	            .ignoring(NoSuchElementException.class)
+	            .ignoring(StaleElementReferenceException.class);
 
-		    WebElement firstProductImg = wait.until(d -> {
-		        d.navigate().refresh();
-		        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+	    WebElement matchedElement = wait.until(d -> {
+	        d.navigate().refresh();
+	        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
 
-		        List<WebElement> productImgs = d.findElements(By.xpath(
-		            "//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')][1]//div[@class='product_list_card_img']//img"
-		        ));
+	        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+	        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+	        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
 
-		        if (!productImgs.isEmpty()) {
-		            WebElement firstImg = productImgs.get(0);
-		            String altText = firstImg.getAttribute("alt").trim();
-		            System.out.println("👀 First Product ALT text on User App: " + altText);
+	        String altText = "";
+	        if (!productImgs.isEmpty()) {
+	            WebElement firstImg = productImgs.get(0);
+	            altText = firstImg.getAttribute("alt").trim();
+	            System.out.println("🖼 ALT Text (First Product): " + altText);
+	        }
 
-		            // ✅ Case-insensitive partial match
-		            if (altText.toLowerCase().contains(expectedFirstProduct.toLowerCase())) {
-		                return firstImg;
-		            }
-		        }
-		        return null;
-		    });
+	        // ---------- FETCH FIRST PRODUCT HEADING ----------
+	        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+	        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
 
-		    if (firstProductImg != null && firstProductImg.isDisplayed()) {
-		        System.out.println("✅ Verified product sorted correctly by image alt: '" 
-		            + expectedFirstProduct + "' in User App (First Position).");
-		    } else {
-		        throw new RuntimeException("❌ Product with alt containing '" + expectedFirstProduct 
-		            + "' not found in first position on User App Styles page.");
-		    }
+	        String headingText = "";
+	        if (!headingList.isEmpty()) {
+	            headingText = headingList.get(0).getText().trim();
+	            System.out.println("🔤 Heading Text (First Product): " + headingText);
+	        }
+
+	        // ---------- MATCHING LOGIC ----------
+	        boolean altMatch = !altText.isEmpty() &&
+	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        boolean headingMatch = !headingText.isEmpty() &&
+	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        // If either one matches → PASS
+	        if (altMatch || headingMatch) {
+	            System.out.println("✅ Match found! (ALT or Heading)");
+	            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+	        }
+
+	        return null; // keep waiting
+	    });
+
+	    if (matchedElement != null && matchedElement.isDisplayed()) {
+	        System.out.println("🎉 FINAL RESULT: PASS");
+	        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
+	    } else {
+	        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+	                + expectedFirstProduct);
+	    }
 	}
-
 	
 	//Sort Styles
 	public void sortTheStylesInAdminPanel() throws IOException {
@@ -501,7 +541,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	    
 
 	    // Clear cache
-	    Common.waitForElement(2);
+	    Common.waitForElement(5);
 	    click(clearCatchButton);
 	    System.out.println("✅ Cleared cache");
 	    Common.waitForElement(6);
@@ -563,47 +603,66 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	    // ✅ Get expected product name from test data (from admin sort)
 	    String expectedFirstProduct = Common.getValueFromTestData("ExpectedStylesFirstProduct").trim(); 
 
-	    // Scroll to make sure products load
+	    // Scroll to load products
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
 	    Common.waitForElement(2);
 
-	    // ✅ FluentWait for page sync and refresh loop
+	    // FLUENT WAIT
 	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
 	            .withTimeout(Duration.ofMinutes(5))
 	            .pollingEvery(Duration.ofSeconds(3))
 	            .ignoring(NoSuchElementException.class)
 	            .ignoring(StaleElementReferenceException.class);
 
-	    WebElement firstProductImg = wait.until(d -> {
+	    WebElement matchedElement = wait.until(d -> {
 	        d.navigate().refresh();
 	        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
 
-	        List<WebElement> productImgs = d.findElements(By.xpath(
-	            "//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')][1]//div[@class='product_list_card_img']//img"
-	        ));
+	        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+	        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+	        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
 
+	        String altText = "";
 	        if (!productImgs.isEmpty()) {
 	            WebElement firstImg = productImgs.get(0);
-	            String altText = firstImg.getAttribute("alt").trim();
-	            System.out.println("👀 First Product ALT text on User App: " + altText);
-
-	            // ✅ Case-insensitive partial match
-	            if (altText.toLowerCase().contains(expectedFirstProduct.toLowerCase())) {
-	                return firstImg;
-	            }
+	            altText = firstImg.getAttribute("alt").trim();
+	            System.out.println("🖼 ALT Text (First Product): " + altText);
 	        }
-	        return null;
+
+	        // ---------- FETCH FIRST PRODUCT HEADING ----------
+	        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+	        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
+
+	        String headingText = "";
+	        if (!headingList.isEmpty()) {
+	            headingText = headingList.get(0).getText().trim();
+	            System.out.println("🔤 Heading Text (First Product): " + headingText);
+	        }
+
+	        // ---------- MATCHING LOGIC ----------
+	        boolean altMatch = !altText.isEmpty() &&
+	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        boolean headingMatch = !headingText.isEmpty() &&
+	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+	        // If either one matches → PASS
+	        if (altMatch || headingMatch) {
+	            System.out.println("✅ Match found! (ALT or Heading)");
+	            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+	        }
+
+	        return null; // keep waiting
 	    });
 
-	    if (firstProductImg != null && firstProductImg.isDisplayed()) {
-	        System.out.println("✅ Verified product sorted correctly by image alt: '" 
-	            + expectedFirstProduct + "' in User App (First Position).");
+	    if (matchedElement != null && matchedElement.isDisplayed()) {
+	        System.out.println("🎉 FINAL RESULT: PASS");
+	        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
 	    } else {
-	        throw new RuntimeException("❌ Product with alt containing '" + expectedFirstProduct 
-	            + "' not found in first position on User App Styles page.");
+	        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+	                + expectedFirstProduct);
 	    }
 	}
-
 	
 	
 //Sort Micro Page
@@ -676,7 +735,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		    
 
 		    // Clear cache
-		    Common.waitForElement(2);
+		    Common.waitForElement(5);
 		    click(clearCatchButton);
 		    System.out.println("✅ Cleared cache");
 		    Common.waitForElement(6);
@@ -732,44 +791,64 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		    // Get the expected first product from test data
 		    String expectedFirstProduct = Common.getValueFromTestData("ExpectedMicroPageFirstProduct").trim(); 
 
-		 // Scroll to make sure products load
+		    // Scroll to load products
 		    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
 		    Common.waitForElement(2);
 
-		    // ✅ FluentWait for page sync and refresh loop
+		    // FLUENT WAIT
 		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
 		            .withTimeout(Duration.ofMinutes(5))
 		            .pollingEvery(Duration.ofSeconds(3))
 		            .ignoring(NoSuchElementException.class)
 		            .ignoring(StaleElementReferenceException.class);
 
-		    WebElement firstProductImg = wait.until(d -> {
+		    WebElement matchedElement = wait.until(d -> {
 		        d.navigate().refresh();
 		        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
 
-		        List<WebElement> productImgs = d.findElements(By.xpath(
-		            "//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')][1]//div[@class='product_list_card_img']//img"
-		        ));
+		        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+		        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+		        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
 
+		        String altText = "";
 		        if (!productImgs.isEmpty()) {
 		            WebElement firstImg = productImgs.get(0);
-		            String altText = firstImg.getAttribute("alt").trim();
-		            System.out.println("👀 First Product ALT text on User App: " + altText);
-
-		            // ✅ Case-insensitive partial match
-		            if (altText.toLowerCase().contains(expectedFirstProduct.toLowerCase())) {
-		                return firstImg;
-		            }
+		            altText = firstImg.getAttribute("alt").trim();
+		            System.out.println("🖼 ALT Text (First Product): " + altText);
 		        }
-		        return null;
+
+		        // ---------- FETCH FIRST PRODUCT HEADING ----------
+		        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+		        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
+
+		        String headingText = "";
+		        if (!headingList.isEmpty()) {
+		            headingText = headingList.get(0).getText().trim();
+		            System.out.println("🔤 Heading Text (First Product): " + headingText);
+		        }
+
+		        // ---------- MATCHING LOGIC ----------
+		        boolean altMatch = !altText.isEmpty() &&
+		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+		        boolean headingMatch = !headingText.isEmpty() &&
+		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+		        // If either one matches → PASS
+		        if (altMatch || headingMatch) {
+		            System.out.println("✅ Match found! (ALT or Heading)");
+		            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+		        }
+
+		        return null; // keep waiting
 		    });
 
-		    if (firstProductImg != null && firstProductImg.isDisplayed()) {
-		        System.out.println("✅ Verified product sorted correctly by image alt: '" 
-		            + expectedFirstProduct + "' in User App (First Position).");
+		    if (matchedElement != null && matchedElement.isDisplayed()) {
+		        System.out.println("🎉 FINAL RESULT: PASS");
+		        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
 		    } else {
-		        throw new RuntimeException("❌ Product with alt containing '" + expectedFirstProduct 
-		            + "' not found in first position on User App Styles page.");
+		        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+		                + expectedFirstProduct);
 		    }
 		}
 
@@ -843,7 +922,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		    
 
 		    // Clear cache
-		    Common.waitForElement(2);
+		    Common.waitForElement(5);
 		    click(clearCatchButton);
 		    System.out.println("✅ Cleared cache");
 		    Common.waitForElement(6);
@@ -905,53 +984,447 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		    // Get the expected first product from test data
 		    String expectedFirstProduct = Common.getValueFromTestData("ExpectedAllProductFirstProduct").trim(); 
 
-			 // Scroll to make sure products load
+		    // Scroll to load products
+		    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
+		    Common.waitForElement(2);
+
+		    // FLUENT WAIT
+		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
+		            .withTimeout(Duration.ofMinutes(5))
+		            .pollingEvery(Duration.ofSeconds(3))
+		            .ignoring(NoSuchElementException.class)
+		            .ignoring(StaleElementReferenceException.class);
+
+		    WebElement matchedElement = wait.until(d -> {
+		        d.navigate().refresh();
+		        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+
+		        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+		        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+		        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
+
+		        String altText = "";
+		        if (!productImgs.isEmpty()) {
+		            WebElement firstImg = productImgs.get(0);
+		            altText = firstImg.getAttribute("alt").trim();
+		            System.out.println("🖼 ALT Text (First Product): " + altText);
+		        }
+
+		        // ---------- FETCH FIRST PRODUCT HEADING ----------
+		        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+		        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
+
+		        String headingText = "";
+		        if (!headingList.isEmpty()) {
+		            headingText = headingList.get(0).getText().trim();
+		            System.out.println("🔤 Heading Text (First Product): " + headingText);
+		        }
+
+		        // ---------- MATCHING LOGIC ----------
+		        boolean altMatch = !altText.isEmpty() &&
+		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+		        boolean headingMatch = !headingText.isEmpty() &&
+		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+		        // If either one matches → PASS
+		        if (altMatch || headingMatch) {
+		            System.out.println("✅ Match found! (ALT or Heading)");
+		            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+		        }
+
+		        return null; // keep waiting
+		    });
+
+		    if (matchedElement != null && matchedElement.isDisplayed()) {
+		        System.out.println("🎉 FINAL RESULT: PASS");
+		        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
+		    } else {
+		        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+		                + expectedFirstProduct);
+		    }
+		}
+
+	
+	
+//Sort Search Collection Page
+		WebElement SearchCollectionFirstProductName;
+		String expectedSearchCollectionFirstProductName;
+			public void sortTheSearchCollectionInAdminPanel() throws IOException {
+			    Common.waitForElement(2);  
+			    String SearchCollectionName = "Wedding Party";
+			    
+			    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		  
+			        // Open Product Sort
+			        Common.waitForElement(2);
+			        click(searchProductSortMenu);
+			        type(searchProductSortMenu, "Product Sorts");
+			        click(clickProductSort);
+			        System.out.println("✅ Selected Product Sorts");
+
+			        click(addProductSort);
+			        System.out.println("✅ Clicked add product Sort");
+			        Common.waitForElement(2);
+
+			        click(categoryType);
+			        type(categorySearchTextBox, "Search Collections");
+			        categorySearchTextBox.sendKeys(Keys.ENTER);
+			        click(categoryId);
+			        Common.waitForElement(2);
+			        type(categorySearchTextBox, SearchCollectionName);
+			        categorySearchTextBox.sendKeys(Keys.ENTER);
+			        System.out.println("✅ Search Collections selected for Product Sort");
+
+			     // All product cards
+			        List<WebElement> allProducts = driver.findElements(By.xpath("//div[contains(@class,'sortable-card')]"));
+			        if (allProducts.size() < 3) {
+			            System.out.println("❌ Less than 3 products available, cannot perform reorder.");
+			            return;
+			        }
+
+			        WebElement thirdProduct = driver.findElement(By.xpath("(//div[contains(@class,'sortable-card')])[3]"));
+			        WebElement firstProduct = driver.findElement(By.xpath("(//div[contains(@class,'sortable-card')])[1]"));
+
+			        Actions action = new Actions(driver);
+
+			     // Perform drag & drop to above the first card
+			     action.clickAndHold(thirdProduct)
+			       .pause(Duration.ofMillis(500))
+			       .moveToElement(firstProduct, 0, -30) // Drop 30px above the first card
+			       .pause(Duration.ofMillis(500))
+			       .release()
+			       .build()
+			       .perform();
+			     
+
+			     Common.waitForElement(3);
+			     System.out.println("✅ Dragged 3rd product to 1st position");
+
+			        // Capture first product after sort
+			     SearchCollectionFirstProductName = driver.findElement(
+			            By.xpath("(//div[contains(@class,'sortable-card')])[1]//span[contains(@class,'product-name')]")
+			        );
+			        
+			         expectedSearchCollectionFirstProductName = SearchCollectionFirstProductName.getText().trim();
+			        System.out.println("📌 First product after sorting (Admin): " + expectedSearchCollectionFirstProductName + "");
+
+			        Common.setValueInTestDataMap("ExpectedSearchCollectionsFirstProduct", expectedSearchCollectionFirstProductName);
+
+			        // Save sort
+			        wait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
+			        System.out.println("✅ Sorting saved for category: " + SearchCollectionName);
+			    
+
+			    // Clear cache
+			    Common.waitForElement(5);
+			    click(clearCatchButton);
+			    System.out.println("✅ Cleared cache");
+			    Common.waitForElement(6);
+			    click(clearCatchButton);
+			    System.out.println("✅ Cleared cache");
+			    Common.waitForElement(3);
+
+			    System.out.println("🎉 Search Collection sorting completed successfully!");
+			}
+	
+	
+			public void verifySortingSearchCollectionInUserApp() throws IOException, InterruptedException {
+				HomePage home = new HomePage(driver);
+				home.homeLaunch();
+			    Common.waitForElement(3);
+
+			    ExtentTest test = ExtentManager.getExtentReports().createTest("Verify Search Collection in User App");
+			    ExtentManager.setTest(test);
+
+			    // ✅ Get shop name from Excel / Test Data
+			    String microPage = Common.getValueFromTestDataMap("Shop Name");
+			    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+			    // ✅ Step 1: Search Shop
+			    Common.waitForElement(2);
+			    wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+			    searchBox.clear();
+			    searchBox.sendKeys(microPage);
+			 // After searching microPage
+			    Common.waitForElement(2);
+
+			    // 🔍 Check if "wedding party" result appears
+			    try {
+			        WebElement weddingParty = wait.until(ExpectedConditions.visibilityOfElementLocated(
+			            By.xpath("//div[@class='product-redirect-tag' and contains(normalize-space(),'wedding party')]")
+			        ));
+
+			        System.out.println("🎯 Wedding Party option visible");
+
+			        // Click it
+			        weddingParty.click();
+			        System.out.println("🟢 Clicked on Wedding Party");
+
+			    } catch (Exception e) {
+			        System.out.println("❌ Wedding Party option NOT visible");
+			    }
+
+			    ExtentManager.getExtentReports().flush();
+			}
+			
+
+			
+			// Method to verify that the first product in category is correct
+			public void verifyFirstProductInUserAppSearchCollection() throws InterruptedException {
+			    // Get the expected first product from test data
+			    String expectedFirstProduct = Common.getValueFromTestData("ExpectedSearchCollectionsFirstProduct").trim(); 
+
+			    // Scroll to load products
 			    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
 			    Common.waitForElement(2);
 
-			    // ✅ FluentWait for page sync and refresh loop
+			    // FLUENT WAIT
 			    FluentWait<WebDriver> wait = new FluentWait<>(driver)
 			            .withTimeout(Duration.ofMinutes(5))
 			            .pollingEvery(Duration.ofSeconds(3))
 			            .ignoring(NoSuchElementException.class)
 			            .ignoring(StaleElementReferenceException.class);
 
-			    WebElement firstProductImg = wait.until(d -> {
+			    WebElement matchedElement = wait.until(d -> {
 			        d.navigate().refresh();
 			        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
 
-			        List<WebElement> productImgs = d.findElements(By.xpath(
-			            "//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')][1]//div[@class='product_list_card_img']//img"
-			        ));
+			        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+			        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+			        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
 
+			        String altText = "";
 			        if (!productImgs.isEmpty()) {
 			            WebElement firstImg = productImgs.get(0);
-			            String altText = firstImg.getAttribute("alt").trim();
-			            System.out.println("👀 First Product ALT text on User App: " + altText);
-
-			            // ✅ Case-insensitive partial match
-			            if (altText.toLowerCase().contains(expectedFirstProduct.toLowerCase())) {
-			                return firstImg;
-			            }
+			            altText = firstImg.getAttribute("alt").trim();
+			            System.out.println("🖼 ALT Text (First Product): " + altText);
 			        }
-			        return null;
+
+			        // ---------- FETCH FIRST PRODUCT HEADING ----------
+			        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+			        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
+
+			        String headingText = "";
+			        if (!headingList.isEmpty()) {
+			            headingText = headingList.get(0).getText().trim();
+			            System.out.println("🔤 Heading Text (First Product): " + headingText);
+			        }
+
+			        // ---------- MATCHING LOGIC ----------
+			        boolean altMatch = !altText.isEmpty() &&
+			                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+			        boolean headingMatch = !headingText.isEmpty() &&
+			                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+			        // If either one matches → PASS
+			        if (altMatch || headingMatch) {
+			            System.out.println("✅ Match found! (ALT or Heading)");
+			            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+			        }
+
+			        return null; // keep waiting
 			    });
 
-			    if (firstProductImg != null && firstProductImg.isDisplayed()) {
-			        System.out.println("✅ Verified product sorted correctly by image alt: '" 
-			            + expectedFirstProduct + "' in User App (First Position).");
+			    if (matchedElement != null && matchedElement.isDisplayed()) {
+			        System.out.println("🎉 FINAL RESULT: PASS");
+			        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
 			    } else {
-			        throw new RuntimeException("❌ Product with alt containing '" + expectedFirstProduct 
-			            + "' not found in first position on User App Styles page.");
+			        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+			                + expectedFirstProduct);
 			    }
-		}
+			}
+			
+//Sort Search Style Page
+			WebElement SearchStyleFirstProductName;
+			String expectedSearchStyleFirstProductName;
+				public void sortTheSearchStyleInAdminPanel() throws IOException {
+				    Common.waitForElement(2);  
+				    String SearchCollectionName = "Auto Test";
+				    
+				    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+			  
+				        // Open Product Sort
+				        Common.waitForElement(2);
+				        click(searchProductSortMenu);
+				        type(searchProductSortMenu, "Product Sorts");
+				        click(clickProductSort);
+				        System.out.println("✅ Selected Product Sorts");
 
-	
-	
-	
-	
-	
-	
+				        click(addProductSort);
+				        System.out.println("✅ Clicked add product Sort");
+				        Common.waitForElement(2);
+
+				        click(categoryType);
+				        type(categorySearchTextBox, "Search Styles");
+				        categorySearchTextBox.sendKeys(Keys.ENTER);
+				        click(categoryId);
+				        Common.waitForElement(2);
+				        type(categorySearchTextBox, SearchCollectionName);
+				        categorySearchTextBox.sendKeys(Keys.ENTER);
+				        System.out.println("✅ Search Collections selected for Product Sort");
+
+				     // All product cards
+				        List<WebElement> allProducts = driver.findElements(By.xpath("//div[contains(@class,'sortable-card')]"));
+				        if (allProducts.size() < 3) {
+				            System.out.println("❌ Less than 3 products available, cannot perform reorder.");
+				            return;
+				        }
+
+				        WebElement thirdProduct = driver.findElement(By.xpath("(//div[contains(@class,'sortable-card')])[3]"));
+				        WebElement firstProduct = driver.findElement(By.xpath("(//div[contains(@class,'sortable-card')])[1]"));
+
+				        Actions action = new Actions(driver);
+
+				     // Perform drag & drop to above the first card
+				     action.clickAndHold(thirdProduct)
+				       .pause(Duration.ofMillis(500))
+				       .moveToElement(firstProduct, 0, -30) // Drop 30px above the first card
+				       .pause(Duration.ofMillis(500))
+				       .release()
+				       .build()
+				       .perform();
+				     
+
+				     Common.waitForElement(3);
+				     System.out.println("✅ Dragged 3rd product to 1st position");
+
+				        // Capture first product after sort
+				     SearchStyleFirstProductName = driver.findElement(
+				            By.xpath("(//div[contains(@class,'sortable-card')])[1]//span[contains(@class,'product-name')]")
+				        );
+				        
+				         expectedSearchStyleFirstProductName = SearchStyleFirstProductName.getText().trim();
+				        System.out.println("📌 First product after sorting (Admin): " + expectedSearchStyleFirstProductName + "");
+
+				        Common.setValueInTestDataMap("ExpectedSearchStylesFirstProduct", expectedSearchStyleFirstProductName);
+
+				        // Save sort
+				        wait.until(ExpectedConditions.elementToBeClickable(saveButton)).click();
+				        System.out.println("✅ Sorting saved for category: " + SearchCollectionName);
+				    
+
+				    // Clear cache
+				    Common.waitForElement(5);
+				    click(clearCatchButton);
+				    System.out.println("✅ Cleared cache");
+				    Common.waitForElement(6);
+				    click(clearCatchButton);
+				    System.out.println("✅ Cleared cache");
+				    Common.waitForElement(3);
+
+				    System.out.println("🎉 Search Collection sorting completed successfully!");
+				}
+		
+		
+				public void verifySortingSearchStyleInUserApp() throws IOException, InterruptedException {
+					HomePage home = new HomePage(driver);
+					home.homeLaunch();
+				    Common.waitForElement(3);
+
+				    ExtentTest test = ExtentManager.getExtentReports().createTest("Verify Search Style in User App");
+				    ExtentManager.setTest(test);
+
+				    // ✅ Get shop name from Excel / Test Data
+				    String microPage = Common.getValueFromTestDataMap("Shop Name");
+				    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+
+				    // ✅ Step 1: Search Shop
+				    Common.waitForElement(2);
+				    wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+				    searchBox.clear();
+				    searchBox.sendKeys(microPage);
+				 // After searching microPage
+				    Common.waitForElement(2);
+
+				    // 🔍 Check if "wedding party" result appears
+				    try {
+				        WebElement weddingParty = wait.until(ExpectedConditions.visibilityOfElementLocated(
+				            By.xpath("//div[@class='product-redirect-tag' and contains(normalize-space(),'Auto Test')]")
+				        ));
+
+				        System.out.println("🎯 Wedding Party option visible");
+
+				        // Click it
+				        weddingParty.click();
+				        System.out.println("🟢 Clicked on Wedding Party");
+
+				    } catch (Exception e) {
+				        System.out.println("❌ Wedding Party option NOT visible");
+				    }
+
+				    ExtentManager.getExtentReports().flush();
+				}
+				
+
+				
+				// Method to verify that the first product in category is correct
+				public void verifyFirstProductInUserAppSearchStyle() throws InterruptedException {
+				    // Get the expected first product from test data
+				    String expectedFirstProduct = Common.getValueFromTestData("ExpectedSearchStylesFirstProduct").trim(); 
+
+				    // Scroll to load products
+				    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,340);");
+				    Common.waitForElement(2);
+
+				    // FLUENT WAIT
+				    FluentWait<WebDriver> wait = new FluentWait<>(driver)
+				            .withTimeout(Duration.ofMinutes(5))
+				            .pollingEvery(Duration.ofSeconds(3))
+				            .ignoring(NoSuchElementException.class)
+				            .ignoring(StaleElementReferenceException.class);
+
+				    WebElement matchedElement = wait.until(d -> {
+				        d.navigate().refresh();
+				        try { Thread.sleep(2000); } catch (InterruptedException ignored) {}
+
+				        // ---------- FETCH FIRST PRODUCT IMAGE ALT ----------
+				        String imgXpath = "(//div[@id='cls_newproduct_sec_dev']//div[contains(@class,'product_list_cards_list')]//picture[@class='prod_main_img']//img)[1]";
+				        List<WebElement> productImgs = d.findElements(By.xpath(imgXpath));
+
+				        String altText = "";
+				        if (!productImgs.isEmpty()) {
+				            WebElement firstImg = productImgs.get(0);
+				            altText = firstImg.getAttribute("alt").trim();
+				            System.out.println("🖼 ALT Text (First Product): " + altText);
+				        }
+
+				        // ---------- FETCH FIRST PRODUCT HEADING ----------
+				        String headingXpath = "(//div[@id='cls_newproduct_sec_dev']//h2[@class='product_list_cards_heading'])[1]";
+				        List<WebElement> headingList = d.findElements(By.xpath(headingXpath));
+
+				        String headingText = "";
+				        if (!headingList.isEmpty()) {
+				            headingText = headingList.get(0).getText().trim();
+				            System.out.println("🔤 Heading Text (First Product): " + headingText);
+				        }
+
+				        // ---------- MATCHING LOGIC ----------
+				        boolean altMatch = !altText.isEmpty() &&
+				                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+				        boolean headingMatch = !headingText.isEmpty() &&
+				                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+
+				        // If either one matches → PASS
+				        if (altMatch || headingMatch) {
+				            System.out.println("✅ Match found! (ALT or Heading)");
+				            return productImgs.isEmpty() ? headingList.get(0) : productImgs.get(0);
+				        }
+
+				        return null; // keep waiting
+				    });
+
+				    if (matchedElement != null && matchedElement.isDisplayed()) {
+				        System.out.println("🎉 FINAL RESULT: PASS");
+				        System.out.println("Expected Product Found in First Position: " + expectedFirstProduct);
+				    } else {
+				        throw new RuntimeException("❌ FAILED: Neither ALT nor Heading matched expected: "
+				                + expectedFirstProduct);
+				    }
+				}
+
 	
 	
 	

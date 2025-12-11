@@ -150,7 +150,7 @@ public class AdminPanelStepDef {
 		
 	
 			@When("I upload the special product excel {string}")
-			public void i_upload_the_special_product_excel(String filePath) {
+			public void i_upload_the_special_product_excel(String filePath) throws InterruptedException {
 				String excelPath = System.getProperty("user.dir") + "/src/test/resources/Bulk Excel File/SpecialTimerProduct/" + filePath;
 			    admin.uploadTheSpecialTimerProductExcel(excelPath);
 			 
