@@ -64,7 +64,7 @@ Examples:
   | TD_UI_Zlaata_ADM_05   |
   
  
-    @Regression
+   
      @TC_UI_Zlaata_ADM_06
 Scenario Outline: TC_UI_Zlaata_ADM_06 |Remove product SKU from Top Selling and verify on User App.| "<TD_ID>" 
      Given admin is logged in
