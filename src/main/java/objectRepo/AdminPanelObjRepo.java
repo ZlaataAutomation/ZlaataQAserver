@@ -84,6 +84,9 @@ public abstract  class AdminPanelObjRepo extends BasePage {
 		@FindBy(xpath = "//a[normalize-space()='Product Listing Name']")
 		protected WebElement productListingMenu;
 		
+		@FindBy(xpath = "//a[normalize-space()='Product Detail Name']")
+		protected WebElement productDetailMenu;
+		
 	    @FindBy(xpath = "(//input[@role='searchbox'])[1]") 
 	    protected WebElement productSearchBox;
 	    

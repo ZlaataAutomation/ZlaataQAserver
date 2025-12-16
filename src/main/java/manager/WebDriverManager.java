@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -56,7 +57,13 @@ public class WebDriverManager {
         driver = new EventFiringDecorator<>(clickLogger).decorate(baseDriver);
 
         // ✅ Always maximize browser window
-        driver.manage().window().maximize();
+      //  driver.manage().window().maximize();
+    
+        if (!isHeadLessModeEnabled) {
+            driver.manage().window().maximize();
+        } else {
+            driver.manage().window().setSize(new Dimension(1920, 1080));
+        }
 
         // ✅ Apply implicit wait
         driver.manage().timeouts().implicitlyWait(
@@ -96,12 +103,17 @@ public class WebDriverManager {
     private ChromeOptions getChromeOptions() {
         ChromeOptions chromeOptions = new ChromeOptions();
         if (isHeadLessModeEnabled) {
-            chromeOptions.addArguments("--headless", "window-size=1920,1080");
+         //   chromeOptions.addArguments("--headless", "window-size=1920,1080");
+        	chromeOptions.addArguments("--headless=new");   
+            chromeOptions.addArguments("--window-size=1920,1080"); 
+            chromeOptions.addArguments("--disable-gpu");
+            chromeOptions.addArguments("--no-sandbox");
+            chromeOptions.addArguments("--disable-dev-shm-usage");
         }
         chromeOptions.addArguments("--disable-blink-features=AutomationControlled");
         chromeOptions.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
         chromeOptions.setAcceptInsecureCerts(true);
-        chromeOptions.setExperimentalOption("useAutomationExtension", true);
+ //       chromeOptions.setExperimentalOption("useAutomationExtension", true);
         chromeOptions.addArguments("--disable-save-password-bubble");
         chromeOptions.addArguments("--disable-extensions");
         Map<String, Object> prefs = new HashMap<>();

@@ -80,20 +80,20 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    String RESET = "\u001B[0m";
 	    String line = "─────────────────────────────────────────────";
 
-	    // Step 1: Login to Admin
-	    driver.manage().window().minimize();
-
-	 
-
-	    // Step 3: Take banner title input from console
-	    System.out.println(line);
-	    System.out.print(YELLOW + "🖼️ Enter Banner Title: " + RESET);
-	     expectedBannerTitle = sc.nextLine().trim();
-	    System.out.println(CYAN + "📢 You entered Banner Title: " + GREEN + expectedBannerTitle + RESET);
-	    System.out.println(line);
-	    
-	 // ✅ Login once before starting all exports
-        driver.manage().window().maximize();
+//	    // Step 1: Login to Admin
+//	    driver.manage().window().minimize();
+//
+//	 
+//
+//	    // Step 3: Take banner title input from console
+//	    System.out.println(line);
+//	    System.out.print(YELLOW + "🖼️ Enter Banner Title: " + RESET);
+//	     expectedBannerTitle = sc.nextLine().trim();
+//	    System.out.println(CYAN + "📢 You entered Banner Title: " + GREEN + expectedBannerTitle + RESET);
+//	    System.out.println(line);
+//	    
+//	 // ✅ Login once before starting all exports
+//        driver.manage().window().maximize();
         
         adminLoginApp();
 	    // Step 2: Navigate to Excel path (if needed)
@@ -101,7 +101,11 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    Common.waitForElement(2);
 
 	    // Step 4: Add new homepage banner
-	    click(addHomePageBanner);
+	    expectedBannerTitle = "TestHome" + System.currentTimeMillis();
+	 // 🔥 FIX FOR HEADLESS
+	    ((JavascriptExecutor) driver)
+	            .executeScript("arguments[0].click();", addHomePageBanner);
+	    System.out.println("Clicked Add Home Page Banner");
 	    Common.waitForElement(2);
 	    type(bannerTitle, expectedBannerTitle);
 	    Common.waitForElement(2);
@@ -112,7 +116,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    System.out.println(GREEN + "✅ Image uploaded successfully!" + RESET);
 
 	    Common.waitForElement(2);
-	    click(uploadButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", uploadButton);
+//	    click(uploadButton);
 	    
 	    Common.waitForElement(3);
 	    driver.navigate().refresh();
@@ -133,7 +139,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 //	    click(sortBySave);
 	    Common.waitForElement(2);
 	    waitFor(clearCatchButton);
-	    click(clearCatchButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clearCatchButton);
+//	    click(clearCatchButton);
 	    System.out.println("✅ Successfull click Clear Catch Button");
 	    Common.waitForElement(2);
 
@@ -216,46 +224,107 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    System.out.println("✅ Admin Login Successfull");
 	    
 	}
-	public void givesProductName() {
-		Common.waitForElement(4);
+	
+	public void givesProductName() throws InterruptedException {
+		
+		adminLogin();
+		Common.waitForElement(3);
 	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 	    System.out.println("✅ Successfull redirect to Adimn Product page");
-		 // Open product listing
-	    click(productListingMenu);  
-	    System.out.println("✅ Successfull click product listing menu");
-	    waitFor(productSearchBox);
-	    click(productSearchBox);
-
-	    // Fetch the product name directly from Excel map
-	    String productName = Common.getValueFromTestDataMap("ProductListingName");
-	    System.out.println("✅ Successfull fetch product listing name from excel sheet");
-	 // Search or enter the product
-	    type(productSearchBox, productName + Keys.ENTER);
-	    Common.waitForElement(2);
-	    System.out.println("✅ Successfull put product listing name in searchbox and also click enter");
-
 		
-	}
-	public String fetchSkuFromProduct() {
-		
-	    // now click edit, etc…
-	    waitFor(editProductButton);
-	    click(editProductButton);
-	    System.out.println("✅ Successfull click product edit option");
-	    // now click item, etc…
-	    waitFor(itemProductButton);
-	    click(itemProductButton);
-	    System.out.println("✅ Successfull click product item option");
+//	    ((JavascriptExecutor) driver)
+//        .executeScript("arguments[0].click();", productDetailMenu);
+//
+//	    System.out.println("✅ Successfull click product listing menu");
+//	    Common.waitForElement(2);
+//
+//	    ((JavascriptExecutor) driver)
+//        .executeScript("arguments[0].click();", productSearchBox);
+//
+//	    System.out.println("✅ Successfull fetch product listing name from excel sheet");
+//
+//	   driver.switchTo().activeElement().sendKeys(productName);
+//	
+//	    System.out.println("✅ Product name typed: " + productName);
+//	    
+//	    Thread.sleep(3000);
+//	    
+//	    productSearchBox.sendKeys(Keys.ENTER);
+//	    
+//	    System.out.println("✅ Select2 dropdown option clicked ");
 	    
-	 // now take Sku
-	    waitFor(skuField);
-	    System.out.println("✅ Successfull copy the SKU from skufield");
-        return skuField.getAttribute("value").trim();
-     
-        
-	   	
+	    
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    Long width = (Long) js.executeScript("return window.innerWidth;");
+	    Long height = (Long) js.executeScript("return window.innerHeight;");
+
+	    System.out.println("Window Size: " + width + " x " + height);
+	    
+	 //   JavascriptExecutor js = (JavascriptExecutor) driver;
+	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+	    // Click product listing menu
+	    js.executeScript("arguments[0].click();", productDetailMenu);
+	    System.out.println("✅ Successfull click product listing menu");
+
+	    // Wait for search box
+	    wait.until(ExpectedConditions.visibilityOf(productSearchBox));
+	    wait.until(ExpectedConditions.elementToBeClickable(productSearchBox));
+
+	    // Scroll into view (VERY IMPORTANT for headless)
+	    js.executeScript("arguments[0].scrollIntoView(true);", productSearchBox);
+
+	    // Focus input properly
+	    js.executeScript("arguments[0].focus();", productSearchBox);
+
+	    // Clear + Type
+	    productSearchBox.clear();
+	    productSearchBox.sendKeys(productName);
+
+	    System.out.println("✅ Product name typed: " + productName);
+
+	    // Press Enter
+	    Thread.sleep(3000);
+	    productSearchBox.sendKeys(Keys.ENTER);
+
+	    System.out.println("✅ Product search triggered");
+	    
+	    
+	   
+
+		
 	}
-	public void putSkuIntoTopSelling(String sku) {
+	String topSellingProductSku;
+	public String fetchSkuFromProduct() {
+
+	    // Click "Edit Product" button
+		Common.waitForElement(3);
+	//    waitFor(editProductButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", editProductButton);
+//	    click(editProductButton);
+	    System.out.println("\u001B[32m✅ Successfully clicked product edit option\u001B[0m");
+
+	    // Click "Item Product" button
+//	    waitFor(itemProductButton);
+	    Common.waitForElement(2);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", itemProductButton);
+//	    click(itemProductButton);
+	    System.out.println("\u001B[32m✅ Successfully clicked product item option\u001B[0m");
+
+	    // Fetch SKU value
+	    Common.waitForElement(2);
+//	    waitFor(skuField);
+	     topSellingProductSku = skuField.getAttribute("value").trim();
+	    System.out.println("\u001B[33m📌 SKU fetched: " + topSellingProductSku + "\u001B[0m");
+
+	    return topSellingProductSku;
+	}
+	
+	
+	
+	public void putSkuIntoTopSelling() {
 	    try {
 	        // ANSI Colors for better console logs
 	        String GREEN = "\u001B[32m";
@@ -265,24 +334,32 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	        String RED = "\u001B[31m";
 	        String RESET = "\u001B[0m";
 	        String line = "─────────────────────────────────────────────";
-
+	        driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationAdminUrl());
 	        Common.waitForElement(2);
 	        waitFor(generalSettingsMenu);
-	        click(generalSettingsMenu);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", generalSettingsMenu);
+//	        click(generalSettingsMenu);
 	        Common.waitForElement(2);
 
 	        waitFor(clickSetKey);
-	        click(clickSetKey);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", clickSetKey);
+	     //   click(clickSetKey);
 	        Common.waitForElement(2);
 	        waitFor(productSearchBox);
-	        click(productSearchBox);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", productSearchBox);
+//	        click(productSearchBox);
 	        Common.waitForElement(2);
 	        type(productSearchBox, "top_selling");
 	        productSearchBox.sendKeys(Keys.ENTER);
 	        System.out.println(BLUE + "🔍 Searched for 'top_selling'..." + RESET);
 	        Common.waitForElement(3);
 	        waitFor(topSellingEdit);
-	        click(topSellingEdit);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", topSellingEdit);
+	    //    click(topSellingEdit);
 	        System.out.println(GREEN + "✅ Opened Top Selling edit section" + RESET);
 
 	        waitFor(topSellingSkuInput);
@@ -305,29 +382,31 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	        System.out.println(CYAN + "📦 Current SKU list: " + skuList + RESET);
 
 	        boolean alreadyExists = skuList.stream()
-	                .anyMatch(s -> s.equalsIgnoreCase(sku));
+	                .anyMatch(s -> s.equalsIgnoreCase(topSellingProductSku));
 
 	        String updated;
 	        String message;
 
 	        // ✅ If already exists → remove and move to first
 	        if (alreadyExists) {
-	            skuList.removeIf(s -> s.equalsIgnoreCase(sku));
-	            skuList.add(0, sku);
+	            skuList.removeIf(s -> s.equalsIgnoreCase(topSellingProductSku));
+	            skuList.add(0, topSellingProductSku);
 	            updated = "[" + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' already existed — moved to first position.";
+	            message = "SKU '" + topSellingProductSku + "' already existed — moved to first position.";
 	        } else {
 	            // ✅ If not exist → add to first
-	            skuList.add(0, sku);
+	            skuList.add(0, topSellingProductSku);
 	            updated = "[" + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' added to Top Selling list.";
+	            message = "SKU '" + topSellingProductSku + "' added to Top Selling list.";
 	        }
 
 	        // Update field
 	        topSellingSkuInput.clear();
 	        type(topSellingSkuInput, updated);
 	        Common.waitForElement(2);
-	        click(saveTopSelling);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", saveTopSelling);
+	   //     click(saveTopSelling);
 
 	        System.out.println(line);
 	        System.out.println(GREEN + "✅ " + message + RESET);
@@ -342,7 +421,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    // ✅ Always clear cache at the end
 	    Common.waitForElement(2);
 	    waitFor(clearCatchButton);
-	    click(clearCatchButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clearCatchButton);
+	//    click(clearCatchButton);
 	    System.out.println( "🧹 Cache cleared successfully." );
 	    Common.waitForElement(2);
 	}
@@ -350,11 +431,23 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	
 	//Verify the product successfull showing in user application home page top selling Section
 	
-	public void verifyProductShowInTopSelling(String productName) throws InterruptedException {
+	public void verifyProductShowInTopSelling() throws InterruptedException {
 		HomePage home = new HomePage(driver);
 		home.homeLaunch();
-	    Common.waitForElement(3);
-	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,700);");
+		  // Scroll directly to Top Selling section
+	    WebElement topSellingSection = driver.findElement(
+	            By.xpath("//div[@data-section='top_selling']")
+	    );
+	    
+	    ((JavascriptExecutor) driver).executeScript(
+	            "window.scrollTo({top: arguments[0].getBoundingClientRect().top + window.pageYOffset - 120, behavior: 'smooth'});",
+	            topSellingSection
+	    );
+	    ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",
+	            topSellingSection
+	    );
+
 
 	    int timeoutMinutes = 15;   // total wait time
 	    int refreshInterval = 5;  // refresh every 5 seconds
@@ -378,7 +471,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            card = wait.until(d -> {
 	                List<WebElement> elements = d.findElements(By.xpath(
-	                		"//div[contains(@class,'products_cards')]//a[@class='product_heading' and normalize-space(.)='" + productName + "']"
+	                		"(//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
 	                        
 	                ));
 	                return elements.isEmpty() ? null : elements.get(0);
@@ -396,10 +489,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    }
 
 	    // ✅ Final validation
-	    if (productFound && card != null && card.getText().trim().equalsIgnoreCase(productName.trim())) {
-	        System.out.println("✅ Product '" + productName + "' is visible in Top Selling.");
+	    if (productFound && card != null && card.getText().trim().equalsIgnoreCase(excpectedName.trim())) {
+	        System.out.println("✅ Product '" + excpectedName + "' is visible in Top Selling.");
 	    } else {
-	        System.err.println("❌ Product '" + productName + "' not found in Top Selling within " 
+	        System.err.println("❌ Product '" + excpectedName + "' not found in Top Selling within " 
 	                           + timeoutMinutes + " minutes.");
 	        
 	    }
@@ -410,58 +503,63 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	
 	//Negative Testcase Top Selling Section
 	
-	public void forNegativeGivesProductName() {
-		Common.waitForElement(4);
-	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
-	    System.out.println("✅ Successfull redirect to Adimn Product page");
-		 // Open product listing
-	    click(productListingMenu);  
-	    System.out.println("✅ Successfull click product listing menu");
-	    waitFor(productSearchBox);
-	    click(productSearchBox);
-
-	    // Fetch the product name directly from Excel map
-	    String productName = Common.getValueFromTestDataMap("ProductListingName");
-	    System.out.println("✅ Successfull fetch product listing name from excel sheet");
-	 // Search or enter the product
-	    type(productSearchBox, productName + Keys.ENTER);
-	    Common.waitForElement(2);
-	    System.out.println("✅ Successfull put product listing name in searchbox and also click enter");
-
-		
-	}
-	public String forNegativeFetchSkuFromProduct() {
-		
-	    // now click edit, etc…
-	    waitFor(editProductButton);
-	    click(editProductButton);
-	    System.out.println("✅ Successfull click product edit option");
-	    // now click item, etc…
-	    waitFor(itemProductButton);
-	    click(itemProductButton);
-	    System.out.println("✅ Successfull click product item option");
-	    
-	 // now take Sku
-	    waitFor(skuField);
-	    System.out.println("✅ Successfull copy the SKU from skufield");
-        return skuField.getAttribute("value").trim();
-     
-        
-	   	
-	}
+//	public void forNegativeGivesProductName() {
+//		Common.waitForElement(4);
+//	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+//	    System.out.println("✅ Successfull redirect to Adimn Product page");
+//		 // Open product listing
+//	    click(productListingMenu);  
+//	    System.out.println("✅ Successfull click product listing menu");
+//	    waitFor(productSearchBox);
+//	    click(productSearchBox);
+//
+//	    // Fetch the product name directly from Excel map
+//	    String productName = Common.getValueFromTestDataMap("ProductListingName");
+//	    System.out.println("✅ Successfull fetch product listing name from excel sheet");
+//	 // Search or enter the product
+//	    type(productSearchBox, productName + Keys.ENTER);
+//	    Common.waitForElement(2);
+//	    System.out.println("✅ Successfull put product listing name in searchbox and also click enter");
+//
+//		
+//	}
+//	public String forNegativeFetchSkuFromProduct() {
+//		
+//	    // now click edit, etc…
+//	    waitFor(editProductButton);
+//	    click(editProductButton);
+//	    System.out.println("✅ Successfull click product edit option");
+//	    // now click item, etc…
+//	    waitFor(itemProductButton);
+//	    click(itemProductButton);
+//	    System.out.println("✅ Successfull click product item option");
+//	    
+//	 // now take Sku
+//	    waitFor(skuField);
+//	    System.out.println("✅ Successfull copy the SKU from skufield");
+//        return skuField.getAttribute("value").trim();
+//     
+// 	
+//	}
 	// Remove SKU from Top Selling list
-	public void removeSkuFromTopSelling(String sku) {
+	public void removeSkuFromTopSelling() {
 	    try {
 	    	Common.waitForElement(2);
 	    	waitFor(generalSettingsMenu);
-	        click(generalSettingsMenu);
+	    	((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", generalSettingsMenu);
+//	        click(generalSettingsMenu);
 	        Common.waitForElement(2);
 	        
 		    waitFor(clickSetKey);
-		    click(clickSetKey);
+		    ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", clickSetKey);
+//		    click(clickSetKey);
 		    Common.waitForElement(2);
 		    waitFor(productSearchBox);
-		    click(productSearchBox);
+		    ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", productSearchBox);
+//		    click(productSearchBox);
 		    
 		    type(productSearchBox, "top_selling");
 		    
@@ -469,7 +567,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		    System.out.println("✅ Searched for top-selling");
 		    Common.waitForElement(3);
 	        waitFor(topSellingEdit);
-	        click(topSellingEdit);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", topSellingEdit);
+	    //    click(topSellingEdit);
 	        System.out.println("✅ Successfull click the top selling edit button");  
 
 	        waitFor(topSellingSkuInput);
@@ -488,24 +588,26 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	            }
 	        }
 
-	        boolean exists = skuList.removeIf(s -> s.equalsIgnoreCase(sku));
+	        boolean exists = skuList.removeIf(s -> s.equalsIgnoreCase(topSellingProductSku));
 
 	        String updated;
 	        String message;
 	        if (!exists) {
 	            updated = "[" + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' not found. No changes made.";
+	            message = "SKU '" + topSellingProductSku + "' not found. No changes made.";
 	        } else if (skuList.isEmpty()) {
 	            updated = "[]";
-	            message = "SKU '" + sku + "' removed. List is now empty.";
+	            message = "SKU '" + topSellingProductSku + "' removed. List is now empty.";
 	        } else {
 	            updated = "[" + String.join(", ", skuList) + "]";
-	            message = "SKU '" + sku + "' removed from Top Selling list.";
+	            message = "SKU '" + topSellingProductSku + "' removed from Top Selling list.";
 	        }
 
 	        topSellingSkuInput.clear();
 	        type(topSellingSkuInput, updated);
-	        click(saveTopSelling);
+	        ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", saveTopSelling);
+	//        click(saveTopSelling);
 
 	     // Wait briefly for possible error page
 	     Common.waitForElement(3);
@@ -520,18 +622,32 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	    Common.waitForElement(2);
 	    waitFor(clearCatchButton);
-	    click(clearCatchButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clearCatchButton);
+//	    click(clearCatchButton);
 	    System.out.println("✅ Successfully clicked Clear Cache Button");
 	    Common.waitForElement(2);
 	}
 
 
 	// Verify product is NOT in Top Selling (Negative Test)
-	public void verifyProductNotInTopSelling(String productName) throws InterruptedException {
+	public void verifyProductNotInTopSelling() throws InterruptedException {
 		HomePage home = new HomePage(driver);
 		home.homeLaunch();
 	    Common.waitForElement(3);
-	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,700);");
+	    // Scroll directly to Top Selling section
+	    WebElement topSellingSection = driver.findElement(
+	            By.xpath("//div[@data-section='top_selling']")
+	    );
+	    
+	    ((JavascriptExecutor) driver).executeScript(
+	            "window.scrollTo({top: arguments[0].getBoundingClientRect().top + window.pageYOffset - 120, behavior: 'smooth'});",
+	            topSellingSection
+	    );
+	    ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",
+	            topSellingSection
+	    );
 
 	    int timeoutMinutes = 5;   // total wait time
 	    boolean productFound = false;
@@ -544,8 +660,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	            Common.waitForElement(3);
 
 	            List<WebElement> elements = driver.findElements(By.xpath(
-	                    "//div[contains(@class,'products_cards')]//h3[@class='product_heading' and normalize-space(text())='" 
-	                    + productName + "']"
+	            		"(//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
 	            ));
 
 	            if (elements.isEmpty()) {
@@ -562,9 +677,9 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    }
 
 	    if (!productFound) {
-	        System.out.println("✅ Product '" + productName + "' is NOT visible in Top Selling (as expected).");
+	        System.out.println("✅ Product '" + excpectedName + "' is NOT visible in Top Selling (as expected).");
 	    } else {
-	        System.err.println("❌ Product '" + productName + "' still visible in Top Selling even after removal!");
+	        System.err.println("❌ Product '" + excpectedName + "' still visible in Top Selling even after removal!");
 	    }
 	}
 
@@ -1906,14 +2021,117 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 			    ExtentManager.getExtentReports().flush();
 			}
+		 
+		 String productName;
+		 String excpectedName;
+		 public String copyProductNameFromHomePageTopSelling() throws InterruptedException {
 
+			    // ANSI colors
+			    String GREEN = "\u001B[32m";
+			    String CYAN  = "\u001B[36m";
+			    String RESET = "\u001B[0m";
 
+			    HomePage home = new HomePage(driver);
+			    home.homeLaunch();
 
+			    // Scroll directly to Top Selling section
+			    WebElement topSellingSection = driver.findElement(
+			            By.xpath("//div[@data-section='top_selling']")
+			    );
+
+			    ((JavascriptExecutor) driver).executeScript(
+			            "window.scrollTo({top: arguments[0].getBoundingClientRect().top + window.pageYOffset - 120, behavior: 'smooth'});",
+			            topSellingSection
+			    );
+
+			    ((JavascriptExecutor) driver).executeScript(
+			            "arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",
+			            topSellingSection
+			    );
+
+			    Thread.sleep(500); // allow smooth scroll to finish
+
+//			    // Click the first product
+//			    WebElement firstProduct = driver.findElement(
+//			            By.xpath("(//div[@data-section='top_selling']//a[contains(@class,'prod_card_img')])[1]")
+//			    );
+			    WebElement firstProduct1 = driver.findElement(
+			            By.xpath("(//a[contains(@class,'prod_title')])[1]")
+			    );
+			            
+			     excpectedName = firstProduct1.getText().trim();
+			     Common.waitForElement(2);
+			     System.out.println(CYAN + "📦 Product Listing Name: " + excpectedName + RESET);
+			     Common.waitForElement(2);
+			  // First product card link
+			     WebElement firstProduct = driver.findElement(
+			             By.xpath("(//div[@data-section='top_selling']//a[contains(@href,'/product-detail')])[1]")
+			     );
+
+			     String productUrl = firstProduct.getAttribute("href");
+
+			     // JS click (HEADLESS SAFE)
+			     ((JavascriptExecutor) driver)
+			             .executeScript("arguments[0].click();", firstProduct);
+
+			     System.out.println(GREEN + "✅ First Top Selling Product Clicked: " + productUrl + RESET);
+
+			     // ✅ 1. WAIT FOR URL TO CHANGE (CRITICAL)
+			     wait.until(ExpectedConditions.urlContains("/product-detail"));
+
+			     // ✅ 2. WAIT FOR DOM READY
+			     wait.until(driver ->
+			             ((JavascriptExecutor) driver)
+			                     .executeScript("return document.readyState")
+			                     .equals("complete")
+			     );
+
+			     // ✅ 3. WAIT FOR PRODUCT NAME PRESENCE (NOT VISIBILITY)
+			     WebElement productNameElement = wait.until(
+			             ExpectedConditions.presenceOfElementLocated(
+			                     By.xpath("//h4[contains(@class,'prod_name')]")
+			             )
+			     );
+
+			     // ✅ 4. READ VIA JS (HEADLESS FIX)
+			      productName = ((JavascriptExecutor) driver)
+			             .executeScript("return arguments[0].textContent;", productNameElement)
+			             .toString()
+			             .trim();
+
+			     System.out.println(CYAN + "📦 Product Name (PDP): " + productName + RESET);
+
+			     return productName;
+			}
+
+//Home Page Test Case
 	
+//TC-02
+		public void  validateProductSuccessfullyRemoved() throws InterruptedException{
+			
+			copyProductNameFromHomePageTopSelling();
+			
+			givesProductName();
+			
+			fetchSkuFromProduct();
+			
+			removeSkuFromTopSelling();
+			
+			verifyProductNotInTopSelling();
+			
+		
+		 }
 	
+		public void  validateProductSuccessfullyAdded() throws InterruptedException{
+			
+			putSkuIntoTopSelling();
+			
+			verifyProductShowInTopSelling();
+			
+			
+		 }
 	
-	
-	
+//TC-03	
 	
 	
 	

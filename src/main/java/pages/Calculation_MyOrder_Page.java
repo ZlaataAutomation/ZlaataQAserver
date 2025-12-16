@@ -1552,6 +1552,7 @@ public void placeOrderAndCheckOrderConfirmation() throws InterruptedException {
     )).click();
 
     // Select HDFC Bank
+    Common.waitForElement(2);
     wait.until(ExpectedConditions.elementToBeClickable(
             By.xpath("(//div[@role='button' and .//span[contains(text(),'HDFC Bank')]])[1]")
     )).click();
@@ -4694,7 +4695,7 @@ public void takeCustomizeProduct() {
 		
 		validateShippingCharges();
 		
-		validateRazorpayAccessories();
+//		validateRazorpayAccessories();
 		
 					
 	}

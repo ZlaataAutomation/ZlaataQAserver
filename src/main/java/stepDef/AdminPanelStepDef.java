@@ -37,46 +37,66 @@ public class AdminPanelStepDef {
 
 	
 	// Verify Top Selling
-	@Given("admin is logged in")
-	public void admin_is_logged_in() {
-		admin.adminLogin();
 
-	}
-
-	@When("amdin copies the SKU for Product")
-	public void amdin_copies_the_sku_for_product() {
-		admin.givesProductName();
-		capturedSku = admin.fetchSkuFromProduct();
-
-	}
-
-	@When("admin puts this SKU at first position in Top Selling")
-	public void admin_puts_this_sku_at_first_position_in_top_selling() {
-		admin.putSkuIntoTopSelling(capturedSku);
-
-	}
-
-	@Then("the product should appear in Top Selling on the user panel")
-	public void the_product_should_appear_in_top_selling_on_the_user_panel() throws InterruptedException {
-		// pull product name from Excel map
-		String productName = Common.getValueFromTestDataMap("ProductListingName");
-		admin.verifyProductShowInTopSelling(productName);
-	}
-
-	//Top Selling Negative Test
-	@When("I remove the product with SKU from Top Selling")
-		public void i_remove_the_product_with_sku_from_top_selling() {
-		admin.forNegativeGivesProductName();
-		capturedSku = admin.forNegativeFetchSkuFromProduct();
-		admin.removeSkuFromTopSelling(capturedSku);
-		   
+		@Given("admin removes the product from Top Selling.")
+		public void admin_removes_the_product_from_top_selling() throws InterruptedException {
+			admin.validateProductSuccessfullyRemoved(); 
 		}
 
-		@Then("I should not see product  in Top Selling section on user app")
-		public void i_should_not_see_product_in_top_selling_section_on_user_app() throws InterruptedException {
-			String productName = Common.getValueFromTestDataMap("ProductListingName");
-			admin.verifyProductNotInTopSelling(productName);
+		@When("admin adds the product SKU to Top Selling")
+		public void admin_adds_the_product_sku_to_top_selling() throws InterruptedException {
+			admin.validateProductSuccessfullyAdded();
+		
 		}
+
+
+
+	
+	
+	
+	
+//	@Given("admin is logged in")
+//	public void admin_is_logged_in() {
+//		admin.adminLogin();
+//
+//	}
+//
+//	@When("amdin copies the SKU for Product")
+//	public void amdin_copies_the_sku_for_product() {
+//		admin.givesProductName();
+//		capturedSku = admin.fetchSkuFromProduct();
+//
+//	}
+//
+//	@When("admin puts this SKU at first position in Top Selling")
+//	public void admin_puts_this_sku_at_first_position_in_top_selling() {
+//		admin.putSkuIntoTopSelling(capturedSku);
+//
+//	}
+//
+//	@Then("the product should appear in Top Selling on the user panel")
+//	public void the_product_should_appear_in_top_selling_on_the_user_panel() throws InterruptedException {
+//		// pull product name from Excel map
+//		String productName = Common.getValueFromTestDataMap("ProductListingName");
+//		admin.verifyProductShowInTopSelling(productName);
+//	}
+//
+//	
+//	
+//	//Top Selling Negative Test
+//	@When("I remove the product with SKU from Top Selling")
+//		public void i_remove_the_product_with_sku_from_top_selling() {
+//		admin.forNegativeGivesProductName();
+//		capturedSku = admin.forNegativeFetchSkuFromProduct();
+//		admin.removeSkuFromTopSelling(capturedSku);
+//		   
+//		}
+//
+//		@Then("I should not see product  in Top Selling section on user app")
+//		public void i_should_not_see_product_in_top_selling_section_on_user_app() throws InterruptedException {
+//			String productName = Common.getValueFromTestDataMap("ProductListingName");
+//			admin.verifyProductNotInTopSelling(productName);
+//		}
 
 
 

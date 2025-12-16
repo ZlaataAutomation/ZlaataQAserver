@@ -32,26 +32,81 @@ public final class HomePage extends HomePageObjRepo {
 	}
 	public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-				click(submit);
+//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+//				click(submit);
+		//handleAccessCodeIfPresentFast();
 		popup();
+		closeDebugBarIfPresent();
 
 
 	}
-	public void popup() {
-		try {
-			WebElement popUp = driver.findElement(By.xpath("//div[@class='chrismas_closebtn popup_containers_cls_btn Cls_christmas_closebtn']"));
-			Common.waitForElement(5);
+	private void popup() {
+	    List<WebElement> popUps = driver.findElements(
+	            By.xpath("//div[contains(@class,'chrismas_closebtn')]")
+	    );
 
-			if (popUp.isDisplayed()) {
-				popUp.click();
-			}
-
-		} catch (Exception e) {
-
-		}
-
+	    if (!popUps.isEmpty()) {
+	    	 ((JavascriptExecutor) driver)
+             .executeScript("arguments[0].click();", popUps.get(0));
+	    }
 	}
+	private void closeDebugBarIfPresent() {
+        try {
+//            Common.waitForElement(2);
+
+            List<WebElement> debugCloseBtn = driver.findElements(
+                    By.xpath("//a[contains(@class,'phpdebugbar-close-btn')]")
+            );
+
+            if (!debugCloseBtn.isEmpty() && debugCloseBtn.get(0).isDisplayed()) {
+            	 ((JavascriptExecutor) driver)
+                 .executeScript("arguments[0].click();", debugCloseBtn.get(0));
+                System.out.println("🛑 PHP Debugbar closed");
+            }
+        } catch (Exception e) {
+            // Intentionally ignored – debugbar not present
+        }
+    }
+	private void handleAccessCodeIfPresentFast() {
+
+        try {
+            List<WebElement> accessCodeInput = driver.findElements(
+                    By.xpath("//input[@id='access_code']")
+            );
+
+            // 🔹 Instant check – if not present, skip
+            if (accessCodeInput.isEmpty()) {
+                return;
+            }
+
+            WebElement input = accessCodeInput.get(0);
+
+            if (input.isDisplayed()) {
+
+                String accessCode = FileReaderManager.getInstance()
+                        .getJsonReader()
+                        .getValueFromJson("Access");
+
+                // Type access code
+                input.clear();
+                input.sendKeys(accessCode);
+
+                // Click submit
+                WebElement submitBtn = driver.findElement(
+                        By.xpath("//form[contains(@action,'accessCheckProcess')]//button")
+                );
+
+                ((JavascriptExecutor) driver)
+                        .executeScript("arguments[0].click();", submitBtn);
+                
+                System.out.println("⚡ Access code entered (fast path)");
+            }
+
+        } catch (Exception e) {
+            // swallow – fast skip mode
+        }
+    }
+
 	public void scrollToElementUsingJSE(WebElement ele) {
 		JavascriptExecutor js = (JavascriptExecutor) driver;
 		js.executeScript("arguments[0].scrollIntoView();", ele);

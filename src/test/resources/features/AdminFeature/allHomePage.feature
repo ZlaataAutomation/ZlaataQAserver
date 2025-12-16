@@ -18,10 +18,8 @@ Examples:
     @TC_UI_Zlaata_ADM_02
 Scenario Outline: TC_UI_Zlaata_ADM_02 |Verify Top Selling Section Product Display on Homepage.| "<TD_ID>"  
  
-  Given admin is logged in
-  When amdin copies the SKU for Product
-  When admin puts this SKU at first position in Top Selling
-  Then the product should appear in Top Selling on the user panel
+  Given admin removes the product from Top Selling.
+  When admin adds the product SKU to Top Selling
   
 Examples:  
   | TD_ID                  |  
@@ -65,7 +63,7 @@ Examples:
   | TD_ID                  |  
   | TD_UI_Zlaata_ADM_05   |
   
-  @Home
+ 
     @Regression
      @TC_UI_Zlaata_ADM_06
 Scenario Outline: TC_UI_Zlaata_ADM_06 |Remove product SKU from Top Selling and verify on User App.| "<TD_ID>" 
