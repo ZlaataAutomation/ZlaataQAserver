@@ -104,27 +104,26 @@ public class AdminPanelStepDef {
 	// Verify New Arrivals
 
 	@When("the admin verifies the colour of the product at the first position")
-	public void the_admin_verifies_the_colour_of_the_product_at_the_first_position() {
-		admin.verifyColourOfTheProductIsFirstPosition();
+	public void the_admin_verifies_the_colour_of_the_product_at_the_first_position() throws InterruptedException {
+		admin.validateNewArrivalSuccessfullyAdded();
 
 	}
 
 	@When("the admin adds this product to the New Arrivals section")
 	public void the_admin_adds_this_product_to_the_new_arrivals_section() throws InterruptedException {
-		admin.addTheProductInNewArrivalSection();
+		
 
 	}
 
 	@When("the admin sorts this product to the first position in New Arrivals")
 	public void the_admin_sorts_this_product_to_the_first_position_in_new_arrivals() {
-		admin.sortTheProductInFirstPosition();
+		
 
 	}
 
 	@Then("the product should appear in the New Arrivals section on the user application")
 	public void the_product_should_appear_in_the_new_arrivals_section_on_the_user_application() {
-		String productName = Common.getValueFromTestDataMap("ProductListingName");
-		admin.verifyProductShowInNewArrivalsSction(productName);
+		
 
 	}
 	

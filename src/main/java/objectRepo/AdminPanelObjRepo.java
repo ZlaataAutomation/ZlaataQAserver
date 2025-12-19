@@ -147,7 +147,7 @@ public abstract  class AdminPanelObjRepo extends BasePage {
 	    @FindBy(xpath="//a[normalize-space()='Status']")
 	    protected WebElement clickStatus;
 
-	    @FindBy(xpath = "//ul[@id='select2-filter_status-results']//li[normalize-space(.)='Active']")
+	    @FindBy(xpath = "//li[contains(@class,'select2-results__option') and normalize-space()='Active']")
 	    protected WebElement statusActiveOption;
 
 	    @FindBy(xpath="//a[contains(text(),'Collections')]")

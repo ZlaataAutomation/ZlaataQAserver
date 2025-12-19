@@ -34,13 +34,13 @@ public final class HomePage extends HomePageObjRepo {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
 //				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
 //				click(submit);
-		//handleAccessCodeIfPresentFast();
+	//	handleAccessCodeIfPresentFast();
 		popup();
 		closeDebugBarIfPresent();
 
 
 	}
-	private void popup() {
+	public void popup() {
 	    List<WebElement> popUps = driver.findElements(
 	            By.xpath("//div[contains(@class,'chrismas_closebtn')]")
 	    );
@@ -50,7 +50,7 @@ public final class HomePage extends HomePageObjRepo {
              .executeScript("arguments[0].click();", popUps.get(0));
 	    }
 	}
-	private void closeDebugBarIfPresent() {
+	public void closeDebugBarIfPresent() {
         try {
 //            Common.waitForElement(2);
 
@@ -67,7 +67,7 @@ public final class HomePage extends HomePageObjRepo {
             // Intentionally ignored – debugbar not present
         }
     }
-	private void handleAccessCodeIfPresentFast() {
+	public void handleAccessCodeIfPresentFast() {
 
         try {
             List<WebElement> accessCodeInput = driver.findElements(

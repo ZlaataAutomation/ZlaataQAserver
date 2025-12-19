@@ -38,7 +38,7 @@ public class PageObjectManager {
     private AdminPanelExportPage adminExports;
     private AdminProductSecondaryColorPage adminSColor;
     private AdminEmailVerifyOrderFlowPage adminEmail;
-    private COD_RazorPay_Page cod;
+    private Admin_Order_Page adminorder;
     private Calculation_MyOrder_Page calculation;
    
 
@@ -155,8 +155,8 @@ public class PageObjectManager {
 		return (adminEmail == null) ? adminEmail = new AdminEmailVerifyOrderFlowPage(driver) : adminEmail;
 	}
 	
-	public COD_RazorPay_Page getCOD_RazorPay_Page() {
-		return (cod == null) ? cod = new COD_RazorPay_Page(driver) : cod;
+	public Admin_Order_Page getAdmin_Order_Page() {
+		return (adminorder == null) ? adminorder = new Admin_Order_Page(driver) : adminorder;
 	}
 	
 	public Calculation_MyOrder_Page getCalculation_MyOrder_Page() {

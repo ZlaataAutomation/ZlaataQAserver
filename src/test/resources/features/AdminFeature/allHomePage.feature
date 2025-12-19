@@ -30,9 +30,9 @@ Examples:
   @TC_UI_Zlaata_ADM_03
 Scenario Outline: TC_UI_Zlaata_ADM_03 |Verify New Arrivals Section Product Display on Homepage.| "<TD_ID>"  
  
-  Given admin is logged in
-  When the admin verifies the colour of the product at the first position
-    And the admin adds this product to the New Arrivals section
+  
+  Given the admin verifies the colour of the product at the first position
+    When the admin adds this product to the New Arrivals section
     And the admin sorts this product to the first position in New Arrivals
     Then the product should appear in the New Arrivals section on the user application
 Examples:  

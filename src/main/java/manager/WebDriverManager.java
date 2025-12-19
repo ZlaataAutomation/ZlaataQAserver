@@ -109,6 +109,7 @@ public class WebDriverManager {
             chromeOptions.addArguments("--disable-gpu");
             chromeOptions.addArguments("--no-sandbox");
             chromeOptions.addArguments("--disable-dev-shm-usage");
+          
         }
         chromeOptions.addArguments("--disable-blink-features=AutomationControlled");
         chromeOptions.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
@@ -116,9 +117,16 @@ public class WebDriverManager {
  //       chromeOptions.setExperimentalOption("useAutomationExtension", true);
         chromeOptions.addArguments("--disable-save-password-bubble");
         chromeOptions.addArguments("--disable-extensions");
+        
+        
+        chromeOptions.addArguments("--disable-notifications");
+        chromeOptions.addArguments("--disable-features=AccountConsistency");
+        chromeOptions.addArguments("--disable-infobars");
+        
         Map<String, Object> prefs = new HashMap<>();
         prefs.put("credentials_enable_service", false);
         prefs.put("profile.password_manager_enabled", false);
+        prefs.put("profile.default_content_setting_values.notifications", 2);
         chromeOptions.setExperimentalOption("prefs", prefs);
         return chromeOptions;
     }

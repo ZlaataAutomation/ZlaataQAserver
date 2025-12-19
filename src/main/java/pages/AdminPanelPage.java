@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -471,7 +472,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            card = wait.until(d -> {
 	                List<WebElement> elements = d.findElements(By.xpath(
-	                		"(//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
+	                		"(//div[contains(@class,'top_selling_carousel_wrap')]//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
 	                        
 	                ));
 	                return elements.isEmpty() ? null : elements.get(0);
@@ -660,7 +661,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	            Common.waitForElement(3);
 
 	            List<WebElement> elements = driver.findElements(By.xpath(
-	            		"(//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
+	            		"(//div[contains(@class,'top_selling_carousel_wrap')]//a[contains(@class,'prod_title') and contains(normalize-space(),'" + excpectedName + "')])[1]"
 	            ));
 
 	            if (elements.isEmpty()) {
@@ -686,49 +687,70 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 //New Arrivals
 	 private String copiedSku;
 	
-	public void verifyColourOfTheProductIsFirstPosition() {
+	public void verifyColourOfTheProductIsFirstPosition() throws InterruptedException {
+		adminLogin();
 		Common.waitForElement(2);
 	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 	    System.out.println("✅ Successful redirect to Adimn Product page");
 		 // Open product listing
-	    click(productListingMenu);  
+	      ((JavascriptExecutor) driver)
+          .executeScript("arguments[0].click();", productDetailMenu);
+	  //  click(productDetailMenu);  
 	    System.out.println("✅ Successful click product listing menu");
-	    waitFor(productSearchBox);
-	    click(productSearchBox);
+	    Common.waitForElement(2);
+	      ((JavascriptExecutor) driver)
+          .executeScript("arguments[0].click();", productSearchBox);
+	 //   click(productSearchBox);
 
 	    // Fetch the product name directly from Excel map
-	    String productName = Common.getValueFromTestDataMap("ProductListingName");
-	    System.out.println("✅ Fetched product listing name from Excel sheet:" + productName);
+	//    String productName = Common.getValueFromTestDataMap("ProductListingName");
+	    System.out.println("✅ Fetched product listing name from Excel sheet:" + productDetailName);
 	 // Search or enter the product
-	    type(productSearchBox, productName + Keys.ENTER);
+	    // Clear + Type
+	    productSearchBox.clear();
+	    productSearchBox.sendKeys(productDetailName);
+
+	    System.out.println("✅ Product name typed: " + productDetailName);
+
+	    // Press Enter
+	    Thread.sleep(3000);
+	    productSearchBox.sendKeys(Keys.ENTER);
+
+	//    type(productSearchBox, productDetailName + Keys.ENTER);
 	    Common.waitForElement(2);
 	    System.out.println("✅ Entered product listing name in search box & pressed ENTER");
 	    
 	 // now click edit, etc…
 	    Common.waitForElement(3);
-	    waitFor(editProductButton);
-	    click(editProductButton);
+	  //  waitFor(editProductButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", editProductButton);
+	  //  click(editProductButton);
 	    System.out.println("✅ Clicked product edit option");
 	    // now click item, etc…
-	    waitFor(itemProductButton);
-	    click(itemProductButton);
+	  //  waitFor(itemProductButton);
+	    Common.waitForElement(2);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", itemProductButton);
+	  //  click(itemProductButton);
 	    System.out.println("✅  Clicked product item option");
 	    
 	    // -------- Check that the product text matches Excel name --------
-	    waitFor(productListingBoxText); 
+	 //   waitFor(productListingBoxText); 
+	    Common.waitForElement(3);
 	    String uiProductName = productListingBoxText.getAttribute("value").trim();
 	    System.out.println(" UI Product Listing Name: " + uiProductName);
 	    //For Sorting we copied sku
 	    copiedSku = skuTextbox.getAttribute("value").trim();
 	    System.out.println(" Copied SKU : " + copiedSku);
 
-	  
-	    boolean match = uiProductName.toLowerCase().contains(productName.toLowerCase());
-	    if (!match) {
-	        System.err.println("❌ Product mismatch,This is not First Colour Both are Different— skipping remaining steps → Expected: " + productName + " | Actual: " + uiProductName);
-	        // Now skip scenario
-	        Assume.assumeTrue("Skipping due to product mismatch", false);
-	    }
+//	  
+//	    boolean match = uiProductName.toLowerCase().contains(productlistingName.toLowerCase());
+//	    if (!match) {
+//	        System.err.println("❌ Product mismatch,This is not First Colour Both are Different— skipping remaining steps → Expected: " + productlistingName + " | Actual: " + uiProductName);
+//	        // Now skip scenario
+//	        Assume.assumeTrue("Skipping due to product mismatch", false);
+//	    }
 	  //For Assert
 //	    Assert.assertEquals(
 //	    	    uiProductName,
@@ -760,52 +782,73 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	
 	public void addTheProductInNewArrivalSection() throws InterruptedException {
 		// Click product button
-	    click(productButton);
+		Common.waitForElement(2);
+		((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", productButton);
+	  //  click(productButton);
 	    System.out.println("✅ Clicked Product button");
 
 	    // Copy text from Product Name textbox
+	    Common.waitForElement(2);
 	    String copiedProductName = productNameTextbox.getAttribute("value").trim();
 	    System.out.println("📋 Copied product name: " + copiedProductName);
 
 	    //Navigate to Search Product Collection page
-	    
-	    click(searchProductCollectionMenu);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", searchProductCollectionMenu);
+	  //  click(searchProductCollectionMenu);
 	    System.out.println("✅ Clicked Search Product Collection");
 
 	    //Type in the search text box
 	    //Thread.sleep(2000);
-	    waitFor(searchProductCollectionMenu); 
+	    Common.waitForElement(2);
+	//    waitFor(searchProductCollectionMenu); 
 	    type(searchProductCollectionMenu, "Product Collections");
 	    //Thread.sleep(2000);
 	    System.out.println("✅ Typed 'Product Collections' ");
-	    waitFor(clickProductCollection);
+	//    waitFor(clickProductCollection);
 	  //  Thread.sleep(3000);
-	    click(clickProductCollection);
+	    Common.waitForElement(2);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clickProductCollection);
+	 //   click(clickProductCollection);
 	    System.out.println("✅ Selected Product Collection");
 //	     3. Select from the dropdown or result line
 //	    selectDropdownByVisibleText(productCollectionDropdown, "Product Collections");
 //	    System.out.println("✅ Selected Product Collection");
 
 	    Common.waitForElement(2);
-	    waitFor(clickStatus);
-	    click(clickStatus);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clickStatus);
+//	    waitFor(clickStatus);
+//	    click(clickStatus);
 
 	    // Select Status -> Active
-	    waitFor(statusActiveOption);
-	    click(statusActiveOption);
+	    Common.waitForElement(3);
+	    Thread.sleep(2000);
+//	    ((JavascriptExecutor) driver)
+//        .executeScript("arguments[0].click();", statusActiveOption);
+	   // click(statusActiveOption);
+	 // 3️⃣ Scroll + native click (NOT JS)
+	    ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({block:'center'});", statusActiveOption
+	    );
+
+	    statusActiveOption.click();  // ✅ THIS WILL WORK IN HEADLESS
 	    System.out.println("✅ Selected Active status");
 
 	    // Click Collection button
 	    //Thread.sleep(2000);
 	    Common.waitForElement(2);
-	    waitFor(collectionButton);
-	    click(collectionButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", collectionButton);
+	 //   click(collectionButton);
 	    System.out.println("✅ Clicked Collection button");
 
 	    //Search 'new-arrivals'
 	    //Thread.sleep(2000);
 	    Common.waitForElement(2);
-	    waitFor(searchTextBox);
+	 //   waitFor(searchTextBox);
 	    type(searchTextBox, "new-arrivals");
 	    searchTextBox.sendKeys(Keys.ENTER);
 	    System.out.println("✅ Searched for new-arrivals");
@@ -813,13 +856,14 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	    //Click Edit
 	    Common.waitForElement(2);
-	    waitFor(editCollectionButton);
-	    editCollectionButton.click();
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", editCollectionButton);
+	//    editCollectionButton.click();
 	    System.out.println("✅ Entered Edit mode for collection");
 
 	    //Add copied product to last position in product text field
 	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,900);");
-	    waitFor(addProductTextbox);
+	    Common.waitForElement(2);
 	    type(addProductTextbox, copiedProductName);
 	    Common.waitForElement(2);
 	   //Thread.sleep(3000);
@@ -828,8 +872,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    
 
 	    //Save
-	    waitFor(saveButton);
-	    click(saveButton);
+	    Common.waitForElement(2);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", saveButton);
+	  //  click(saveButton);
 	    System.out.println("✅ Saved collection changes");
 		
 		
@@ -837,29 +883,35 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	
 	public void sortTheProductInFirstPosition() {
 		// Click on Search Box for Product Sort
-		Common.waitForElement(3);
-		click(searchProductSortMenu);
+		Common.waitForElement(2);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", searchProductSortMenu);
+		//click(searchProductSortMenu);
 	    System.out.println("✅ Clicked Search Product Collection");
 
 		// Type in the search text box
 		// Thread.sleep(2000);
-		waitFor(searchProductSortMenu);
+	     Common.waitForElement(2);
 		type(searchProductSortMenu, "Product Sorts");
 		// Thread.sleep(2000);
 		System.out.println("✅ Typed 'Product Sorts");
-		waitFor(clickProductSort);
+		 Common.waitForElement(2);
 		// Thread.sleep(3000);
-		click(clickProductSort);
+		 ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", clickProductSort);
+		//click(clickProductSort);
 		System.out.println("✅ Selected Product Sorts");
 
 		//  Click Category Name
-		waitFor(categoryName);
-		click(categoryName);
+		Common.waitForElement(2);
+	   		 ((JavascriptExecutor) driver)
+	        .executeScript("arguments[0].click();", categoryName);
+	//	click(categoryName);
 		System.out.println("✅ Clicked Category Name");
 
 		// In the Category Search, type "New Arrivals" and hit Enter
 		 Common.waitForElement(2);
-		    waitFor(categorySearchBox);
+		//    waitFor(categorySearchBox);
 		    type(categorySearchBox, "New Arrivals");
 		    categorySearchBox.sendKeys(Keys.ENTER);
 		    System.out.println("✅ Typed 'New Arrivals' & pressed Enter");
@@ -871,15 +923,19 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		System.out.println("✅ Scrolled down");
 
 		//Click Next Page arrow
-		Common.waitForElement(3);
-		waitFor(nextPageArrow);
-		click(nextPageArrow);
+		Common.waitForElement(2);
+  		 ((JavascriptExecutor) driver)
+       .executeScript("arguments[0].click();", nextPageArrow);
+		
+		//click(nextPageArrow);
 		System.out.println("✅ Clicked next page");
 
 		// Click Plus Button to add products
 		Common.waitForElement(2);
 		waitFor(plusButton);
-		click(plusButton);
+		 ((JavascriptExecutor) driver)
+	       .executeScript("arguments[0].click();", plusButton);
+		//click(plusButton);
 		System.out.println("✅ Clicked '+' button");
 
 		//  In the products list, find SKU & drag to first position
@@ -943,26 +999,43 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		
 		 //  Save
 		Common.waitForElement(3);
-	    waitFor(saveButton);
-	    click(saveButton);
+		((JavascriptExecutor) driver)
+	       .executeScript("arguments[0].click();", saveButton);
+	  //  click(saveButton);
 	    System.out.println("✅ Saved collection changes");
 	    //Clear Catch
 	    Common.waitForElement(2);
 	    waitFor(clearCatchButton);
-	    click(clearCatchButton);
-	    System.out.println("✅ Successfull click Clear Catch Button");
-	    Common.waitForElement(2);
-		
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clearCatchButton);
+	//    click(clearCatchButton);
+	    System.out.println( "🧹 Cache cleared successfully." );
+	    Common.waitForElement(7);
+	    waitFor(clearCatchButton);
+	    ((JavascriptExecutor) driver)
+        .executeScript("arguments[0].click();", clearCatchButton);
+	//    click(clearCatchButton);
+	    System.out.println( "🧹 Cache cleared successfully." );
 		
 		
 	}
 	
-	public void verifyProductShowInNewArrivalsSction(String productName) {
+	public void verifyProductShowInNewArrivalsSction() {
 		HomePage home = new HomePage(driver);
 		home.homeLaunch();
 	    Common.waitForElement(3);
-	    ((JavascriptExecutor) driver).executeScript("window.scrollBy(0,2400);");
-	    Common.waitForElement(3);
+	    WebElement topSellingSection = driver.findElement(
+	            By.xpath("//div[@data-section='new_arrivals']")
+	    );
+	    
+	    ((JavascriptExecutor) driver).executeScript(
+	            "window.scrollTo({top: arguments[0].getBoundingClientRect().top + window.pageYOffset - 120, behavior: 'smooth'});",
+	            topSellingSection
+	    );
+	    ((JavascriptExecutor) driver).executeScript(
+	            "arguments[0].scrollIntoView({behavior:'smooth', block:'center'});",
+	            topSellingSection
+	    );
 
 	    int timeoutMinutes = 10;   // total wait time
 	    int refreshInterval = 15; // refresh every 15 seconds
@@ -986,7 +1059,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 	            card = wait.until(d -> {
 	                List<WebElement> elements = d.findElements(By.xpath(
-	                		"//div[contains(@class,'products_cards')]//a[@class='product_heading' and normalize-space(.)='" + productName + "']"
+	                		"(//div[contains(@class,'new_arrival_inner_wrpr')]//a[contains(@class,'prod_title') and normalize-space(.)='" + productlistingName + "'])[1]"
 	                ));
 	                return elements.isEmpty() ? null : elements.get(0);
 	            });
@@ -1007,10 +1080,10 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 	    }
 
 	    // ✅ Final validation
-	    if (productFound && card != null && card.getText().trim().equalsIgnoreCase(productName.trim())) {
-	        System.out.println("✅ Product '" + productName + "' is visible in New Arrivals.");
+	    if (productFound && card != null && card.getText().trim().equalsIgnoreCase(productlistingName.trim())) {
+	        System.out.println("✅ Product '" + productlistingName + "' is visible in New Arrivals.");
 	    } else {
-	        System.err.println("❌ Product '" + productName + "' not found in New Arrivals within " 
+	        System.err.println("❌ Product '" + productlistingName + "' not found in New Arrivals within " 
 	                           + timeoutMinutes + " minutes.");
 	    }
 	}
@@ -2056,7 +2129,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 //			            By.xpath("(//div[@data-section='top_selling']//a[contains(@class,'prod_card_img')])[1]")
 //			    );
 			    WebElement firstProduct1 = driver.findElement(
-			            By.xpath("(//a[contains(@class,'prod_title')])[1]")
+			            By.xpath("(//div[contains(@class,'top_selling_carousel_wrap')]//a[contains(@class,'prod_title')])[1]")
 			    );
 			            
 			     excpectedName = firstProduct1.getText().trim();
@@ -2065,7 +2138,7 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 			     Common.waitForElement(2);
 			  // First product card link
 			     WebElement firstProduct = driver.findElement(
-			             By.xpath("(//div[@data-section='top_selling']//a[contains(@href,'/product-detail')])[1]")
+			             By.xpath("(//div[contains(@class,'top_selling_carousel_wrap')]//a[contains(@href,'/product-detail')])[1]")
 			     );
 
 			     String productUrl = firstProduct.getAttribute("href");
@@ -2103,6 +2176,99 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 
 			     return productName;
 			}
+		 
+		 String productlistingName;
+		    String productDetailName;
+//		    String productName;
+//		    String secondaryColor;
+
+		    // ===============================
+		    // 🛍️ Select In-stock Product from App
+		    // ===============================
+		    public String takeRandomProductName() {
+		        HomePage home = new HomePage(driver);
+		        home.homeLaunch();
+		        Common.waitForElement(3);
+
+		        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+		        Actions actions = new Actions(driver);
+
+		        // Hover on Shop → All
+		        WebElement shopMenu = wait.until(ExpectedConditions.visibilityOfElementLocated(
+		                By.xpath("//span[@class='navigation_menu_txt'][normalize-space()='Shop']")));
+		        actions.moveToElement(shopMenu).perform();
+
+		        WebElement allButton = wait.until(ExpectedConditions.elementToBeClickable(
+		                By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES']")));
+		 //       allButton.click();
+		        ((JavascriptExecutor) driver)
+                .executeScript("arguments[0].click();", allButton);
+
+		        System.out.println("✅ Clicked on 'All' under Shop menu");
+
+		        // Collect all product cards
+		        List<WebElement> products = wait.until(ExpectedConditions
+		                .visibilityOfAllElementsLocatedBy(By.xpath("//div[contains(@class,'product_list_cards_list ')]")));
+
+		        if (products.isEmpty()) {
+		            System.out.println("⚠️ No products found on listing page!");
+		            return null;
+		        }
+
+		        Random rand = new Random();
+		        int maxAttempts = Math.min(8, products.size()); // check max 5 random ones
+		        boolean productFound = false;
+
+		        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+		            int randomIndex = rand.nextInt(products.size()) + 1; // 1-based index for XPath
+		            System.out.println("🎯 Checking random product index: " + randomIndex);
+
+		            WebElement productCard = driver.findElement(
+		                    By.xpath("(//div[contains(@class,'product_list_cards_list')])[" + randomIndex + "]"));
+
+		            String name = productCard.findElement(By.xpath(".//h2[@class='product_list_cards_heading']")).getText().trim();
+
+		            List<WebElement> stockLabels = productCard.findElements(
+		                    By.xpath(".//h2[contains(@class,'product_list_cards_out_of_stock_heading') and normalize-space()='OUT OF STOCK']"));
+
+		            boolean isOutOfStock = !stockLabels.isEmpty() && stockLabels.get(0).isDisplayed();
+
+		            if (isOutOfStock) {
+		                System.out.println("❌ Random product '" + name + "' is OUT OF STOCK. Retrying another...");
+		                continue; // try another random one
+		            }
+
+		            // ✅ Product is in stock
+		            productlistingName = name;
+		            WebElement productNameElement = productCard.findElement(By.xpath(".//h2[@class='product_list_cards_heading']"));
+		            ((JavascriptExecutor) driver)
+	                .executeScript("arguments[0].click();", productNameElement);
+		         //   productNameElement.click();
+		            productFound = true;
+
+		            System.out.println("✅ Selected random in-stock product: " + productlistingName);
+		            break;
+		        }
+
+		        if (!productFound) {
+		            System.out.println("⚠️ Could not find any in-stock product after " + maxAttempts + " random tries.");
+		            return null;
+		        }
+
+		     // ✅ Get product detail name
+		        WebElement productDetailNameElement = wait.until(
+		                ExpectedConditions.visibilityOfElementLocated(
+		                        By.xpath("//h4[contains(@class,'prod_name')]")
+		                )
+		        );
+
+		         productDetailName = productDetailNameElement.getText().trim();
+		        System.out.println("📦 Product Detail Name: " + productDetailName);
+
+		        // return or store it as needed
+		        return productlistingName + " | Detail Name: " + productDetailName;
+		    }
+
 
 //Home Page Test Case
 	
@@ -2132,12 +2298,18 @@ public final class AdminPanelPage extends AdminPanelObjRepo  {
 		 }
 	
 //TC-03	
+	public void validateNewArrivalSuccessfullyAdded() throws InterruptedException {
 	
+		takeRandomProductName();
+		
+		verifyColourOfTheProductIsFirstPosition();
+		
+		addTheProductInNewArrivalSection();
+		
+		sortTheProductInFirstPosition();
 	
-	
-	
-	
-	
+		verifyProductShowInNewArrivalsSction();
+}
 	
 	
 	
