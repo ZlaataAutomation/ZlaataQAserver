@@ -19,6 +19,15 @@ public class AdminPanelSortingStepDef {
 
 	}
 	
+
+		@Given("admin is logged in")
+		public void admin_is_logged_in() {
+			adminSort.adminLoginApp();
+		}
+
+
+
+	
 	@When("I sort the products in a category")
 	public void i_sort_the_products_in_a_category() throws IOException {
 	    adminSort.sortTheCategoriesInAdminPanel();

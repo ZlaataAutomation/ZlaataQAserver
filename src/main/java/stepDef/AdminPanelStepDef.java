@@ -128,7 +128,7 @@ public class AdminPanelStepDef {
 	}
 	
 
-	// Catagory
+	// Category
 
 	@When("I update the category banner with image {string}")
 	public void iUpdateTheCategoryBanner(String imageName) {
