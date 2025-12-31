@@ -223,7 +223,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	    // --------------------------
 	    // Step 1: Get all products > 499
 	    // --------------------------
-	    List<WebElement> allProducts = driver.findElements(By.xpath("//div[@class='product_list_cards_wrpr']"));
+	    List<WebElement> allProducts = driver.findElements(By.xpath("//div[@class='product_list_cards_list ']"));
 	    List<WebElement> validProducts = new ArrayList<>();
 
 	    for (WebElement product : allProducts) {
@@ -253,11 +253,11 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	    // --------------------------
 	    // Step 3: Add to Cart
 	    // --------------------------
+//	    Common.waitForElement(2);
+//	    js.executeScript("arguments[0].scrollIntoView(true);", selectedProduct);
+//	    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='product_list_cards_btn_group product_list_add_to_cart Cls_CartListes ClsSingleCart']"))).click();
 	    Common.waitForElement(2);
-	    js.executeScript("arguments[0].scrollIntoView(true);", selectedProduct);
-	    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='product_list_cards_btn_group product_list_add_to_cart Cls_CartListes ClsSingleCart']"))).click();
-	    Common.waitForElement(2);
-	    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@class='add_bag_prod_buy_now_btn btn___2 Cls_CartList ClsProductListSizes'])[1]"))).click();
+	    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Buy')]"))).click();
 	    System.out.println("✅ Product added to cart successfully.");
 
 	    // --------------------------

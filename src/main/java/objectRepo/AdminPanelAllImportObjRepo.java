@@ -85,7 +85,7 @@ public abstract class AdminPanelAllImportObjRepo extends BasePage {
     @FindBy(xpath = "(//span[@class='select2-selection select2-selection--single'])[2]")
     protected WebElement menuButton;
     
-    @FindBy(xpath = "(//input[@role='searchbox'])[4]")
+    @FindBy(xpath = "(//input[@role='searchbox'])[3]")
     protected WebElement menuSearchBox;
     
     @FindBy(xpath="//a[normalize-space()='Status']")
