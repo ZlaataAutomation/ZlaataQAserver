@@ -56,6 +56,9 @@ public abstract class AdminPanelAllImportObjRepo extends BasePage {
     
     @FindBy(xpath = "//input[@id='importFile']")
     protected WebElement uploadExcelButton;
+    
+    @FindBy(xpath = "//input[@id='inventoryImportFile']")
+    protected WebElement  uploadExcelButtonTrack;
 
     @FindBy(xpath = "//button[normalize-space()='Submit']")
     protected WebElement submitButton;
@@ -129,8 +132,13 @@ public abstract class AdminPanelAllImportObjRepo extends BasePage {
     @FindBy(xpath = "//input[@id='text-filter-sku']")
     protected WebElement adminSearchBox;
   
+    
+   @FindBy(xpath = "//a[normalize-space()='Product Colour Name / SKU']")
+   protected WebElement trackinventoriesSearchbardropdown;
+   
   
   
- 
+ @FindBy(xpath = "//input[@role='searchbox']")
+ protected WebElement trackinventoriesSearchbar;
 	
 }

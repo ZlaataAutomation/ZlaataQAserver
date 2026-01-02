@@ -85,3 +85,14 @@ Scenario Outline: TC_UI_Zlaata_ADI_07 |Verify Search Keyboard Style import uploa
 Examples:  
   | TD_ID                  |  
   | TD_UI_Zlaata_ADI_07   |
+  
+    
+@TC_UI_Zlaata_ADI_08
+Scenario Outline: TC_UI_Zlaata_ADI_08 | Verify that uploaded track inventory appears in Admin and User App | "<TD_ID>"
+    When Admin uploads the track inventory Excel file "Trackinventories.xlsx"
+
+Examples:
+  | TD_ID               |
+  | TD_UI_Zlaata_ADI_08 |
+
+  
