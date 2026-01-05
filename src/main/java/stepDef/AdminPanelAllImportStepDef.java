@@ -145,16 +145,34 @@ public class AdminPanelAllImportStepDef {
 
 
 
-	//track inventories import
-
-
+	//track inventories import for one sku Product two size
 
 	@When("Admin uploads the track inventory Excel file {string}")
 	public void admin_uploads_the_track_inventory_excel_file(String filePath) throws IOException {
 		String excelPath = System.getProperty("user.dir") + "/src/test/resources/ImportFile/" + filePath;
 		adminGoogle.VerifyImporttrackinventories(excelPath);
-		
+
 	}
+
+
+	//track  inventories import for two  sku Product one size
+
+	@When("Admin uploads the track inventory Excel file for two items {string}")
+	public void admin_uploads_the_track_inventory_excel_file_for_two_items(String filePath) throws IOException {
+		String excelPath = System.getProperty("user.dir") + "/src/test/resources/ImportFile/" + filePath;
+		adminGoogle.VerifyImportTrackInventoryMultipleStages(excelPath);
+	}
+
+
+
+	@When("Admin uploads the Track Inventory Excel file for new size reflecting in the application {string}")
+	public void admin_uploads_the_track_inventory_excel_file_for_new_size_reflecting_in_the_application(String filePath) throws IOException {
+		String excelPath = System.getProperty("user.dir") + "/src/test/resources/ImportFile/" + filePath;
+		adminGoogle.VerifyImportTrackInventoryaddNewsizereflectinginapplication(excelPath);
+	}
+
+
+
 
 
 

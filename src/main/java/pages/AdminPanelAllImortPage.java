@@ -25,6 +25,7 @@ import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import com.aventstack.extentreports.ExtentTest;
+import com.fasterxml.jackson.databind.type.CollectionLikeType;
 
 import manager.FileReaderManager;
 import objectRepo.AdminPanelAllImportObjRepo;
@@ -1132,7 +1133,7 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 	
 	
 			
-///track inventories
+///track inventories for one sku two size
 ///
 			public void VerifyImporttrackinventories(String filePath) throws IOException {
 
@@ -1300,19 +1301,433 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 			}
 
 
+//track inventories for two sku one size
+			public void VerifyImportTrackInventoryMultipleStages(String filePath) throws IOException {
+			    Common.waitForElement(2);
+			    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+			    System.out.println("Redirected to Track Inventory page");
+
+			    // Read Excel
+			    List<Map<String, Object>> excelProducts = ExcelXLSReader.readProductsWithMultipleListing(filePath);
+
+			    // Group by SKU
+			    Map<String, List<Map<String, Object>>> productsBySku = new LinkedHashMap<>();
+			    for (Map<String, Object> row : excelProducts) {
+			        String sku = row.get("SKU").toString().trim();
+			        productsBySku.computeIfAbsent(sku, k -> new ArrayList<>()).add(row);
+			    }
+
+			    
+			    
+			    // ---------------- Stage 1 & 2: Print BEFORE IMPORT for all SKUs ----------------
+			    Map<String, Map<String, Map<String, String>>> expectedDataMap = new LinkedHashMap<>();
+			    for (String sku : productsBySku.keySet()) {
+			        System.out.println("\n================================================");
+			        System.out.println("PROCESSING SKU → " + sku);
+			        System.out.println("================================================");
+
+			        List<Map<String, Object>> skuRows = productsBySku.get(sku);
+
+			        // Build expected data
+			        Map<String, Map<String, String>> expectedSizeData = new HashMap<>();
+			        for (Map<String, Object> row : skuRows) {
+			            // TOP
+			            String topSize = row.get("Top Size") != null ? row.get("Top Size").toString().trim() : "";
+			            String topQty = row.get("Top Quantity") != null ? row.get("Top Quantity").toString().trim() : "";
+			            if (!topSize.isEmpty() && !topQty.isEmpty()) {
+			                expectedSizeData.computeIfAbsent("TOP", k -> new HashMap<>()).put(topSize, topQty);
+			                System.out.println("EXPECTED → TOP | Size: " + topSize + " | Qty: " + topQty);
+			            }
+
+			            // BOTTOM
+			            String bottomSize = row.get("Bottom Size") != null ? row.get("Bottom Size").toString().trim() : "";
+			            String bottomQty = row.get("Bottom Quantity") != null ? row.get("Bottom Quantity").toString().trim() : "";
+			            if (!bottomSize.isEmpty() && !bottomQty.isEmpty()) {
+			                expectedSizeData.computeIfAbsent("BOTTOM", k -> new HashMap<>()).put(bottomSize, bottomQty);
+			                System.out.println("EXPECTED → BOTTOM | Size: " + bottomSize + " | Qty: " + bottomQty);
+			            }
+			        }
+
+			        expectedDataMap.put(sku, expectedSizeData);
+
+			        // Search SKU
+			        trackinventoriesSearchbardropdown.click();
+			        Common.waitForElement(2);
+			        trackinventoriesSearchbar.clear();
+			        trackinventoriesSearchbar.sendKeys(sku);
+			        Common.waitForElement(2);
+			        trackinventoriesSearchbar.sendKeys(Keys.ENTER);
+			        Common.waitForElement(3);
+
+			        // Print BEFORE IMPORT
+			        System.out.println("\n--- UI INVENTORY BEFORE IMPORT ---");
+			        List<WebElement> blocks = driver.findElements(By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']"));
+			        for (WebElement block : blocks) {
+			            String type = block.findElement(By.xpath(".//span[contains(@class,'increment-btn')]")).getAttribute("data-type").trim().toUpperCase();
+			            String size = block.findElement(By.xpath(".//p[contains(@class,'size-field')]")).getText().trim();
+			            String qty = block.findElement(By.xpath(".//input[@type='number']")).getAttribute("value").trim();
+			            System.out.println("UI BEFORE IMPORT → " + type + " | Size: " + size + " | Qty: " + qty);
+			        }
+
+			        // Remove filter to prepare for next SKU
+			        click(removeButton);
+			    }
+
+			    // ---------------- Stage 3: Import once ----------------
+			    click(importButton);
+			    System.out.println("\nClicked Import button");
+			    Common.waitForElement(2);
+			    uploadExcelButtonTrack.sendKeys(filePath);
+			    System.out.println("Excel file uploaded");
+			    Common.waitForElement(2);
+			    submitButton.click();
+			    System.out.println("Import submitted");
+			    Common.waitForElement(8);
+			    driver.navigate().refresh();
+			    Common.waitForElement(3);
+
+			    // ---------------- Stage 3: Print AFTER IMPORT for all SKUs ----------------
+			    for (String sku : productsBySku.keySet()) {
+			        System.out.println("\n--- UI INVENTORY AFTER IMPORT FOR SKU → " + sku + " ---");
+			        trackinventoriesSearchbardropdown.click();
+			        Common.waitForElement(2);
+			        trackinventoriesSearchbar.clear();
+			        trackinventoriesSearchbar.sendKeys(sku);
+			        Common.waitForElement(2);
+			        trackinventoriesSearchbar.sendKeys(Keys.ENTER);
+			        Common.waitForElement(3);
+
+			        List<WebElement> blocks = driver.findElements(By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']"));
+			        Map<String, Map<String, String>> actualSizeData = new HashMap<>();
+			        for (WebElement block : blocks) {
+			            String type = block.findElement(By.xpath(".//span[contains(@class,'increment-btn')]")).getAttribute("data-type").trim().toUpperCase();
+			            String size = block.findElement(By.xpath(".//p[contains(@class,'size-field')]")).getText().trim();
+			            String qty = block.findElement(By.xpath(".//input[@type='number']")).getAttribute("value").trim();
+			            actualSizeData.computeIfAbsent(type, k -> new HashMap<>()).put(size, qty);
+			            System.out.println("UI AFTER IMPORT → " + type + " | Size: " + size + " | Qty: " + qty);
+			        }
+			        
+			        click(removeButton);
+
+			        // Verify
+			        Map<String, Map<String, String>> expectedSizeData = expectedDataMap.get(sku);
+			        List<String> failures = new ArrayList<>();
+			        for (String type : expectedSizeData.keySet()) {
+			            Map<String, String> expSizes = expectedSizeData.get(type);
+			            Map<String, String> actSizes = actualSizeData.get(type);
+			            if (actSizes == null) {
+			                failures.add(sku + " | " + type + " section missing in UI");
+			                continue;
+			            }
+			            for (String size : expSizes.keySet()) {
+			                String expQty = expSizes.get(size);
+			                String actQty = actSizes.get(size);
+			                if (!expQty.equals(actQty)) {
+			                    failures.add(sku + " | " + type + " qty mismatch → Size: " + size + " | Expected: " + expQty + " | Actual: " + actQty);
+			                } else {
+			                    System.out.println("VERIFIED → " + sku + " | " + type + " | Size: " + size + " | Qty: " + actQty);
+			                }
+			            }
+			        }
+			        if (!failures.isEmpty()) {
+			            System.err.println("\n❌ INVENTORY VERIFICATION FAILED FOR SKU → " + sku);
+			            failures.forEach(System.err::println);
+			            Assert.fail("Inventory mismatch for SKU → " + sku);
+			        } else {
+			            System.out.println("\n✅ INVENTORY VERIFICATION PASSED FOR SKU → " + sku);
+			        }
+			    }
+			}
+
+	// track inventories after add new size reflecting in application
+			public void VerifyImportTrackInventoryaddNewsizereflectinginapplication(String filePath) throws IOException {
+
+			    // -------------------- OPEN TRACK INVENTORY PAGE --------------------
+			    Common.waitForElement(2);
+			    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+			    System.out.println("Redirected to Track Inventory page");
+
+			    // -------------------- READ SKU FROM EXCEL --------------------
+			    List<Map<String, Object>> excelProducts =
+			            ExcelXLSReader.readProductsWithMultipleListing(filePath);
+
+			    String expectedSku = excelProducts.get(0).get("SKU").toString().trim();
+
+			    System.out.println("\n==============================");
+			    System.out.println("SKU FROM EXCEL → " + expectedSku);
+			    System.out.println("==============================");
+
+			    // -------------------- OPEN APPLICATION (FRONTEND) --------------------
+			    HomePage home = new HomePage(driver);
+			    home.homeLaunch();
+			    Common.waitForElement(5); // wait for banner / video
+
+			    // -------------------- CLICK SEARCH BAR (DIV) --------------------
+			    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
+
+			    WebElement searchBarContainer = wait.until(
+			            ExpectedConditions.elementToBeClickable(
+			                    By.xpath("//div[@class='navigation_search_input_box']")
+			            )
+			    );
+			    searchBarContainer.click();
+			    System.out.println("Search bar container clicked");
+
+			    // -------------------- ENTER SKU IN INPUT --------------------
+			    WebElement searchInput = wait.until(
+			            ExpectedConditions.visibilityOfElementLocated(
+			                    By.xpath("//div[@class='navigation_search_input_box']//input")
+			            )
+			    );
+
+			    searchInput.sendKeys(expectedSku);
+			    System.out.println("Entered SKU → " + expectedSku);
+
+			    searchInput.sendKeys(Keys.ENTER);
+			    System.out.println("Pressed ENTER");
+
+			    Common.waitForElement(4);
+
+			    // -------------------- RESULT CONFIRMATION --------------------
+			    System.out.println("Search results loaded successfully for SKU → " + expectedSku);
+			    WebElement productImage = wait.until(
+		                ExpectedConditions.elementToBeClickable(
+		                        By.xpath("(//div[contains(@class,'product_list_cards_img_box')]//a)[1]")
+		                )
+		        );
+
+		        productImage.click();
+		        System.out.println("Clicked on product listing image");
+
+		        // Optional: verify PDP loaded
+		        wait.until(ExpectedConditions.urlContains("product-detail"));
+		        System.out.println("Navigated to Product Detail Page");
+			
+		            // ---------- TOP Sizes ----------
+		            List<WebElement> topSizes = driver.findElements(By.cssSelector(".Cls_prod_size_name"));
+		            if (!topSizes.isEmpty()) {
+		                System.out.println("TOP Sizes:");
+		                for (WebElement size : topSizes) {
+		                    System.out.println(size.getText());
+		                }
+		            }
+
+		            // ---------- BOTTOM Sizes ----------
+		            List<WebElement> bottomSizes = driver.findElements(By.cssSelector(".Cls_prod_size_name_bottom"));
+		            if (!bottomSizes.isEmpty()) {
+		                System.out.println("\nBOTTOM Sizes:");
+		                for (WebElement size : bottomSizes) {
+		                    System.out.println(size.getText());
+		                }
+		            }
+
+		            if (topSizes.isEmpty() && bottomSizes.isEmpty()) {
+		                System.out.println("No sizes available for this product.");
+		            }
+		        
+
+		           driver.get(Common.getValueFromTestDataMap("ExcelPath"));	
+				    System.out.println("Redirected to Track Inventory page");
+				    
+				    Map<String, Map<String, String>> expectedSizeData = new HashMap<>();
+
+				    for (Map<String, Object> row : excelProducts) {
+
+				        String topSize = row.get("Top Size").toString().trim();
+				        String topQty  = row.get("Top Quantity").toString().trim();
+
+				        String bottomSize = row.get("Bottom Size").toString().trim();
+				        String bottomQty  = row.get("Bottom Quantity").toString().trim();
+
+				        expectedSizeData
+				                .computeIfAbsent("TOP", k -> new HashMap<>())
+				                .put(topSize, topQty);
+
+				        expectedSizeData
+				                .computeIfAbsent("BOTTOM", k -> new HashMap<>())
+				                .put(bottomSize, bottomQty);
+
+				        System.out.println("TOP    → " + topSize + " = " + topQty);
+				        System.out.println("BOTTOM → " + bottomSize + " = " + bottomQty);
+				    }
+				    System.out.println("==============================");
+
+				    // -------------------- SEARCH SKU --------------------
+				    trackinventoriesSearchbardropdown.click();
+				    Common.waitForElement(2);
+				    trackinventoriesSearchbar.sendKeys(expectedSku);
+				    Common.waitForElement(2);
+				    trackinventoriesSearchbar.sendKeys(Keys.ENTER);
+				    Common.waitForElement(3);
+
+				    // ====================================================
+				    // UI INVENTORY DATA BEFORE IMPORT
+				    // ====================================================
+				    System.out.println("\n==============================");
+				    System.out.println("UI INVENTORY DATA (BEFORE IMPORT)");
+				    System.out.println("==============================");
+
+				    List<WebElement> beforeImportBlocks = driver.findElements(
+				            By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']")
+				    );
+
+				    for (WebElement block : beforeImportBlocks) {
+
+				        String type = block.findElement(
+				                By.xpath(".//span[contains(@class,'increment-btn')]")
+				        ).getAttribute("data-type").trim().toUpperCase();
+
+				        String size = block.findElement(
+				                By.xpath(".//p[contains(@class,'size-field')]")
+				        ).getText().trim();
+
+				        String qty = block.findElement(
+				                By.xpath(".//input[@type='number']")
+				        ).getAttribute("value").trim();
+
+				        System.out.println("UI DATA → " + type + " | Size: " + size + " | Qty: " + qty);
+				    }
+
+				    // -------------------- IMPORT EXCEL --------------------
+				    click(importButton);
+				    System.out.println("Clicked Import button");
+
+				    Common.waitForElement(2);
+				    uploadExcelButtonTrack.sendKeys(filePath);
+				    System.out.println("Excel file uploaded");
+
+				    Common.waitForElement(2);
+				    submitButton.click();
+				    System.out.println("Import submitted");
+
+				    Common.waitForElement(8);
+				    driver.navigate().refresh();
+				    Common.waitForElement(3);
+
+				    // ====================================================
+				    // UI INVENTORY DATA AFTER IMPORT
+				    // ====================================================
+				    Map<String, Map<String, String>> actualSizeData = new HashMap<>();
+
+				    System.out.println("\n==============================");
+				    System.out.println("UI INVENTORY DATA (AFTER IMPORT)");
+				    System.out.println("==============================");
+
+				    List<WebElement> sizeBlocks = driver.findElements(
+				            By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']")
+				    );
+
+				    for (WebElement block : sizeBlocks) {
+
+				        String type = block.findElement(
+				                By.xpath(".//span[contains(@class,'increment-btn')]")
+				        ).getAttribute("data-type").trim().toUpperCase();
+
+				        String size = block.findElement(
+				                By.xpath(".//p[contains(@class,'size-field')]")
+				        ).getText().trim();
+
+				        String qty = block.findElement(
+				                By.xpath(".//input[@type='number']")
+				        ).getAttribute("value").trim();
+
+				        actualSizeData
+				                .computeIfAbsent(type, k -> new HashMap<>())
+				                .put(size, qty);
+
+				        System.out.println("UI DATA → " + type + " | Size: " + size + " | Qty: " + qty);
+				    }
+				    System.out.println("==============================");
+				    
+				    home.homeLaunch();
+				    Common.waitForElement(5); // wait for banner / video
+
+				    // -------------------- CLICK SEARCH BAR (DIV) --------------------
+
+				    WebElement searchBarContainer1 = wait.until(
+				            ExpectedConditions.elementToBeClickable(
+				                    By.xpath("//div[@class='navigation_search_input_box']")
+				            )
+				    );
+				    searchBarContainer1.click();
+				    System.out.println("Search bar container clicked");
+
+				    // -------------------- ENTER SKU IN INPUT --------------------
+				    WebElement searchInput1 = wait.until(
+				            ExpectedConditions.visibilityOfElementLocated(
+				                    By.xpath("//div[@class='navigation_search_input_box']//input")
+				            )
+				    );
+
+				    searchInput1.sendKeys(expectedSku);
+				    System.out.println("Entered SKU → " + expectedSku);
+
+				    searchInput1.sendKeys(Keys.ENTER);
+				    System.out.println("Pressed ENTER");
+
+				    Common.waitForElement(4);
+
+				    // -------------------- RESULT CONFIRMATION --------------------
+				    System.out.println("Search results loaded successfully for SKU → " + expectedSku);
+				    WebElement productImage1 = wait.until(
+			                ExpectedConditions.elementToBeClickable(
+			                        By.xpath("(//div[contains(@class,'product_list_cards_img_box')]//a)[1]")
+			                )
+			        );
+
+			        productImage1.click();
+			        System.out.println("Clicked on product listing image");
+
+			        // Optional: verify PDP loaded
+			        wait.until(ExpectedConditions.urlContains("product-detail"));
+			        System.out.println("Navigated to Product Detail Page");
+				
+			            // ---------- TOP Sizes ----------
+			            List<WebElement> topSizes1 = driver.findElements(By.cssSelector(".Cls_prod_size_name"));
+			            if (!topSizes1.isEmpty()) {
+			                System.out.println("TOP Sizes:");
+			                for (WebElement size : topSizes1) {
+			                    System.out.println(size.getText());
+			                }
+			            }
+
+			            // ---------- BOTTOM Sizes ----------
+			            List<WebElement> bottomSizes1 = driver.findElements(By.cssSelector(".Cls_prod_size_name_bottom"));
+			            if (!bottomSizes1.isEmpty()) {
+			                System.out.println("\nBOTTOM Sizes:");
+			                for (WebElement size : bottomSizes1) {
+			                    System.out.println(size.getText());
+			                }
+			            }
+
+			            if (topSizes1.isEmpty() && bottomSizes1.isEmpty()) {
+			                System.out.println("No sizes available for this product.");
+			            }
+			        
+				    
+			}
+				    
+		           
+			
+			
+			
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+			 
+
+					
+					
+					
+					
+					
+					
+				    
+				    
+				    
+
+			
+
+
 	
 	
 	
