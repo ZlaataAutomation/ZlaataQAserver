@@ -95,4 +95,26 @@ Examples:
   | TD_ID               |
   | TD_UI_Zlaata_ADI_08 |
 
+
+@TC_UI_Zlaata_ADI_09
+Scenario Outline: TC_UI_Zlaata_ADI_09| Verify that uploaded track inventory product count for two Product  | "<TD_ID>"
+    When Admin uploads the track inventory Excel file for two items "Trackinventories1.xlsx"
+
+Examples:
+  | TD_ID               |
+  | TD_UI_Zlaata_ADI_09 |
+  
+  
+@TC_UI_Zlaata_ADI_10
+Scenario Outline: TC_UI_Zlaata_ADI_10 |Verify that the newly uploaded size in Track Inventory for a product is reflected in the application| "<TD_ID>"
+    When Admin uploads the Track Inventory Excel file for new size reflecting in the application "Trackinventories2.xlsx"
+
+Examples:
+  | TD_ID               |
+  | TD_UI_Zlaata_ADI_10 |
+
+  
+  
+  
+
   
