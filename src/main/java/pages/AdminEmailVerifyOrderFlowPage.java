@@ -310,7 +310,7 @@ public class AdminEmailVerifyOrderFlowPage extends AdminEmailVerifyOrderFlowObjR
 		            click(viewOrderDetails);
 		            System.out.println(GREEN + "🧾 Clicked View Order Details" + RESET);
 		            
-		    	    WebElement cancelBtn = driver.findElement(By.xpath("//button[@class='prod_cancel_btn cls_cancel_button']"));
+		    	    WebElement cancelBtn = driver.findElement(By.xpath("//button[@class='prod_cancel_btn']"));
 		    	    if (cancelBtn.isDisplayed()) {
 		    	        System.out.println("❌ Cancel Button: Displayed ✅");
 		    	    }
@@ -774,7 +774,7 @@ public void cancelOrderFromUser() throws Exception {
 	click(closeBtn);
     
     // Click Cancel button
-    WebElement cancelButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='prod_cancel_btn cls_cancel_button']")));
+    WebElement cancelButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[@class='prod_cancel_btn']")));
     if (cancelButton.isDisplayed()) {
         System.out.println(" Cancel Button: Displayed ✅");
         cancelButton.click();
@@ -799,7 +799,7 @@ public void cancelOrderFromUser() throws Exception {
     //  Verify Order Cancelled message
     try {
         WebElement successMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                By.xpath("//h4[contains(@class,'order_placed_status') and normalize-space()='Order Cancelled']")));
+                By.xpath("//h4[contains(@class,'order_status') and normalize-space()='Order Cancelled']")));
         System.out.println(GREEN + "🎉 Order cancelled successfully: " + successMsg.getText() + RESET);
     } catch (Exception e) {
         System.out.println(RED + "❌ Order cancellation message not found!" + RESET);
@@ -1051,6 +1051,16 @@ public void orderReturnForUserSide() {
 	    myOrderSearchBox.sendKeys(productName);
 	    Common.waitForElement(1);
 	    myOrderSearchBox.sendKeys(Keys.ENTER);
+	    Common.waitForElement(2);
+	 		// Build dynamic XPath
+	 		String xpath = "(//a[contains(@class,'order_placed_redirect_btn')])[1]";
+	 		WebElement btn = driver.findElement(By.xpath(xpath));
+
+	 		// 1️⃣ Scroll to the element
+	 		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", btn);
+	 		
+	 		((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+	    
 	    Common.waitForElement(3);
 	   // Click Return button
 	    WebElement returnButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[normalize-space()='return'])[1]")));
@@ -1119,6 +1129,17 @@ public void orderExchangeForUserSide() {
 	    myOrderSearchBox.sendKeys(productName);
 	    Common.waitForElement(1);
 	    myOrderSearchBox.sendKeys(Keys.ENTER);
+	    Common.waitForElement(2);
+		// Build dynamic XPath
+		String xpath = "(//a[contains(@class,'order_placed_redirect_btn')])[1]";
+		WebElement btn = driver.findElement(By.xpath(xpath));
+
+		// 1️⃣ Scroll to the element
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView({block:'center'});", btn);
+		
+		((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+	    
+	    
 	    Common.waitForElement(3);
 	   // Click Exchange button
 	    WebElement exchangeButton = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[normalize-space()='exchange'])[1]")));
@@ -1790,6 +1811,21 @@ public void orderExchangeForUserSide() {
 		wait.until(ExpectedConditions.elementToBeClickable(cancelBtn));
         click(cancelBtn);
         System.out.println(GREEN + "🧾 Clicked Cancel Button" + RESET);
+     // Select Return reason
+	    Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(cancelreturnReason));
+	    waitFor(cancelreturnReason);
+		click(cancelreturnReason);
+	    System.out.println(GREEN + "📌 Selected Return Reason: " + cancelreturnReason + RESET);
+
+	    // 3 Click Continue / Confirm Cancel
+	    Common.waitForElement(1);
+	    wait.until(ExpectedConditions.elementToBeClickable(continueReturnBtn));
+	    waitFor(continueReturnBtn);
+		click(continueReturnBtn);
+	    System.out.println(GREEN + "✅ Clicked Continue button" + RESET);
+	    
+	 
         Common.waitForElement(2);
         WebElement deliveredMsg = wait.until(
                 ExpectedConditions.visibilityOfElementLocated(By.xpath("//h4[normalize-space()='Order Delivered']"))
@@ -2181,7 +2217,7 @@ public void orderExchangeForUserSide() {
         Common.waitForElement(2);
         WebElement exchangeCancelledMsg = wait.until(
         	    ExpectedConditions.visibilityOfElementLocated(
-        	        By.xpath("//h4[@class='order_placed_status' and normalize-space()='Exchange Cancelled']")
+        	        By.xpath("//h4[@class='order_status' and normalize-space()='Exchange Cancelled']")
         	    )
         	);
 

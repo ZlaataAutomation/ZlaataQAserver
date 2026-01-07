@@ -132,6 +132,9 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	 @FindBy(xpath="(//label[normalize-space()='Wrong size/color Received'])[1]")
 	    protected WebElement returnReason;
 	 
+			 @FindBy(xpath="(//label[normalize-space()='Replacement or exchange already arranged'])[1]")
+			    protected WebElement cancelreturnReason;
+			 
 	 @FindBy(xpath="//button[contains(@class,'place_order_btn') and text()='Confirm Return']")
 	    protected WebElement confirmReturnBtn;
 	
@@ -157,7 +160,7 @@ public abstract class AdminEmailVerifyOrderFlowObjRepo extends BasePage {
 	 @FindBy(xpath="//select[@name='item[0][status]']")
 	    protected WebElement returnStatus;
 	 
-	 @FindBy(xpath="//button[@class='prod_cancel_btn cls_cancel_button']")
+	 @FindBy(xpath="//button[@class='prod_cancel_btn']")
 	    protected WebElement cancelBtn;
 	
 	
