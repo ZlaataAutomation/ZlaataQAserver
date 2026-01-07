@@ -35,8 +35,8 @@ public final class HomePage extends HomePageObjRepo {
 				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
 				click(submit);
 	//	handleAccessCodeIfPresentFast();
-		popup();
-		closeDebugBarIfPresent();
+//		popup();
+//		closeDebugBarIfPresent();
 
 
 	}

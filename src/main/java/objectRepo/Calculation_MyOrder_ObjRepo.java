@@ -63,7 +63,7 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
    	@FindBy(xpath = "//a[contains(@class,'view_details_btn') and (contains(text(),'View Order Details') or contains(text(),'View Orders'))]")
 	protected WebElement viewOrderDetails;
 	
-   	@FindBy(xpath = "(//div[contains(@class,'popup_containers_cls_btn')])[7]")
+   	@FindBy(xpath = "//h3[normalize-space()='price details']/following-sibling::div[contains(@class,'popup_containers_cls_btn')]")
 	protected WebElement closeBtn;
    	
    	@FindBy(xpath = "//input[@id='search_input']")

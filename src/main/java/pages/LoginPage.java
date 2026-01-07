@@ -32,9 +32,9 @@ public final class LoginPage extends LoginObjRepository {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
 //				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
 //				click(submit);
-		//handleAccessCodeIfPresentFast();
-		popup();
-		closeDebugBarIfPresent();
+		handleAccessCodeIfPresentFast();
+//		popup();
+//		closeDebugBarIfPresent();
 		
     }
 

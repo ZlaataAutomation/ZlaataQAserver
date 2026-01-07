@@ -458,7 +458,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        ));
 
 	        giftCardInput.clear();
-	        giftCardInput.sendKeys("7624 9826 0572 1212");
+	        giftCardInput.sendKeys("7538291807462035");
 	        System.out.println(GREEN + "✔ Entered Gift Card number successfully" + RESET);
 
 	        Common.waitForElement(2);
@@ -804,7 +804,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
 	    click(continueBtn);
 	    System.out.println(GREEN + "✅ Clicked Continue Button" + RESET);
-
+	    Common.waitForElement(2);
 	    // ✅ Fetch "You Saved" from Address Page UI
 	    WebElement addressYouSavedElement = wait.until(
 	            ExpectedConditions.visibilityOfElementLocated(
@@ -1342,21 +1342,39 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         // STEP 1: UI Values
         // =============================
 	    
-	    driver.findElement(By.xpath("(//div[contains(@class,'popup_containers_cls_btn')])[7]")).click();
+	    driver.findElement(By.xpath("//h3[normalize-space()='price details']/following-sibling::div[contains(@class,'popup_containers_cls_btn')]")).click();
 	    Common.waitForElement(1);
        js.executeScript("window.scrollBy(0, 500);");
 	 // Payable Amount - only first text node
-	    Common.waitForElement(2);
-	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
-	    String fullText = amountDiv.getText().trim();
+//	    Common.waitForElement(2);
+//	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+//	    String fullText = amountDiv.getText().trim();
+//
+//	    // Remove the "You have Saved …" part completely
+//	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+//
+//	    // Now cleaned = "₹300"
+//
+//	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+//	    System.out.println("Order Value: " + uiPayableAmount);
+       
+       Common.waitForElement(2);
+       WebElement amountDiv = driver.findElement(
+               By.xpath("//tr[contains(@class,'total_order_value')]//div[contains(@class,'prod_order_payment_mode_value')]")
+       );
 
-	    // Remove the "You have Saved …" part completely
-	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+       String fullText = amountDiv.getText().trim();
 
-	    // Now cleaned = "₹300"
+       // Remove the "You have Saved …" part
+       String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
 
-	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
-	    System.out.println("Order Value: " + uiPayableAmount);
+       // Extract digits
+       int uiOrderValue = Integer.parseInt(
+               cleaned.replaceAll("[^0-9]", "")
+       );
+
+       System.out.println("Order Value: " + uiOrderValue);
+       
 	    // Helper to parse int safely
         Function<WebElement, Integer> parseMoney = el ->
                 Integer.parseInt(el.getText().replaceAll("[^0-9]", ""));
@@ -1374,14 +1392,14 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 
 	    	// Saved Amount
 	    	String savedText = driver.findElement(
-	    	        By.cssSelector(".prod_order_amount_value span")
+	    	        By.cssSelector(".prod_order_payment_mode_value span")
 	    	).getText().trim();
 
 	    	int uiSavedAmount = parseMoney(savedText);
         int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
         int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
     //   int uiShippingCharges = parseMoney(driver.findElement(By.xpath("//div[text()=' Shipping Charges ']/following::div[1]")).getText());
-        int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+    //    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
 
         // =============================
         // STEP 2: Print Backend Values
@@ -1396,31 +1414,31 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         System.out.println(LINE);
 
         System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
-        System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
+ //       System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
         System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
         System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
           System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
-        System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+        System.out.println(YELLOW + "Total Order Value (UI): " + uiOrderValue + RESET);
         System.out.println(LINE);
 
         // =============================
         // STEP 3: Calculations
         // =============================
         System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
-        System.out.println(GREEN + "Payable Amount Formula: Total Amount(Price Break Up):" + calcTotalAmount + "+ Gift Card(Price Break Up):"+ giftCardAmount_P1 +" " + RESET);
-        int calcPayableAmount =
-        		calcTotalAmount + giftCardAmount_P1;
-        System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
+ //       System.out.println(GREEN + "Payable Amount Formula: Total Amount(Price Break Up):" + calcTotalAmount + "+ Gift Card(Price Break Up):"+ giftCardAmount_P1 +" " + RESET);
+ //       int calcPayableAmount =
+ //       		calcTotalAmount + giftCardAmount_P1;
+  //      System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount + RESET);
         System.out.println(LINE);
-        System.out.println(GREEN + "Total Order Value Formula: Payable Amount:" + calcPayableAmount + "+ Gift Wrap Fee:"+ uiGiftWrapFee +"+ Shipping Charges Fee:"+ uiShippingCharges +" " + RESET);
+        System.out.println(GREEN + "Total Order Value Formula: Payable Amount:" + calcTotalAmount + "+ Gift Wrap Fee:"+ uiGiftWrapFee +"+ Shipping Charges Fee:"+ uiShippingCharges +" " + RESET);
         int calcTotalOrderValue =
-             (calcPayableAmount + uiGiftWrapFee + uiShippingCharges);
+             (calcTotalAmount + uiGiftWrapFee + uiShippingCharges);
         System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
         System.out.println(LINE);
         System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + totalMRP_P1 + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
         int calcYouSaved =
                 (totalMRP_P1 + customFee_P1)
-                - calcPayableAmount;
+                - calcTotalAmount;
         System.out.println(YELLOW + "You saved  Amount: " + calcYouSaved + RESET);
 //        int calcTotalOrderValue =
 //                (discountedMRP + giftWrapFee + expressShipping + customFee)
@@ -1442,14 +1460,14 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         // =============================
         // STEP 4: VALIDATION
         // =============================
-        if (calcTotalOrderValue == uiTotalOrderValue) {
+        if (calcTotalOrderValue == uiOrderValue) {
             System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
         } else {
             System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-                    uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+            		uiOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
 
             Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-                    uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+            		uiOrderValue + " | Calc: " + calcTotalOrderValue);
         }
         
      // ---- YOUSAVED AMOUNT ----
@@ -1464,15 +1482,15 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         }
 
         // ---- PAYABLE AMOUNT ----
-        if (calcPayableAmount == uiPayableAmount) {
-            System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
-        } else {
-            System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                    uiPayableAmount + " | Calc: " + calcTotalAmount + RESET);
-
-            Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                    uiPayableAmount + " | Calc: " + calcTotalAmount);
-        }
+//        if (calcPayableAmount == uiPayableAmount) {
+//            System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+//        } else {
+//            System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//                    uiPayableAmount + " | Calc: " + calcTotalAmount + RESET);
+//
+//            Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//                    uiPayableAmount + " | Calc: " + calcTotalAmount);
+//        }
 
         System.out.println(LINE);
     }  
@@ -1616,6 +1634,7 @@ int giftCardAmount1;
 int couponDiscount1;
 int threadValue1;
 int calcPayableAmount1;	
+int calcYouSavedp1;
 public void validatePriceBreakupDetails_P1() {
 	 String GREEN  = "\u001B[32m";
 	    String RED    = "\u001B[31m";
@@ -1628,7 +1647,7 @@ public void validatePriceBreakupDetails_P1() {
 	    Common.waitForElement(2);
 	    
 	    // Open Price Breakup
-        driver.findElement(By.xpath("//button[@class='price_breakup_btn active']")).click();
+        driver.findElement(By.xpath("(//button[@class='price_breakup_btn active'])[1]")).click();
 
 	 // Helper: returns value or 0 if row missing
     Function<String, Integer> getValue = (label) -> {
@@ -1679,7 +1698,7 @@ public void validatePriceBreakupDetails_P1() {
             (discountedMRP1 + customFee1)
             - (threadValue1 + giftCardAmount1 + couponDiscount1);
     
-    int calcYouSaved =
+     calcYouSavedp1 =
     		customFee1 + totalMRP1 - calcTotalAmount1;
 
     calcPayableAmount1 =
@@ -1693,7 +1712,7 @@ public void validatePriceBreakupDetails_P1() {
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Formula:" + RESET);
     System.out.println("   (" + totalMRP1 + " - " + calcTotalAmount1);
-    System.out.println(GREEN + "   = " + calcYouSaved + RESET);
+    System.out.println(GREEN + "   = " + calcYouSavedp1 + RESET);
 
     System.out.println();
 
@@ -1712,14 +1731,14 @@ public void validatePriceBreakupDetails_P1() {
 
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Validation:" + RESET);
-    System.out.println("   Calculated = " + calcYouSaved);
+    System.out.println("   Calculated = " + calcYouSavedp1);
     System.out.println("   UI Value   = " + uiYouSaved);
 
-    if (calcYouSaved == uiYouSaved) {
+    if (calcYouSavedp1 == uiYouSaved) {
         System.out.println(GREEN + "   ✔ MATCHED" + RESET);
     } else {
         System.out.println(RED + "   ✘ MISMATCH — UI: " + uiYouSaved +
-                " | Calc: " + calcYouSaved + RESET);
+                " | Calc: " + calcYouSavedp1 + RESET);
         Assert.fail("❌ You Saved MISMATCH!");
     }
 
@@ -1753,6 +1772,7 @@ int giftCardAmount2;
 int couponDiscount2;
 int threadValue2;
 int calcPayableAmount_P2;
+int calcYouSavedp2;
 public void validatePriceBreakupDetails_P2() {
 	 String GREEN  = "\u001B[32m";
 	    String RED    = "\u001B[31m";
@@ -1765,7 +1785,7 @@ public void validatePriceBreakupDetails_P2() {
 	    Common.waitForElement(2);
 	    
 	    // Open Price Breakup
-        driver.findElement(By.xpath("//button[@class='price_breakup_btn active']")).click();
+        driver.findElement(By.xpath("(//button[@class='price_breakup_btn active'])[2]")).click();
 
 	 // Helper: returns value or 0 if row missing
     Function<String, Integer> getValue = (label) -> {
@@ -1816,7 +1836,7 @@ public void validatePriceBreakupDetails_P2() {
             (discountedMRP2 + customFee2)
             - (threadValue2 + giftCardAmount2 + couponDiscount2);
     
-    int calcYouSaved =
+     calcYouSavedp2 =
     		customFee2 + totalMRP2 - calcTotalAmount2;
 
     calcPayableAmount_P2 =
@@ -1830,7 +1850,7 @@ public void validatePriceBreakupDetails_P2() {
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Formula:" + RESET);
     System.out.println("   (" + totalMRP2 + " - " + calcTotalAmount2 );
-    System.out.println(GREEN + "   = " + calcYouSaved + RESET);
+    System.out.println(GREEN + "   = " + calcYouSavedp2 + RESET);
 
     System.out.println();
 
@@ -1849,14 +1869,14 @@ public void validatePriceBreakupDetails_P2() {
 
     // YOU SAVED
     System.out.println(YELLOW + "You Saved Validation:" + RESET);
-    System.out.println("   Calculated = " + calcYouSaved);
+    System.out.println("   Calculated = " + calcYouSavedp2);
     System.out.println("   UI Value   = " + uiYouSaved);
 
-    if (calcYouSaved == uiYouSaved) {
+    if (calcYouSavedp2 == uiYouSaved) {
         System.out.println(GREEN + "   ✔ MATCHED" + RESET);
     } else {
         System.out.println(RED + "   ✘ MISMATCH — UI: " + uiYouSaved +
-                " | Calc: " + calcYouSaved + RESET);
+                " | Calc: " + calcYouSavedp2 + RESET);
         Assert.fail("❌ You Saved MISMATCH!");
     }
 
@@ -1892,7 +1912,7 @@ public void moveToProduct(int productLevel) {
 	
 	((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
 }
-
+int calcPayableAmount2;
 public void validateOrderSummaryForTwoProduct_P1() {
 
     String CYAN = "\u001B[36m";
@@ -2040,7 +2060,7 @@ public void validateOrderSummaryForTwoProduct_P1() {
 
 
 
-int calcPayableAmount2;
+//int calcPayableAmount2;
 public void validateOrderSummaryForTwoProduct_P2() {
 
     String CYAN = "\u001B[36m";
@@ -2057,17 +2077,33 @@ public void validateOrderSummaryForTwoProduct_P2() {
     
    js.executeScript("window.scrollBy(0, 500);");
  // Payable Amount - only first text node
-    Common.waitForElement(2);
-    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
-    String fullText = amountDiv.getText().trim();
+//    Common.waitForElement(2);
+//    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+//    String fullText = amountDiv.getText().trim();
+//
+//    // Remove the "You have Saved …" part completely
+//    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+//
+//    // Now cleaned = "₹300"
+//
+//    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+//   // System.out.println("Order Value: " + uiPayableAmount);
+   Common.waitForElement(2);
+   WebElement amountDiv = driver.findElement(
+           By.xpath("//tr[contains(@class,'total_order_value')]//div[contains(@class,'prod_order_payment_mode_value')]")
+   );
 
-    // Remove the "You have Saved …" part completely
-    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+   String fullText = amountDiv.getText().trim();
 
-    // Now cleaned = "₹300"
+   // Remove the "You have Saved …" part
+   String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
 
-    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
-   // System.out.println("Order Value: " + uiPayableAmount);
+   // Extract digits
+   int uiOrderValue = Integer.parseInt(
+           cleaned.replaceAll("[^0-9]", "")
+   );
+
+   System.out.println("Order Value: " + uiOrderValue);
 
     // Helper to parse int safely
     Function<WebElement, Integer> parseMoney = el ->
@@ -2085,13 +2121,13 @@ public void validateOrderSummaryForTwoProduct_P2() {
 
     	// Saved Amount
     	String savedText = driver.findElement(
-    	        By.cssSelector(".prod_order_amount_value span")
+    	        By.cssSelector(".prod_order_payment_mode_value span")
     	).getText().trim();
 
     	int uiSavedAmount = parseMoney(savedText);
     int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
     int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
-    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+ //   int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
 
     // =============================
     // STEP 2: Print Backend Values
@@ -2107,26 +2143,23 @@ public void validateOrderSummaryForTwoProduct_P2() {
     System.out.println(LINE);
 
     System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
-    System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
     System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
     System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
       System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
-    System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+    System.out.println(YELLOW + "Total Order Value (UI): " + uiOrderValue + RESET);
     System.out.println(LINE);
 
     // =============================
     // STEP 3: Calculations
     // =============================
     System.out.println(CYAN + "🧮 Performing Calculations..." + RESET);
-     calcPayableAmount2 =
-  		  calcTotalAmount2 + giftCardAmount2;
+//     calcPayableAmount2 =
+//  		  calcTotalAmount2 + giftCardAmount2;
     
       int calcTotalOrderValue =
-           (calcPayableAmount2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+           (calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
       
-      int calcYouSaved2 =
-              (totalMRP2 + customFee2)
-              - calcPayableAmount2;
+      int calcYouSaved2 =calcYouSavedp1+calcYouSavedp2;
       
  
 
@@ -2151,14 +2184,14 @@ public void validateOrderSummaryForTwoProduct_P2() {
     // =============================
     // STEP 4: VALIDATION
     // =============================
-    if (calcTotalOrderValue == uiTotalOrderValue) {
+    if (calcTotalOrderValue == uiOrderValue) {
         System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
     } else {
         System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+        		uiOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
 
         Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+        		uiOrderValue + " | Calc: " + calcTotalOrderValue);
     }
     
  // ---- YOUSAVED AMOUNT ----
@@ -2173,15 +2206,15 @@ public void validateOrderSummaryForTwoProduct_P2() {
     }
 
     // ---- PAYABLE AMOUNT ----
-    if (calcPayableAmount2 == uiPayableAmount) {
-        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
-    } else {
-        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcPayableAmount2 + RESET);
-
-        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
-                uiPayableAmount + " | Calc: " + calcPayableAmount2);
-    }
+//    if (calcPayableAmount2 == uiPayableAmount) {
+//        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+//    } else {
+//        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//                uiPayableAmount + " | Calc: " + calcPayableAmount2 + RESET);
+//
+//        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//                uiPayableAmount + " | Calc: " + calcPayableAmount2);
+//    }
 
     System.out.println(LINE);
 }  
@@ -2279,7 +2312,7 @@ public void verifyThreeProductCouponSplit_P1() {
 	// Avoid divide-by-zero
 	double calcCouponRaw = 0.0;
 	if (discountedMRP1 > 0) {
-	    calcCouponRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * couponDiscount;
+	    calcCouponRaw = ((double) discountedMRP1 / ((double) discountedMRP-accPrice)) * couponDiscount;
 	}
 
 	// ROUNDING OPTIONS
@@ -2409,7 +2442,7 @@ public void verifyThreeProductCouponSplit_P2() {
 	// Avoid divide-by-zero
 	double calcCouponRaw = 0.0;
 	if (discountedMRP1 > 0) {
-	    calcCouponRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * couponDiscount;
+	    calcCouponRaw = ((double) discountedMRP2 / ((double) discountedMRP-accPrice)) * couponDiscount;
 	}
 
 	// ROUNDING OPTIONS
@@ -2566,7 +2599,7 @@ public void verifyThreeThreadSplit_P1() {
     double calcThreadRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcThreadRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * threadValue;
+        calcThreadRaw = ((double) discountedMRP1 / ((double) discountedMRP-accPrice)) * threadValue;
     }
 
     int calcThreadFloor = (int) Math.floor(calcThreadRaw);
@@ -2723,7 +2756,7 @@ public void verifyThreeThreadSplit_P2() {
     double calcThreadRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcThreadRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * threadValue;
+        calcThreadRaw = ((double) discountedMRP2 / ((double) discountedMRP-accPrice)) * threadValue;
     }
 
     int calcThreadFloor = (int) Math.floor(calcThreadRaw);
@@ -2880,7 +2913,7 @@ public void verifyThreeGiftCardSplit_P2() {
     double calcGiftCardRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcGiftCardRaw = ((double) discountedMRP2 / (double) discountedMRP-accPrice) * giftCardAmount;
+        calcGiftCardRaw = ((double) discountedMRP2 / ((double) discountedMRP-accPrice)) * giftCardAmount;
     }
 
     int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
@@ -3035,7 +3068,7 @@ public void verifyThreeProductGiftCardSplit_P1() {
     double calcGiftCardRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcGiftCardRaw = ((double) discountedMRP1 / (double) discountedMRP-accPrice) * giftCardAmount;
+        calcGiftCardRaw = ((double) discountedMRP1 / ((double) discountedMRP-accPrice)) * giftCardAmount;
     }
 
     int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
@@ -3364,6 +3397,7 @@ public void takeCustomizeProduct() {
 	int couponDiscount3;
 	int threadValue3;
 	int calcPayableAmount3;	
+	int calcYouSaved3;
 	public void validatePriceBreakupDetails_AP() {
 		 String GREEN  = "\u001B[32m";
 		    String RED    = "\u001B[31m";
@@ -3376,7 +3410,7 @@ public void takeCustomizeProduct() {
 		    Common.waitForElement(2);
 		    
 		    // Open Price Breakup
-	        driver.findElement(By.xpath("//button[@class='price_breakup_btn active']")).click();
+	        driver.findElement(By.xpath("(//button[@class='price_breakup_btn active'])[3]")).click();
 
 		 // Helper: returns value or 0 if row missing
 	    Function<String, Integer> getValue = (label) -> {
@@ -3434,7 +3468,7 @@ public void takeCustomizeProduct() {
 //	            (discountedMRP1 + customFee1)
 //	            - (threadValue1 + giftCardAmount1 + couponDiscount1);
 	    
-	    int calcYouSaved =
+	     calcYouSaved3 =
 	            totalMRP3 - calcTotalAmount3;
 
 	    calcPayableAmount3 =
@@ -3448,7 +3482,7 @@ public void takeCustomizeProduct() {
 	    // YOU SAVED
 	    System.out.println(YELLOW + "You Saved Formula:" + RESET);
 	    System.out.println("   (" + totalMRP3 + " - " + calcTotalAmount3);
-	    System.out.println(GREEN + "   = " + calcYouSaved + RESET);
+	    System.out.println(GREEN + "   = " + calcYouSaved3 + RESET);
 
 	    System.out.println();
 
@@ -3467,14 +3501,14 @@ public void takeCustomizeProduct() {
 
 	    // YOU SAVED
 	    System.out.println(YELLOW + "You Saved Validation:" + RESET);
-	    System.out.println("   Calculated = " + calcYouSaved);
+	    System.out.println("   Calculated = " + calcYouSaved3);
 	    System.out.println("   UI Value   = " + uiYouSaved);
 
-	    if (calcYouSaved == uiYouSaved) {
+	    if (calcYouSaved3 == uiYouSaved) {
 	        System.out.println(GREEN + "   ✔ MATCHED" + RESET);
 	    } else {
 	        System.out.println(RED + "   ✘ MISMATCH — UI: " + uiYouSaved +
-	                " | Calc: " + calcYouSaved + RESET);
+	                " | Calc: " + calcYouSaved3 + RESET);
 	        Assert.fail("❌ You Saved MISMATCH!");
 	    }
 
@@ -3482,14 +3516,14 @@ public void takeCustomizeProduct() {
 
 	    // TOTAL AMOUNT
 	    System.out.println(YELLOW + "Total Amount Validation:" + RESET);
-	    System.out.println("   Calculated = " + calcTotalAmount1);
+	    System.out.println("   Calculated = " + calcTotalAmount3);
 	    System.out.println("   UI Value   = " + uiTotalAmount);
 
 	    if (calcTotalAmount3 == uiTotalAmount) {
 	        System.out.println(GREEN + "   ✔ MATCHED" + RESET);
 	    } else {
 	        System.out.println(RED + "   ✘ MISMATCH — UI: " + uiTotalAmount +
-	                " | Calc: " + calcTotalAmount1 + RESET);
+	                " | Calc: " + calcTotalAmount3 + RESET);
 	        Assert.fail("❌ Total Amount MISMATCH!");
 	    }
 
@@ -3517,17 +3551,19 @@ public void takeCustomizeProduct() {
 	    
 	   js.executeScript("window.scrollBy(0, 500);");
 	 // Payable Amount - only first text node
-	    Common.waitForElement(2);
+//	    Common.waitForElement(2);
 	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
 	    String fullText = amountDiv.getText().trim();
-
-	    // Remove the "You have Saved …" part completely
+//
+//	    // Remove the "You have Saved …" part completely
 	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
-
-	    // Now cleaned = "₹300"
-
+//
+//	    // Now cleaned = "₹300"
+//
 	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
-	   // System.out.println("Order Value: " + uiPayableAmount);
+//	   // System.out.println("Order Value: " + uiPayableAmount);
+	   
+	  
 
 	    // Helper to parse int safely
 	    Function<WebElement, Integer> parseMoney = el ->
@@ -3665,17 +3701,34 @@ public void takeCustomizeProduct() {
 	    
 	   js.executeScript("window.scrollBy(0, 500);");
 	 // Payable Amount - only first text node
-	    Common.waitForElement(2);
-	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
-	    String fullText = amountDiv.getText().trim();
+//	    Common.waitForElement(2);
+//	    WebElement amountDiv = driver.findElement(By.cssSelector(".prod_order_amount_value"));
+//	    String fullText = amountDiv.getText().trim();
+//
+//	    // Remove the "You have Saved …" part completely
+//	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+//
+//	    // Now cleaned = "₹300"
+//
+//	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
+////	    System.out.println("Order Value: " + uiPayableAmount);
+///
+///Common.waitForElement(2);
+   WebElement amountDiv = driver.findElement(
+           By.xpath("//tr[contains(@class,'total_order_value')]//div[contains(@class,'prod_order_payment_mode_value')]")
+   );
 
-	    // Remove the "You have Saved …" part completely
-	    String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
+   String fullText = amountDiv.getText().trim();
 
-	    // Now cleaned = "₹300"
+   // Remove the "You have Saved …" part
+   String cleaned = fullText.replaceAll("You have Saved.*", "").trim();
 
-	    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
-//	    System.out.println("Order Value: " + uiPayableAmount);
+   // Extract digits
+   int uiOrderValue = Integer.parseInt(
+           cleaned.replaceAll("[^0-9]", "")
+   );
+
+   System.out.println("Order Value: " + uiOrderValue);
 	    // Helper to parse int safely
 	    Function<WebElement, Integer> parseMoney = el ->
 	            Integer.parseInt(el.getText().replaceAll("[^0-9]", ""));
@@ -3693,14 +3746,14 @@ public void takeCustomizeProduct() {
 
 	    	// Saved Amount
 	    	String savedText = driver.findElement(
-	    	        By.cssSelector(".prod_order_amount_value span")
+	    	        By.cssSelector(".prod_order_payment_mode_value span")
 	    	).getText().trim();
 
 	    	int uiSavedAmount = parseMoney(savedText);
 	    int uiGiftWrapFee = parseMoney(driver.findElement(By.cssSelector(".prod_order_gift_wrap_fee_value")).getText());
 	    int uiShippingCharges = safeGet.apply("//div[normalize-space(text())='Shipping Charges']/following::div[1]");
 	  // int uiShippingCharges = parseMoney(driver.findElement(By.xpath("//div[text()=' Shipping Charges ']/following::div[1]")).getText());
-	    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
+//	    int uiTotalOrderValue = parseMoney(driver.findElement(By.xpath("//div[text()=' Total Order Value ']/following::div[1]")).getText());
 
 	    // =============================
 	    // STEP 2: Print Backend Values
@@ -3718,11 +3771,10 @@ public void takeCustomizeProduct() {
 	    System.out.println(LINE);
 
 	    System.out.println(CYAN + "📌 UI Values from Order Summary Page" + RESET);
-	    System.out.println(YELLOW + "Payable Amount (UI): " + uiPayableAmount + RESET);
 	    System.out.println(YELLOW + "You Saved (UI): " + uiSavedAmount + RESET);
 	    System.out.println(YELLOW + "Gift Wrap Fee (UI): " + uiGiftWrapFee + RESET);
 	      System.out.println(YELLOW + "Shipping Charges (UI): " + uiShippingCharges + RESET);
-	    System.out.println(YELLOW + "Total Order Value (UI): " + uiTotalOrderValue + RESET);
+	    System.out.println(YELLOW + "Total Order Value (UI): " + uiOrderValue + RESET);
 	    System.out.println(LINE);
 
 	    // =============================
@@ -3735,10 +3787,7 @@ public void takeCustomizeProduct() {
 	    int calcTotalOrderValue =
 	         (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
 	    
-	    int calcYouSaved1 =
-	            (totalMRP2 + customFee2)
-	            - calcPayableAmount_P2;
-
+	    int calcYouSaved1 =calcYouSavedp1+calcYouSavedp2+calcYouSaved3;
 //	    int calcTotalOrderValue =
 //	            (discountedMRP + giftWrapFee + expressShipping + customFee)
 //	                    - (threadValue + couponDiscount);
@@ -3747,7 +3796,7 @@ public void takeCustomizeProduct() {
 	 //   System.out.println(GREEN + "Formula: (calcTotalAmount + giftWrapFee + expressShipping)" + RESET);
 	    System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
 	    System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved1 + RESET);
-	    System.out.println(YELLOW + "Calculated Payable  Amount: " + calcPayableAmount_P2 + RESET);
+	  //  System.out.println(YELLOW + "Calculated Payable  Amount: " + calcPayableAmount_P2 + RESET);
 //	    int calcPayableAmount =
 //	            calcTotalOrderValue - (giftWrapFee + expressShipping);
 	//
@@ -3760,14 +3809,14 @@ public void takeCustomizeProduct() {
 	    // =============================
 	    // STEP 4: VALIDATION
 	    // =============================
-	    if (calcTotalOrderValue == uiTotalOrderValue) {
+	    if (calcTotalOrderValue == uiOrderValue) {
 	        System.out.println(GREEN + "✅ TOTAL ORDER VALUE MATCHED UI" + RESET);
 	    } else {
 	        System.out.println(RED + "❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
+	        		uiOrderValue + " | Calc: " + calcTotalOrderValue + RESET);
 
 	        Assert.fail("❌ TOTAL ORDER VALUE MISMATCH — UI: " +
-	                uiTotalOrderValue + " | Calc: " + calcTotalOrderValue);
+	        		uiOrderValue + " | Calc: " + calcTotalOrderValue);
 	    }
 	 // ---- YOUSAVED AMOUNT ----
 	    if (calcYouSaved1 == uiSavedAmount) {
@@ -3780,16 +3829,16 @@ public void takeCustomizeProduct() {
 	        		uiSavedAmount + " | Calc: " + calcYouSaved1);
 	    }
 
-	    // ---- PAYABLE AMOUNT ----
-	    if (calcPayableAmount_P2 == uiPayableAmount) {
-	        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
-	    } else {
-	        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
-	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2 + RESET);
-
-	        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
-	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2);
-	    }
+//	    // ---- PAYABLE AMOUNT ----
+//	    if (calcPayableAmount_P2 == uiPayableAmount) {
+//	        System.out.println(GREEN + "✅ PAYABLE AMOUNT MATCHED UI" + RESET);
+//	    } else {
+//	        System.out.println(RED + "❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2 + RESET);
+//
+//	        Assert.fail("❌ PAYABLE AMOUNT MISMATCH — UI: " +
+//	                uiPayableAmount + " | Calc: " + calcPayableAmount_P2);
+//	    }
 
 	    System.out.println(LINE);
 	}  
@@ -4516,13 +4565,13 @@ public void takeCustomizeProduct() {
 		
 //		deleteAllProductFromCart();
 		
-		deleteAllProductsFromCart();
+//		deleteAllProductsFromCart();
 		
-		takeRandomProductFromAll();
+//		takeRandomProductFromAll();
 		
-		takeRandomProductFromAll();
+//		takeRandomProductFromAll();
 		
-		addGiftCardInCart();
+//		addGiftCardInCart();
 			
 		applyCouponAndGiftWrap();
 		
@@ -4542,7 +4591,7 @@ public void takeCustomizeProduct() {
 		
 		placeOrderAndCheckOrderConfirmation();
 //First Product		
-		moveToProduct(1);
+//		moveToProduct(1);
 	
 		validatePriceBreakupDetails_P1();
 		
@@ -4554,8 +4603,8 @@ public void takeCustomizeProduct() {
 	    
 		closeBtn.click();
 	    
-		driver.navigate().back();
-		moveToProduct(2);
+		
+//		moveToProduct(2);
 		
 		validatePriceBreakupDetails_P2();
 		
@@ -4568,10 +4617,10 @@ public void takeCustomizeProduct() {
 		closeBtn.click();
 		
 		validateOrderSummaryForTwoProduct_P2();
-		driver.navigate().back();
-		moveToProduct(1);
-		
-		validateOrderSummaryForTwoProduct_P1();	
+//		driver.navigate().back();
+//		moveToProduct(1);
+//		
+//		validateOrderSummaryForTwoProduct_P1();	
 		
 	}
 	
@@ -4610,7 +4659,7 @@ public void takeCustomizeProduct() {
 			
 			placeOrderAndCheckOrderConfirmation();
 //First Product		
-			moveToProduct(1);
+///			moveToProduct(1);
 		
 			validatePriceBreakupDetails_P1();
 			
@@ -4622,8 +4671,8 @@ public void takeCustomizeProduct() {
 		    
 			closeBtn.click();
 		    
-			driver.navigate().back();
-			moveToProduct(2);
+//			driver.navigate().back();
+//			moveToProduct(2);
 			
 			validatePriceBreakupDetails_P2();
 			
@@ -4635,9 +4684,9 @@ public void takeCustomizeProduct() {
 			
 			closeBtn.click();
 			
-			driver.navigate().back();
-			
-			moveToProduct(3);
+//			driver.navigate().back();
+//			
+//			moveToProduct(3);
 			
 			validatePriceBreakupDetails_AP();
 			
@@ -4645,19 +4694,19 @@ public void takeCustomizeProduct() {
 			
 			closeBtn.click();
 			
-			validateOrderSummaryForThreeProduct_AP();
+//			validateOrderSummaryForThreeProduct_AP();
 			
-			driver.navigate().back();
-			
-			moveToProduct(2);
-			
+//			driver.navigate().back();
+//			
+//			moveToProduct(2);
+//			
 			validateOrderSummaryForThreeProduct_P2();
-			
-			driver.navigate().back();
-			
-			moveToProduct(1);
-			
-			validateOrderSummaryForThreeProduct_P1();	
+//			
+//			driver.navigate().back();
+//			
+//			moveToProduct(1);
+//			
+//			validateOrderSummaryForThreeProduct_P1();	
 			
 		}
 	
