@@ -458,7 +458,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        ));
 
 	        giftCardInput.clear();
-	        giftCardInput.sendKeys("7538291807462035");
+	        giftCardInput.sendKeys("1743285016732974");
 	        System.out.println(GREEN + "✔ Entered Gift Card number successfully" + RESET);
 
 	        Common.waitForElement(2);
@@ -1432,7 +1432,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         System.out.println(LINE);
         System.out.println(GREEN + "Total Order Value Formula: Payable Amount:" + calcTotalAmount + "+ Gift Wrap Fee:"+ uiGiftWrapFee +"+ Shipping Charges Fee:"+ uiShippingCharges +" " + RESET);
         int calcTotalOrderValue =
-             (calcTotalAmount + uiGiftWrapFee + uiShippingCharges);
+             (calcTotalAmount + uiGiftWrapFee + uiShippingCharges + giftCardAmount_P1);
         System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
         System.out.println(LINE);
         System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + totalMRP_P1 + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
@@ -2157,7 +2157,7 @@ public void validateOrderSummaryForTwoProduct_P2() {
 //  		  calcTotalAmount2 + giftCardAmount2;
     
       int calcTotalOrderValue =
-           (calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+           (calcPayableAmount_P2 + calcPayableAmount1 + giftCardAmount1 + giftCardAmount2 + uiGiftWrapFee + uiShippingCharges);
       
       int calcYouSaved2 =calcYouSavedp1+calcYouSavedp2;
       
@@ -3785,7 +3785,7 @@ public void takeCustomizeProduct() {
 //			  calcTotalAmount1 + giftCardAmount1;
 	  
 	    int calcTotalOrderValue =
-	         (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + uiGiftWrapFee + uiShippingCharges);
+	         (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + giftCardAmount1 + giftCardAmount2 + giftCardAmount3 + uiGiftWrapFee + uiShippingCharges);
 	    
 	    int calcYouSaved1 =calcYouSavedp1+calcYouSavedp2+calcYouSaved3;
 //	    int calcTotalOrderValue =

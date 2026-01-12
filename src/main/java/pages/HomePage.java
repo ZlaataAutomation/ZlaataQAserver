@@ -32,9 +32,9 @@ public final class HomePage extends HomePageObjRepo {
 	}
 	public void homeLaunch() {
 		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
-				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
-				click(submit);
-	//	handleAccessCodeIfPresentFast();
+//				type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+//				click(submit);
+		handleAccessCodeIfPresentFast();
 //		popup();
 //		closeDebugBarIfPresent();
 

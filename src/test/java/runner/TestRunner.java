@@ -16,7 +16,7 @@ features = {"src/test/resources/features/"},
 glue = "stepDef",	
 monochrome = true,	
 dryRun = false,
-tags= "@TC_UI_Zlaata_Calculate_03"
+tags= "@Mail"
 )
 
 		
@@ -36,7 +36,7 @@ public class TestRunner {
 @AfterClass
 public static void generateExcelReport() {
 	 ExcelReportUtil.generateExcelReport();
-//	 EmailSendUtils.sendEmail();
+	// EmailSendUtils.sendEmail();
 }
 }
 
