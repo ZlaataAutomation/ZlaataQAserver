@@ -603,11 +603,13 @@ public void updateOrderStatusToShipped() throws InterruptedException {
 	click(orderIdbtn);
 	 Common.waitForElement(1);
 	wait.until(ExpectedConditions.elementToBeClickable(orderSearchBox));
-    Common.waitForElement(1);
+    Common.waitForElement(2);
 	waitFor(orderSearchBox);
+	click(orderSearchBox);
+
     orderSearchBox.clear();
     orderSearchBox.sendKeys(orderId);
-    Common.waitForElement(1);
+    Common.waitForElement(2);
     orderSearchBox.sendKeys(Keys.ENTER);
     Common.waitForElement(2);
 
