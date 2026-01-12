@@ -1209,6 +1209,43 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 
 			        System.out.println("UI DATA → " + type + " | Size: " + size + " | Qty: " + qty);
 			    }
+			    
+
+			 // ================= UPDATE EXCEL QUANTITY =================
+			    ExcelXLSReader.updateRandomQuantityOnly(filePath);
+
+			    // ================= READ EXCEL AFTER UPDATE =================
+			    excelProducts = ExcelXLSReader.readProductsWithMultipleListing(filePath);
+			    expectedSizeData.clear();
+
+			    System.out.println("\n==============================");
+			    System.out.println("EXCEL DATA (AFTER RUNTIME UPDATE)");
+			    System.out.println("==============================");
+
+			    for (Map<String, Object> row : excelProducts) {
+
+			        String topSize = row.get("Top Size").toString().trim();
+			        String topQty  = row.get("Top Quantity").toString().trim();
+
+			        String bottomSize = row.get("Bottom Size").toString().trim();
+			        String bottomQty  = row.get("Bottom Quantity").toString().trim();
+
+			        expectedSizeData
+			                .computeIfAbsent("TOP", k -> new HashMap<>())
+			                .put(topSize, topQty);
+
+			        expectedSizeData
+			                .computeIfAbsent("BOTTOM", k -> new HashMap<>())
+			                .put(bottomSize, bottomQty);
+
+			        // 🔹 PRINT UPDATED EXCEL DATA
+			        System.out.println("TOP    → " + topSize + " = " + topQty);
+			        System.out.println("BOTTOM → " + bottomSize + " = " + bottomQty);
+			    }
+
+			    System.out.println("==============================");
+
+			    
 
 			    // -------------------- IMPORT EXCEL --------------------
 			    click(importButton);

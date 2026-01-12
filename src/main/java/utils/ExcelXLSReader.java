@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
@@ -808,7 +809,38 @@ public class ExcelXLSReader {
 	
 	
 	
-	
+	public static void updateRandomQuantityOnly(String filePath) throws IOException {
+
+	    FileInputStream fis = new FileInputStream(filePath);
+	    Workbook workbook = new XSSFWorkbook(fis);
+	    Sheet sheet = workbook.getSheetAt(0);
+
+	    Random random = new Random();
+
+	    for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+	        Row row = sheet.getRow(i);
+	        if (row == null) continue;
+
+	        int topQty = random.nextInt(50) + 1;
+	        int bottomQty = random.nextInt(50) + 1;
+
+	        // Column D – Top Quantity
+	        row.getCell(3, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
+	                .setCellValue(topQty);
+
+	        // Column F – Bottom Quantity
+	        row.getCell(5, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
+	                .setCellValue(bottomQty);
+	    }
+
+	    fis.close();
+	    FileOutputStream fos = new FileOutputStream(filePath);
+	    workbook.write(fos);
+	    fos.close();
+	    workbook.close();
+	}
+
 	
 	
 	
