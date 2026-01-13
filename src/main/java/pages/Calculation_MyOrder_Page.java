@@ -1065,6 +1065,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	int giftCardAmount_P1;
 	int couponDiscount_P1;
 	int threadValue_P1;
+	int calcYouSaved;
 	public void validatePriceBreakupDetails() throws InterruptedException {
 	    String GREEN = "\u001B[32m";
 	    String YELLOW = "\u001B[33m";
@@ -1255,7 +1256,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	    	    	        + ""
 	    	    	        
 	    	    	);
-	    	    int calcYouSaved =
+	    	     calcYouSaved =
 	    	            totalMRP_P1 - calcTotalAmount;
 	    
 
@@ -1436,10 +1437,8 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
         System.out.println(LINE);
         System.out.println(GREEN + "You Saved  Formula: Total Amount(Price Break Up):" + totalMRP_P1 + "+ Customized Fee(Price Break Up):"+ customFee_P1 +" " + RESET);
-        int calcYouSaved =
-                (totalMRP_P1 + customFee_P1)
-                - calcTotalAmount;
-        System.out.println(YELLOW + "You saved  Amount: " + calcYouSaved + RESET);
+        int calcYouSaved1 = calcYouSaved-giftCardAmount_P1;
+        System.out.println(YELLOW + "You saved  Amount: " + calcYouSaved1 + RESET);
 //        int calcTotalOrderValue =
 //                (discountedMRP + giftWrapFee + expressShipping + customFee)
 //                        - (threadValue + couponDiscount);
@@ -1471,14 +1470,14 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
         }
         
      // ---- YOUSAVED AMOUNT ----
-        if (calcYouSaved == uiSavedAmount) {
+        if (calcYouSaved1 == uiSavedAmount) {
             System.out.println(GREEN + "✅ YOUSAVED AMOUNT MATCHED UI" + RESET);
         } else {
             System.out.println(RED + "❌ YOUSAVED AMOUNT MISMATCH — UI: " +
-            		uiSavedAmount + " | Calc: " + calcYouSaved + RESET);
+            		uiSavedAmount + " | Calc: " + calcYouSaved1 + RESET);
 
             Assert.fail("❌ YOUSAVED AMOUNT MISMATCH — UI: " +
-            		uiSavedAmount + " | Calc: " + calcYouSaved);
+            		uiSavedAmount + " | Calc: " + calcYouSaved1);
         }
 
         // ---- PAYABLE AMOUNT ----
@@ -2157,9 +2156,9 @@ public void validateOrderSummaryForTwoProduct_P2() {
 //  		  calcTotalAmount2 + giftCardAmount2;
     
       int calcTotalOrderValue =
-           (calcPayableAmount_P2 + calcPayableAmount1 + giftCardAmount1 + giftCardAmount2 + uiGiftWrapFee + uiShippingCharges);
+           (calcTotalAmount2 + calcTotalAmount1 + giftCardAmount1 + giftCardAmount2 + uiGiftWrapFee + uiShippingCharges);
       
-      int calcYouSaved2 =calcYouSavedp1+calcYouSavedp2;
+      int calcYouSaved2 =(calcYouSavedp1+calcYouSavedp2)-(giftCardAmount1+giftCardAmount2);
       
  
 
@@ -2171,7 +2170,7 @@ public void validateOrderSummaryForTwoProduct_P2() {
     System.out.println(GREEN + "Calculated Payable Amount From First Product: "+ calcPayableAmount1 + RESET);
     System.out.println(YELLOW + "Calculated Total Order Value: " + calcTotalOrderValue + RESET);
     System.out.println(YELLOW + "Calculated YouSaved Amount: " + calcYouSaved2 + RESET);
-    System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount2 + RESET);
+ //   System.out.println(YELLOW + "Calculated Payable Amount: " + calcPayableAmount2 + RESET);
 //    int calcPayableAmount =
 //            calcTotalOrderValue - (giftWrapFee + expressShipping);
 //
@@ -2913,7 +2912,7 @@ public void verifyThreeGiftCardSplit_P2() {
     double calcGiftCardRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcGiftCardRaw = ((double) discountedMRP2 / ((double) discountedMRP-accPrice)) * giftCardAmount;
+        calcGiftCardRaw = ((double) discountedMRP2 / (double) discountedMRP) * giftCardAmount;
     }
 
     int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
@@ -3068,7 +3067,7 @@ public void verifyThreeProductGiftCardSplit_P1() {
     double calcGiftCardRaw = 0.0;
 
     if (discountedMRP > 0) {
-        calcGiftCardRaw = ((double) discountedMRP1 / ((double) discountedMRP-accPrice)) * giftCardAmount;
+        calcGiftCardRaw = ((double) discountedMRP1 / (double) discountedMRP) * giftCardAmount;
     }
 
     int calcGiftCardFloor = (int) Math.floor(calcGiftCardRaw);
@@ -3785,9 +3784,9 @@ public void takeCustomizeProduct() {
 //			  calcTotalAmount1 + giftCardAmount1;
 	  
 	    int calcTotalOrderValue =
-	         (calcPayableAmount3 + calcPayableAmount_P2 + calcPayableAmount1 + giftCardAmount1 + giftCardAmount2 + giftCardAmount3 + uiGiftWrapFee + uiShippingCharges);
+	         (calcTotalAmount3 + calcTotalAmount2 + calcTotalAmount1 + giftCardAmount1 + giftCardAmount2 + giftCardAmount3 + uiGiftWrapFee + uiShippingCharges);
 	    
-	    int calcYouSaved1 =calcYouSavedp1+calcYouSavedp2+calcYouSaved3;
+	    int calcYouSaved1 =(calcYouSavedp1+calcYouSavedp2+calcYouSaved3)-(giftCardAmount1 + giftCardAmount2 + giftCardAmount3);
 //	    int calcTotalOrderValue =
 //	            (discountedMRP + giftWrapFee + expressShipping + customFee)
 //	                    - (threadValue + couponDiscount);
@@ -4132,7 +4131,7 @@ public void takeCustomizeProduct() {
 	    click(clickCartBtn);
 	    System.out.println(  "🛒 Opened Cart" );
 
-
+	    Common.waitForElement(2);
 	    // 1️⃣ Read Total MRP
 	    WebElement totalMrpElement = driver.findElement(By.cssSelector(".Cls_cart_total_mrp"));
 	    int totalMRP = Integer.parseInt(totalMrpElement.getAttribute("data-total_mrp"));
@@ -4565,13 +4564,13 @@ public void takeCustomizeProduct() {
 		
 //		deleteAllProductFromCart();
 		
-//		deleteAllProductsFromCart();
+		deleteAllProductsFromCart();
 		
-//		takeRandomProductFromAll();
+		takeRandomProductFromAll();
 		
-//		takeRandomProductFromAll();
+		takeRandomProductFromAll();
 		
-//		addGiftCardInCart();
+		addGiftCardInCart();
 			
 		applyCouponAndGiftWrap();
 		
