@@ -87,6 +87,8 @@ Examples:
   | TD_UI_Zlaata_ADI_07   |
   
     
+     @Import
+  @Regression
 @TC_UI_Zlaata_ADI_08
 Scenario Outline: TC_UI_Zlaata_ADI_08 | Verify that uploaded track inventory appears in Admin and User App | "<TD_ID>"
     When Admin uploads the track inventory Excel file "Trackinventories.xlsx"
