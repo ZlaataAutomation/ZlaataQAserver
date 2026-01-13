@@ -808,7 +808,7 @@ public class ExcelXLSReader {
 	}
 	
 	
-	
+	//Gow `
 	public static void updateRandomQuantityOnly(String filePath) throws IOException {
 
 	    FileInputStream fis = new FileInputStream(filePath);
@@ -843,7 +843,59 @@ public class ExcelXLSReader {
 
 	
 	
-	
+	public static Map<String, Map<String, String>> updateQuantityInExcel(String filePath)
+	        throws IOException {
+
+	    Map<String, Map<String, String>> updatedData = new HashMap<>();
+	    Random random = new Random();
+	    DataFormatter formatter = new DataFormatter();
+
+	    FileInputStream fis = new FileInputStream(filePath);
+	    XSSFWorkbook workbook = new XSSFWorkbook(fis);
+	    XSSFSheet sheet = workbook.getSheetAt(0);
+
+	    for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+	        Row row = sheet.getRow(i);
+	        if (row == null) continue;
+
+	        String sku = formatter.formatCellValue(row.getCell(1)).trim();
+	        String topSize = formatter.formatCellValue(row.getCell(2)).trim();
+	        String bottomSize = formatter.formatCellValue(row.getCell(4)).trim();
+
+	        // 🔹 Always update TOP quantity
+	        int newTopQty = random.nextInt(900) + 100;
+	        row.getCell(3, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
+	                .setCellValue(newTopQty);
+
+	        updatedData
+	                .computeIfAbsent(sku + "_TOP", k -> new HashMap<>())
+	                .put(topSize, String.valueOf(newTopQty));
+
+	        // 🔹 Update BOTTOM quantity ONLY if size is NOT Regular
+	        if (!topSize.equalsIgnoreCase("Regular")) {
+
+	            int newBottomQty = random.nextInt(900) + 100;
+	            row.getCell(5, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK)
+	                    .setCellValue(newBottomQty);
+
+	            if (!bottomSize.isEmpty()) {
+	                updatedData
+	                        .computeIfAbsent(sku + "_BOTTOM", k -> new HashMap<>())
+	                        .put(bottomSize, String.valueOf(newBottomQty));
+	            }
+	        }
+	    }
+
+	    fis.close();
+	    FileOutputStream fos = new FileOutputStream(filePath);
+	    workbook.write(fos);
+	    workbook.close();
+	    fos.close();
+
+	    return updatedData;
+	}
+
 	
 	
 	

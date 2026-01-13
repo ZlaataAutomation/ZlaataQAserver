@@ -1340,54 +1340,55 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 
 //track inventories for two sku one size
 			public void VerifyImportTrackInventoryMultipleStages(String filePath) throws IOException {
+
 			    Common.waitForElement(2);
 			    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
 			    System.out.println("Redirected to Track Inventory page");
 
-			    // Read Excel
-			    List<Map<String, Object>> excelProducts = ExcelXLSReader.readProductsWithMultipleListing(filePath);
+			    // ---------------- READ EXCEL (INITIAL) ----------------
+			    List<Map<String, Object>> excelProducts =
+			            ExcelXLSReader.readProductsWithMultipleListing(filePath);
 
-			    // Group by SKU
+			    // Group rows by SKU
 			    Map<String, List<Map<String, Object>>> productsBySku = new LinkedHashMap<>();
 			    for (Map<String, Object> row : excelProducts) {
 			        String sku = row.get("SKU").toString().trim();
 			        productsBySku.computeIfAbsent(sku, k -> new ArrayList<>()).add(row);
 			    }
 
-			    
-			    
-			    // ---------------- Stage 1 & 2: Print BEFORE IMPORT for all SKUs ----------------
-			    Map<String, Map<String, Map<String, String>>> expectedDataMap = new LinkedHashMap<>();
+			    // =====================================================
+			    // STAGE 1: EXPECTED + UI BEFORE IMPORT (PRINT ONCE)
+			    // =====================================================
 			    for (String sku : productsBySku.keySet()) {
+
 			        System.out.println("\n================================================");
 			        System.out.println("PROCESSING SKU → " + sku);
 			        System.out.println("================================================");
 
 			        List<Map<String, Object>> skuRows = productsBySku.get(sku);
 
-			        // Build expected data
-			        Map<String, Map<String, String>> expectedSizeData = new HashMap<>();
+			        // Print EXPECTED from Excel
 			        for (Map<String, Object> row : skuRows) {
-			            // TOP
+
 			            String topSize = row.get("Top Size") != null ? row.get("Top Size").toString().trim() : "";
-			            String topQty = row.get("Top Quantity") != null ? row.get("Top Quantity").toString().trim() : "";
+			            String topQty  = row.get("Top Quantity") != null ? row.get("Top Quantity").toString().trim() : "";
+
+			            String bottomSize = row.get("Bottom Size") != null ? row.get("Bottom Size").toString().trim() : "";
+			            String bottomQty  = row.get("Bottom Quantity") != null ? row.get("Bottom Quantity").toString().trim() : "";
+
 			            if (!topSize.isEmpty() && !topQty.isEmpty()) {
-			                expectedSizeData.computeIfAbsent("TOP", k -> new HashMap<>()).put(topSize, topQty);
 			                System.out.println("EXPECTED → TOP | Size: " + topSize + " | Qty: " + topQty);
 			            }
 
-			            // BOTTOM
-			            String bottomSize = row.get("Bottom Size") != null ? row.get("Bottom Size").toString().trim() : "";
-			            String bottomQty = row.get("Bottom Quantity") != null ? row.get("Bottom Quantity").toString().trim() : "";
-			            if (!bottomSize.isEmpty() && !bottomQty.isEmpty()) {
-			                expectedSizeData.computeIfAbsent("BOTTOM", k -> new HashMap<>()).put(bottomSize, bottomQty);
+			            if (!topSize.equalsIgnoreCase("Regular")
+			                    && !bottomSize.isEmpty()
+			                    && !bottomQty.isEmpty()) {
+
 			                System.out.println("EXPECTED → BOTTOM | Size: " + bottomSize + " | Qty: " + bottomQty);
 			            }
 			        }
 
-			        expectedDataMap.put(sku, expectedSizeData);
-
-			        // Search SKU
+			        // Search SKU in UI
 			        trackinventoriesSearchbardropdown.click();
 			        Common.waitForElement(2);
 			        trackinventoriesSearchbar.clear();
@@ -1396,36 +1397,107 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 			        trackinventoriesSearchbar.sendKeys(Keys.ENTER);
 			        Common.waitForElement(3);
 
-			        // Print BEFORE IMPORT
+			        // Print UI BEFORE IMPORT
 			        System.out.println("\n--- UI INVENTORY BEFORE IMPORT ---");
-			        List<WebElement> blocks = driver.findElements(By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']"));
+			        List<WebElement> blocks = driver.findElements(
+			                By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']")
+			        );
+
 			        for (WebElement block : blocks) {
-			            String type = block.findElement(By.xpath(".//span[contains(@class,'increment-btn')]")).getAttribute("data-type").trim().toUpperCase();
-			            String size = block.findElement(By.xpath(".//p[contains(@class,'size-field')]")).getText().trim();
-			            String qty = block.findElement(By.xpath(".//input[@type='number']")).getAttribute("value").trim();
+			            String type = block.findElement(
+			                    By.xpath(".//span[contains(@class,'increment-btn')]")
+			            ).getAttribute("data-type").trim().toUpperCase();
+
+			            String size = block.findElement(
+			                    By.xpath(".//p[contains(@class,'size-field')]")
+			            ).getText().trim();
+
+			            String qty = block.findElement(
+			                    By.xpath(".//input[@type='number']")
+			            ).getAttribute("value").trim();
+
 			            System.out.println("UI BEFORE IMPORT → " + type + " | Size: " + size + " | Qty: " + qty);
 			        }
 
-			        // Remove filter to prepare for next SKU
 			        click(removeButton);
 			    }
 
-			    // ---------------- Stage 3: Import once ----------------
+			    // =====================================================
+			    // STAGE 2: UPDATE EXCEL (RUNTIME)
+			    // =====================================================
+			    Map<String, Map<String, String>> updatedExcelData =
+			            ExcelXLSReader.updateQuantityInExcel(filePath);
+
+			    System.out.println("\n==============================");
+			    System.out.println("EXCEL DATA (AFTER UPDATE)");
+			    System.out.println("==============================");
+
+			    updatedExcelData.forEach((key, sizeMap) ->
+			            sizeMap.forEach((size, qty) ->
+			                    System.out.println(key + " → " + size + " = " + qty)
+			            )
+			    );
+
+			    System.out.println("==============================");
+
+			    // =====================================================
+			    // STAGE 3: READ UPDATED EXCEL (EXPECTED MAP)
+			    // =====================================================
+			    List<Map<String, Object>> updatedExcelProducts =
+			            ExcelXLSReader.readProductsWithMultipleListing(filePath);
+
+			    Map<String, Map<String, Map<String, String>>> expectedDataMap = new LinkedHashMap<>();
+
+			    for (Map<String, Object> row : updatedExcelProducts) {
+
+			        String sku = row.get("SKU").toString().trim();
+
+			        String topSize = row.get("Top Size") != null ? row.get("Top Size").toString().trim() : "";
+			        String topQty  = row.get("Top Quantity") != null ? row.get("Top Quantity").toString().trim() : "";
+
+			        String bottomSize = row.get("Bottom Size") != null ? row.get("Bottom Size").toString().trim() : "";
+			        String bottomQty  = row.get("Bottom Quantity") != null ? row.get("Bottom Quantity").toString().trim() : "";
+
+			        Map<String, Map<String, String>> skuExpected =
+			                expectedDataMap.computeIfAbsent(sku, k -> new HashMap<>());
+
+			        if (!topSize.isEmpty() && !topQty.isEmpty()) {
+			            skuExpected.computeIfAbsent("TOP", k -> new HashMap<>())
+			                    .put(topSize, topQty);
+			        }
+
+			        if (!topSize.equalsIgnoreCase("Regular")
+			                && !bottomSize.isEmpty()
+			                && !bottomQty.isEmpty()) {
+
+			            skuExpected.computeIfAbsent("BOTTOM", k -> new HashMap<>())
+			                    .put(bottomSize, bottomQty);
+			        }
+			    }
+
+			    // =====================================================
+			    // STAGE 4: IMPORT UPDATED EXCEL
+			    // =====================================================
 			    click(importButton);
-			    System.out.println("\nClicked Import button");
 			    Common.waitForElement(2);
 			    uploadExcelButtonTrack.sendKeys(filePath);
-			    System.out.println("Excel file uploaded");
 			    Common.waitForElement(2);
 			    submitButton.click();
 			    System.out.println("Import submitted");
+
 			    Common.waitForElement(8);
 			    driver.navigate().refresh();
 			    Common.waitForElement(3);
 
-			    // ---------------- Stage 3: Print AFTER IMPORT for all SKUs ----------------
-			    for (String sku : productsBySku.keySet()) {
-			        System.out.println("\n--- UI INVENTORY AFTER IMPORT FOR SKU → " + sku + " ---");
+			    // =====================================================
+			    // STAGE 5: VERIFY UI AFTER IMPORT
+			    // =====================================================
+			    for (String sku : expectedDataMap.keySet()) {
+
+			        System.out.println("\n===============================");
+			        System.out.println("VERIFY SKU AFTER IMPORT → " + sku);
+			        System.out.println("===============================");
+
 			        trackinventoriesSearchbardropdown.click();
 			        Common.waitForElement(2);
 			        trackinventoriesSearchbar.clear();
@@ -1434,44 +1506,71 @@ public class AdminPanelAllImortPage extends AdminPanelAllImportObjRepo{
 			        trackinventoriesSearchbar.sendKeys(Keys.ENTER);
 			        Common.waitForElement(3);
 
-			        List<WebElement> blocks = driver.findElements(By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']"));
+			        List<WebElement> blocks = driver.findElements(
+			                By.xpath("//span[contains(@class,'increment-btn')]/ancestor::div[@class='text-center']")
+			        );
+
 			        Map<String, Map<String, String>> actualSizeData = new HashMap<>();
+
 			        for (WebElement block : blocks) {
-			            String type = block.findElement(By.xpath(".//span[contains(@class,'increment-btn')]")).getAttribute("data-type").trim().toUpperCase();
-			            String size = block.findElement(By.xpath(".//p[contains(@class,'size-field')]")).getText().trim();
-			            String qty = block.findElement(By.xpath(".//input[@type='number']")).getAttribute("value").trim();
-			            actualSizeData.computeIfAbsent(type, k -> new HashMap<>()).put(size, qty);
-			            System.out.println("UI AFTER IMPORT → " + type + " | Size: " + size + " | Qty: " + qty);
+
+			            String type = block.findElement(
+			                    By.xpath(".//span[contains(@class,'increment-btn')]")
+			            ).getAttribute("data-type").trim().toUpperCase();
+
+			            String size = block.findElement(
+			                    By.xpath(".//p[contains(@class,'size-field')]")
+			            ).getText().trim();
+
+			            String qty = block.findElement(
+			                    By.xpath(".//input[@type='number']")
+			            ).getAttribute("value").trim();
+
+			            actualSizeData.computeIfAbsent(type, k -> new HashMap<>())
+			                    .put(size, qty);
+
+			            System.out.println("UI AFTER → " + type + " | Size: " + size + " | Qty: " + qty);
 			        }
-			        
+
 			        click(removeButton);
 
-			        // Verify
+			        // ---------------- ASSERT ----------------
 			        Map<String, Map<String, String>> expectedSizeData = expectedDataMap.get(sku);
 			        List<String> failures = new ArrayList<>();
+
 			        for (String type : expectedSizeData.keySet()) {
+
 			            Map<String, String> expSizes = expectedSizeData.get(type);
 			            Map<String, String> actSizes = actualSizeData.get(type);
+
 			            if (actSizes == null) {
-			                failures.add(sku + " | " + type + " section missing in UI");
+			                failures.add(sku + " | Missing section → " + type);
 			                continue;
 			            }
+
 			            for (String size : expSizes.keySet()) {
 			                String expQty = expSizes.get(size);
 			                String actQty = actSizes.get(size);
+
 			                if (!expQty.equals(actQty)) {
-			                    failures.add(sku + " | " + type + " qty mismatch → Size: " + size + " | Expected: " + expQty + " | Actual: " + actQty);
+			                    failures.add(sku + " | " + type +
+			                            " | Size: " + size +
+			                            " | Expected: " + expQty +
+			                            " | Actual: " + actQty);
 			                } else {
-			                    System.out.println("VERIFIED → " + sku + " | " + type + " | Size: " + size + " | Qty: " + actQty);
+			                    System.out.println("VERIFIED ✔ " + sku +
+			                            " | " + type +
+			                            " | Size: " + size +
+			                            " | Qty: " + actQty);
 			                }
 			            }
 			        }
+
 			        if (!failures.isEmpty()) {
-			            System.err.println("\n❌ INVENTORY VERIFICATION FAILED FOR SKU → " + sku);
 			            failures.forEach(System.err::println);
 			            Assert.fail("Inventory mismatch for SKU → " + sku);
 			        } else {
-			            System.out.println("\n✅ INVENTORY VERIFICATION PASSED FOR SKU → " + sku);
+			            System.out.println(":white_check_mark: INVENTORY VERIFIED FOR SKU → " + sku);
 			        }
 			    }
 			}
