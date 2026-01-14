@@ -101,7 +101,14 @@ public abstract class Calculation_MyOrder_ObjRepo extends BasePage {
 	@FindBy(xpath = "(//input[@id='net-banking'])[1]")
 	protected WebElement selectNetBank;
 	
-	
+	 @FindBy(xpath = "//a[normalize-space()='Order Id']")  
+	 protected WebElement orderIdbtn;
+	 
+	 @FindBy(xpath = "(//input[@role='searchbox'])[1]")  
+	 protected WebElement orderSearchBox;
+	 
+	 @FindBy(xpath = "//i[@class='las la-edit']")
+	    protected WebElement editBtn;
 	
 	
 	

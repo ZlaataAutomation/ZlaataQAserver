@@ -2060,6 +2060,11 @@ public void validateOrderSummaryForTwoProduct_P1() {
 
 
 //int calcPayableAmount2;
+String productName1;
+String productName2;
+int discountPercent1;
+int discountPercent2;
+String orderId;
 public void validateOrderSummaryForTwoProduct_P2() {
 
     String CYAN = "\u001B[36m";
@@ -2088,6 +2093,36 @@ public void validateOrderSummaryForTwoProduct_P2() {
 //    int uiPayableAmount = Integer.parseInt(cleaned.replaceAll("[^0-9]", ""));
 //   // System.out.println("Order Value: " + uiPayableAmount);
    Common.waitForElement(2);
+
+   WebElement productNameElement = driver.findElement(By.xpath("(//div[contains(@class,'placed_prod_details')]//h4[@class='placed_prod_name'])[1]"));
+   productName1 = productNameElement.getText().trim();
+   System.out.println(YELLOW + "Product Name: " + productName1 + RESET);
+   WebElement productNameElement2 = driver.findElement(By.xpath("(//div[contains(@class,'placed_prod_details')]//h4[@class='placed_prod_name'])[2]"));
+   productName2 = productNameElement2.getText().trim();
+   System.out.println(YELLOW + "Product Name: " + productName2 + RESET);
+   
+   WebElement discountEle = driver.findElement(By.xpath("(//span[contains(@class,'placed_prod_discount')])[1]"));
+	String discountText = discountEle.getText();   // "(54% OFF)"
+
+	 discountPercent1 = Integer.parseInt(
+	        discountText.replaceAll("[^0-9]", "")
+	);
+
+	System.out.println("Discount % = " + discountPercent1);
+	
+	WebElement discountEle1 = driver.findElement(By.xpath("(//span[contains(@class,'placed_prod_discount')])[2]"));
+	String discountText1 = discountEle1.getText();   // "(54% OFF)"
+
+	 discountPercent2 = Integer.parseInt(
+			 discountText1.replaceAll("[^0-9]", "")
+	);
+
+	System.out.println("Discount % = " + discountPercent2);
+
+	WebElement orderIdElement = driver.findElement(By.xpath("//div[@class='prod_order_id_value']"));
+    orderId = orderIdElement.getText().trim();
+    System.out.println(YELLOW + "🆔 Order ID: " + orderId + RESET);
+    
    WebElement amountDiv = driver.findElement(
            By.xpath("//tr[contains(@class,'total_order_value')]//div[contains(@class,'prod_order_payment_mode_value')]")
    );
@@ -4511,15 +4546,765 @@ public void takeCustomizeProduct() {
 	    System.out.println(GREEN + "🎉 All Order Summary Calculations Verified Successfully!" + RESET);
 	}
 	
+	private static final String GREEN  = "\u001B[32m";
+	private static final String CYAN   = "\u001B[36m";
+	private static final String YELLOW = "\u001B[33m";
+	private static final String BLUE   = "\u001B[34m";
+	private static final String RESET  = "\u001B[0m";
+
+	public void allDeatailsFirstProduct() {
+
+	    System.out.println(CYAN + "\n━━━━━━━━━━ FIRST PRODUCT DETAILS ━━━━━━━━━━" + RESET);
+
+	    System.out.println(YELLOW + "🛍 Product Name        : " + RESET + productName1);
+	    System.out.println(BLUE   + "💰 Total MRP           : " + RESET + totalMRP1);
+	    System.out.println(BLUE   + "🏷 Discounted MRP      : " + RESET + discountedMRP1);
+	    System.out.println(BLUE   + "🎁 Gift Card Applied   : " + RESET + giftCardAmount1);
+	    System.out.println(BLUE   + "🎟 Coupon Discount     : " + RESET + couponDiscount1);
+	    System.out.println(BLUE   + "🧵 Thread Value        : " + RESET + threadValue1);
+	    System.out.println(GREEN  + "🔥 Discount Percentage : " + RESET + discountPercent1 + "%");
+	    System.out.println(BLUE   + "💰 Total Amount           : " + RESET + calcTotalAmount1);
+
+	    
+	    System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
+
+	public void allDeatailsSecondProduct() {
+		
+
+	    System.out.println(CYAN + "\n━━━━━━━━━━ SECOND PRODUCT DETAILS ━━━━━━━━━━" + RESET);
+
+	    System.out.println(YELLOW + "🛍 Product Name        : " + RESET + productName2);
+	    System.out.println(BLUE   + "💰 Total MRP           : " + RESET + totalMRP2);
+	    System.out.println(BLUE   + "🏷 Discounted MRP      : " + RESET + discountedMRP2);
+	    System.out.println(BLUE   + "🎁 Gift Card Applied   : " + RESET + giftCardAmount2);
+	    System.out.println(BLUE   + "🎟 Coupon Discount     : " + RESET + couponDiscount2);
+	    System.out.println(BLUE   + "🧵 Thread Value        : " + RESET + threadValue2);
+	    System.out.println(GREEN  + "🔥 Discount Percentage : " + RESET + discountPercent2 + "%");
+	    System.out.println(BLUE   + "💰 Total Amount           : " + RESET + calcTotalAmount2);
+
+
+	    System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
+	
+	int adminTotalMRP1,admincouponDiscount1,admindiscountedMRP1,adminDiscount1,adminTaxPrice1,adminThread1,adminTaxableAmount1,adminTax1,adminTotalPrice1,adminGiftCardApplied1;
+	String adminproductName1;
+	public void copyAllFirstProductDetailsAdmin() {
+		Common.waitForElement(3);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
+		js.executeScript("window.scrollTo(0, 2100);");
+		WebElement firstProduct = driver.findElement(
+			    By.xpath("(//h5[normalize-space()='Product Detail']/following-sibling::div[contains(@class,'border')])[1]")
+			);
+
+		
+		// Helper → read value inside FIRST PRODUCT only
+		Function<String, Integer> getP1Value = (label) -> {
+		    try {
+		        WebElement input = firstProduct.findElement(By.xpath(
+		            ".//label[normalize-space()='" + label + "']/following-sibling::input"
+		        ));
+		        return Integer.parseInt(input.getAttribute("value").replaceAll("[^0-9]", ""));
+		    } catch (Exception e) {
+		        return 0;
+		    }
+		};
+
+
+		
+		Common.waitForElement(1);
+		// ---------- SECOND  PRODUCT ----------
+		 adminproductName1 = firstProduct.findElement(By.xpath(
+		    ".//label[normalize-space()='Product Name']/following-sibling::input"
+		)).getAttribute("value").trim();
+
+		adminTotalMRP1        = getP1Value.apply("Mrp Price");
+		admindiscountedMRP1   = getP1Value.apply("Discounted Price");
+		admincouponDiscount1  = getP1Value.apply("Coupon Price");
+		adminDiscount1        = getP1Value.apply("Discount");
+		adminTaxPrice1        = getP1Value.apply("Tax Price");
+		adminThread1          = getP1Value.apply("Thread");
+		adminTaxableAmount1   = getP1Value.apply("Taxable Amount");
+		adminTax1             = getP1Value.apply("Tax");
+		adminTotalPrice1      = getP1Value.apply("Total Price");
+		adminGiftCardApplied1 = getP1Value.apply("Gift Card Applied");
+		System.out.println(CYAN + "\n━━━━━━━━━━ SECOND  PRODUCT [1] ━━━━━━━━━━" + RESET);
+		System.out.println(YELLOW + "🛍 Product Name        : " + RESET + adminproductName1);
+		System.out.println(BLUE   + "💰 MRP                : " + RESET + adminTotalMRP1);
+		System.out.println(BLUE   + "🏷 Discounted Price   : " + RESET + admindiscountedMRP1);
+		System.out.println(BLUE   + "🎟 Coupon Price       : " + RESET + admincouponDiscount1);
+		System.out.println(BLUE   + "📉 Discount           : " + RESET + adminDiscount1);
+		System.out.println(BLUE   + "🧾 UI Tax Price          : " + RESET + adminTaxPrice1);
+		System.out.println(BLUE   + "🧵 Thread             : " + RESET + adminThread1);
+		System.out.println(BLUE   + "📊 UI Taxable Amount     : " + RESET + adminTaxableAmount1);
+		System.out.println(BLUE   + "📑 UI Tax                : " + RESET + adminTax1);
+		System.out.println(GREEN  + "💵 UI Total Price        : " + RESET + adminTotalPrice1);
+		System.out.println(GREEN  + "🎁 Gift Card Applied  : " + RESET + adminGiftCardApplied1);
+		System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
+	
+	int adminTotalMRP2,admincouponDiscount2,admindiscountedMRP2,adminDiscount2,adminTaxPrice2,adminThread2,adminTaxableAmount2,adminTax2,adminTotalPrice2,adminGiftCardApplied2;
+	String adminproductName2;
+	public void copyAllSecondProductDetailsAdmin() {
+		Common.waitForElement(2);
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+
+		js.executeScript("window.scrollTo(0, 800);");
+		WebElement firstProduct = driver.findElement(
+			    By.xpath("(//h5[normalize-space()='Product Detail']/following-sibling::div[contains(@class,'border')])[2]")
+			);
+
+		
+		// Helper → read value inside SECOND PRODUCT only
+		Function<String, Integer> getP1Value = (label) -> {
+		    try {
+		        WebElement input = firstProduct.findElement(By.xpath(
+		            ".//label[normalize-space()='" + label + "']/following-sibling::input"
+		        ));
+		        return Integer.parseInt(input.getAttribute("value").replaceAll("[^0-9]", ""));
+		    } catch (Exception e) {
+		        return 0;
+		    }
+		};
+
+
+		
+		Common.waitForElement(2);
+		// ---------- SECOND PRODUCT ----------
+		 adminproductName2 = firstProduct.findElement(By.xpath(
+		    ".//label[normalize-space()='Product Name']/following-sibling::input"
+		)).getAttribute("value").trim();
+		 Common.waitForElement(2);
+		adminTotalMRP2        = getP1Value.apply("Mrp Price");
+		admindiscountedMRP2   = getP1Value.apply("Discounted Price");
+		admincouponDiscount2  = getP1Value.apply("Coupon Price");
+		adminDiscount2        = getP1Value.apply("Discount");
+		adminTaxPrice2        = getP1Value.apply("Tax Price");
+		adminThread2          = getP1Value.apply("Thread");
+		adminTaxableAmount2   = getP1Value.apply("Taxable Amount");
+		adminTax2            = getP1Value.apply("Tax");
+		adminTotalPrice2      = getP1Value.apply("Total Price");
+		adminGiftCardApplied2 = getP1Value.apply("Gift Card Applied");
+		System.out.println(CYAN + "\n━━━━━━━━━━ FIRST PRODUCT  ━━━━━━━━━━" + RESET);
+		System.out.println(YELLOW + "🛍 Product Name        : " + RESET + adminproductName2);
+		System.out.println(BLUE   + "💰 MRP                : " + RESET + adminTotalMRP2);
+		System.out.println(BLUE   + "🏷 Discounted Price   : " + RESET + admindiscountedMRP2);
+		System.out.println(BLUE   + "🎟 Coupon Price       : " + RESET + admincouponDiscount2);
+		System.out.println(BLUE   + "📉 Discount           : " + RESET + adminDiscount2);
+		System.out.println(BLUE   + "🧾 UI Tax Price          : " + RESET + adminTaxPrice2);
+		System.out.println(BLUE   + "🧵 Thread             : " + RESET + adminThread2);
+		System.out.println(BLUE   + "📊 UI Taxable Amount     : " + RESET + adminTaxableAmount2);
+		System.out.println(BLUE   + "📑 UI Tax                : " + RESET + adminTax2);
+		System.out.println(GREEN  + "💵 UI Total Price        : " + RESET + adminTotalPrice2);
+		System.out.println(GREEN  + "🎁 Gift Card Applied  : " + RESET + adminGiftCardApplied2);
+		System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+
+
+
+	}	
+	int calculatedTaxPercent2;
+    int calculatedTaxableAmount2;
+    int calculatedTaxPrice2;
+	public void calculateAndValidateAdminTax2() {
+
+	    // ANSI COLORS
+	    String GREEN = "\u001B[32m";
+	    String RED   = "\u001B[31m";
+	    String CYAN  = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+
+	    
+
+	    // 🔹 TAX %
+	    if (adminTotalPrice2 > 2500) {
+	        calculatedTaxPercent2 = 18;
+	    } else {
+	        calculatedTaxPercent2 = 5;
+	    }
+
+	    // 🔹 TAXABLE AMOUNT
+	    calculatedTaxableAmount2 = (int) Math.round(
+	            adminTotalPrice2 / (1 + (calculatedTaxPercent2 / 100.0))
+	    );
+
+	    // 🔹 TAX PRICE
+	    calculatedTaxPrice2 = adminTotalPrice2 - calculatedTaxableAmount2;
+
+	    // -------------------------------
+	    // 🔹 PRINT VALUES
+	    // -------------------------------
+	    System.out.println(CYAN + "🧮 ADMIN TAX CALCULATION (PRODUCT 2)" + RESET);
+	    System.out.println(GREEN + "Tax %           : " + calculatedTaxPercent2 + RESET);
+	    System.out.println(GREEN + "Taxable Amount  : " + calculatedTaxableAmount2 + RESET);
+	    System.out.println(GREEN + "Tax Price       : " + calculatedTaxPrice2 + RESET);
+
+	    // -------------------------------
+	    // 🔹 VALIDATION
+	    // -------------------------------
+	    if (calculatedTaxPercent2 == adminTax2) {
+	        System.out.println(GREEN + "✅ TAX PERCENT MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAX PERCENT MISMATCH — UI: "
+	                + adminTax2 + " | Calc: " + calculatedTaxPercent2 + RESET);
+	        Assert.fail("❌ TAX PERCENT MISMATCH");
+	    }
+
+	    if (calculatedTaxableAmount2 == adminTaxableAmount2) {
+	        System.out.println(GREEN + "✅ TAXABLE AMOUNT MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAXABLE AMOUNT MISMATCH — UI: "
+	                + adminTaxableAmount2 + " | Calc: " + calculatedTaxableAmount2 + RESET);
+	        Assert.fail("❌ TAXABLE AMOUNT MISMATCH");
+	    }
+
+	    if (calculatedTaxPrice2 == adminTaxPrice2) {
+	        System.out.println(GREEN + "✅ TAX PRICE MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAX PRICE MISMATCH — UI: "
+	                + adminTaxPrice2 + " | Calc: " + calculatedTaxPrice2 + RESET);
+	        Assert.fail("❌ TAX PRICE MISMATCH");
+	    }
+
+
+	    System.out.println(GREEN + "✅ ADMIN TAX CALCULATION VALIDATED SUCCESSFULLY" + RESET);
+	}
+	
+	int calculatedTaxPercent1;
+    int calculatedTaxableAmount1;
+    int calculatedTaxPrice1;
+	public void calculateAndValidateAdminTax1() {
+
+	    // ANSI COLORS
+	    String GREEN = "\u001B[32m";
+	    String RED   = "\u001B[31m";
+	    String CYAN  = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+
+	    
+
+	    // 🔹 TAX %
+	    if (adminTotalPrice1 > 2500) {
+	        calculatedTaxPercent1 = 18;
+	    } else {
+	        calculatedTaxPercent1 = 5;
+	    }
+
+	    // 🔹 TAXABLE AMOUNT
+	    calculatedTaxableAmount1 = (int) Math.round(
+	            adminTotalPrice1 / (1 + (calculatedTaxPercent1 / 100.0))
+	    );
+
+	    // 🔹 TAX PRICE
+	    calculatedTaxPrice1 = adminTotalPrice1 - calculatedTaxableAmount1;
+
+	    // -------------------------------
+	    // 🔹 PRINT VALUES
+	    // -------------------------------
+	    System.out.println(CYAN + "🧮 ADMIN TAX CALCULATION (PRODUCT 2)" + RESET);
+	    System.out.println(GREEN + "Tax %           : " + calculatedTaxPercent1 + RESET);
+	    System.out.println(GREEN + "Taxable Amount  : " + calculatedTaxableAmount1 + RESET);
+	    System.out.println(GREEN + "Tax Price       : " + calculatedTaxPrice1 + RESET);
+
+	    // -------------------------------
+	    // 🔹 VALIDATION
+	    // -------------------------------
+	    if (calculatedTaxPercent1 == adminTax1) {
+	        System.out.println(GREEN + "✅ TAX PERCENT MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAX PERCENT MISMATCH — UI: "
+	                + adminTax1 + " | Calc: " + calculatedTaxPercent1 + RESET);
+	        Assert.fail("❌ TAX PERCENT MISMATCH");
+	    }
+
+	    if (calculatedTaxableAmount1 == adminTaxableAmount1) {
+	        System.out.println(GREEN + "✅ TAXABLE AMOUNT MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAXABLE AMOUNT MISMATCH — UI: "
+	                + adminTaxableAmount1 + " | Calc: " + calculatedTaxableAmount1 + RESET);
+	        Assert.fail("❌ TAXABLE AMOUNT MISMATCH");
+	    }
+
+	    if (calculatedTaxPrice1 == adminTaxPrice1) {
+	        System.out.println(GREEN + "✅ TAX PRICE MATCHED" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TAX PRICE MISMATCH — UI: "
+	                + adminTaxPrice1 + " | Calc: " + calculatedTaxPrice1 + RESET);
+	        Assert.fail("❌ TAX PRICE MISMATCH");
+	    }
+
+
+	    System.out.println(GREEN + "✅ ADMIN TAX CALCULATION VALIDATED SUCCESSFULLY" + RESET);
+	}
+	
+
+	public void compareUserAndAdminProduct1Details() {
+
+	    String GREEN = "\u001B[32m";
+	    String RED   = "\u001B[31m";
+	    String CYAN  = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+
+	    System.out.println(CYAN + "🔍 COMPARING USER vs ADMIN PRODUCT-1 DETAILS" + RESET);
+
+	    // -------------------------------
+	    // TOTAL MRP
+	    // -------------------------------
+	    if (totalMRP2 == adminTotalMRP1) {
+	        System.out.println(GREEN + "✅ TOTAL MRP MATCHED: " + totalMRP2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL MRP MISMATCH — User: "
+	                + totalMRP2 + " | Admin: " + adminTotalMRP1 + RESET);
+	        Assert.fail("TOTAL MRP MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // DISCOUNTED MRP
+	    // -------------------------------
+	    if (discountedMRP2 == admindiscountedMRP1) {
+	        System.out.println(GREEN + "✅ DISCOUNTED MRP MATCHED: " + discountedMRP2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ DISCOUNTED MRP MISMATCH — User: "
+	                + discountedMRP2 + " | Admin: " + admindiscountedMRP1 + RESET);
+	        Assert.fail("DISCOUNTED MRP MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // COUPON DISCOUNT
+	    // -------------------------------
+	    if (couponDiscount2 == admincouponDiscount1) {
+	        System.out.println(GREEN + "✅ COUPON DISCOUNT MATCHED: " + couponDiscount2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ COUPON DISCOUNT MISMATCH — User: "
+	                + couponDiscount2 + " | Admin: " + admincouponDiscount1 + RESET);
+	        Assert.fail("COUPON DISCOUNT MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // DISCOUNT PERCENT
+	    // -------------------------------
+	    if (discountPercent2 == adminDiscount1) {
+	        System.out.println(GREEN + "✅ DISCOUNT % MATCHED: " + discountPercent2 + "%" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ DISCOUNT % MISMATCH — User: "
+	                + discountPercent2 + "% | Admin: " + adminDiscount1 + "%" + RESET);
+	        Assert.fail("DISCOUNT % MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // THREAD VALUE
+	    // -------------------------------
+	    if (threadValue2 == adminThread1) {
+	        System.out.println(GREEN + "✅ THREAD VALUE MATCHED: " + threadValue2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ THREAD VALUE MISMATCH — User: "
+	                + threadValue2 + " | Admin: " + adminThread1 + RESET);
+	        Assert.fail("THREAD VALUE MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // GIFT CARD APPLIED
+	    // -------------------------------
+	    if (giftCardAmount2 == adminGiftCardApplied1) {
+	        System.out.println(GREEN + "✅ GIFT CARD AMOUNT MATCHED: " + giftCardAmount2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ GIFT CARD AMOUNT MISMATCH — User: "
+	                + giftCardAmount2 + " | Admin: " + adminGiftCardApplied1 + RESET);
+	        Assert.fail("GIFT CARD AMOUNT MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // TOTAL PRICE VALIDATION
+	    // Admin Total = calcTotal + GiftCard
+	    // -------------------------------
+	    int expectedAdminTotalPrice = calcTotalAmount2 + giftCardAmount2;
+
+	    if (expectedAdminTotalPrice == adminTotalPrice1) {
+	        System.out.println(GREEN + "✅ TOTAL PRICE MATCHED — Admin Total: "
+	                + adminTotalPrice1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL PRICE MISMATCH — Admin UI: "
+	                + adminTotalPrice1 + " | Calc: " + expectedAdminTotalPrice + RESET);
+	        Assert.fail("TOTAL PRICE MISMATCH");
+	    }
+
+	    System.out.println(GREEN + "🎉 USER vs ADMIN PRODUCT-1 VALIDATION COMPLETED" + RESET);
+	}
+
+	public void compareUserAndAdminProduct2Details() {
+
+	    String GREEN = "\u001B[32m";
+	    String RED   = "\u001B[31m";
+	    String CYAN  = "\u001B[36m";
+	    String RESET = "\u001B[0m";
+
+	    System.out.println(CYAN + "🔍 COMPARING USER vs ADMIN PRODUCT-2 DETAILS" + RESET);
+
+	    // -------------------------------
+	    // TOTAL MRP
+	    // -------------------------------
+	    if (totalMRP1 == adminTotalMRP2) {
+	        System.out.println(GREEN + "✅ TOTAL MRP MATCHED: " + totalMRP1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL MRP MISMATCH — User: "
+	                + totalMRP1 + " | Admin: " + adminTotalMRP2 + RESET);
+	        Assert.fail("TOTAL MRP MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // DISCOUNTED MRP
+	    // -------------------------------
+	    if (discountedMRP1 == admindiscountedMRP2) {
+	        System.out.println(GREEN + "✅ DISCOUNTED MRP MATCHED: " + discountedMRP1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ DISCOUNTED MRP MISMATCH — User: "
+	                + discountedMRP1 + " | Admin: " + admindiscountedMRP2 + RESET);
+	        Assert.fail("DISCOUNTED MRP MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // COUPON DISCOUNT
+	    // -------------------------------
+	    if (couponDiscount1 == admincouponDiscount2) {
+	        System.out.println(GREEN + "✅ COUPON DISCOUNT MATCHED: " + couponDiscount1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ COUPON DISCOUNT MISMATCH — User: "
+	                + couponDiscount1 + " | Admin: " + admincouponDiscount2 + RESET);
+	        Assert.fail("COUPON DISCOUNT MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // DISCOUNT PERCENT
+	    // -------------------------------
+	    if (discountPercent1 == adminDiscount2) {
+	        System.out.println(GREEN + "✅ DISCOUNT % MATCHED: " + discountPercent1 + "%" + RESET);
+	    } else {
+	        System.out.println(RED + "❌ DISCOUNT % MISMATCH — User: "
+	                + discountPercent1 + "% | Admin: " + adminDiscount2 + "%" + RESET);
+	        Assert.fail("DISCOUNT % MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // THREAD VALUE
+	    // -------------------------------
+	    if (threadValue1 == adminThread2) {
+	        System.out.println(GREEN + "✅ THREAD VALUE MATCHED: " + threadValue1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ THREAD VALUE MISMATCH — User: "
+	                + threadValue1 + " | Admin: " + adminThread2 + RESET);
+	        Assert.fail("THREAD VALUE MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // GIFT CARD APPLIED
+	    // -------------------------------
+	    if (giftCardAmount1 == adminGiftCardApplied2) {
+	        System.out.println(GREEN + "✅ GIFT CARD AMOUNT MATCHED: " + giftCardAmount1 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ GIFT CARD AMOUNT MISMATCH — User: "
+	                + giftCardAmount1 + " | Admin: " + adminGiftCardApplied2 + RESET);
+	        Assert.fail("GIFT CARD AMOUNT MISMATCH");
+	    }
+
+	    // -------------------------------
+	    // TOTAL PRICE VALIDATION
+	    // Admin Total = calcTotal + GiftCard
+	    // -------------------------------
+	    int expectedAdminTotalPrice = calcTotalAmount1 + giftCardAmount1;
+
+	    if (expectedAdminTotalPrice == adminTotalPrice2) {
+	        System.out.println(GREEN + "✅ TOTAL PRICE MATCHED — Admin Total: "
+	                + adminTotalPrice2 + RESET);
+	    } else {
+	        System.out.println(RED + "❌ TOTAL PRICE MISMATCH — Admin UI: "
+	                + adminTotalPrice2 + " | Calc: " + expectedAdminTotalPrice + RESET);
+	        Assert.fail("TOTAL PRICE MISMATCH");
+	    }
+
+	    System.out.println(GREEN + "🎉 USER vs ADMIN PRODUCT-2 VALIDATION COMPLETED" + RESET);
+	}
+	public void openAdminAppForCalculation() throws InterruptedException {
+
+	    String GREEN = "\u001B[32m";
+	    String YELLOW = "\u001B[33m";
+	    String RED = "\u001B[31m";
+	    String RESET = "\u001B[0m";
+	    String line = "──────────────────────────────────────────────────────────────";
+
+	    System.out.println(line);
+	    System.out.println(GREEN + "🚚  Order Status for Order ID: " + orderId + RESET);
+	    System.out.println(line);
+
+	    adminLoginApp();
+	    
+	    Common.waitForElement(2);
+	    driver.get(Common.getValueFromTestDataMap("ExcelPath"));
+		System.out.println("Redirect to Placed Order Page");
+		Common.waitForElement(1);
+		
+	    // ✅ Go to order search box and search order ID
+		Common.waitForElement(2);
+	    wait.until(ExpectedConditions.elementToBeClickable(orderIdbtn));
+	    waitFor(orderIdbtn);
+		click(orderIdbtn);
+		 Common.waitForElement(1);
+		wait.until(ExpectedConditions.elementToBeClickable(orderSearchBox));
+	    Common.waitForElement(2);
+		waitFor(orderSearchBox);
+		click(orderSearchBox);
+
+	    orderSearchBox.clear();
+	    orderSearchBox.sendKeys(orderId);
+	    Common.waitForElement(2);
+	    orderSearchBox.sendKeys(Keys.ENTER);
+	    Common.waitForElement(2);
+
+	    // ✅ Verify order is displayed
+	    try {
+	        WebElement orderRow = wait.until(ExpectedConditions.visibilityOfElementLocated(
+	                By.xpath("//td/span[normalize-space(text())='" + orderId + "']")));
+	        System.out.println(GREEN + "✅ Order found in table!" + RESET);
+	    } catch (TimeoutException e) {
+	        System.out.println(RED + "❌ Order not found! Stopping execution." + RESET);
+	        return;
+	    }
+
+	    // ✅ Click Edit button
+	    wait.until(ExpectedConditions.elementToBeClickable(editBtn));
+	    Common.waitForElement(2);
+		waitFor(editBtn);
+		click(editBtn);
+	    System.out.println(GREEN + "✅ Clicked Edit" + RESET);
+	    Common.waitForElement(2);
+	}
 	
 	
+	String mainReferenceId;
+
+	int mainTotalMRP;
+	int mainTotalDiscountedPrice;
+	int mainTotalCouponPrice;
+	int mainTotalTaxPrice;
+	int mainTotalTaxableAmount;
+	int mainShippingCharge;
+	int mainGrandTotal;
+	int mainThread;
+	int mainGiftCardApplied;
+
+	public void copyMainOrderDetails() {
+
+	    String GREEN  = "\u001B[32m";
+	    String BLUE   = "\u001B[34m";
+	    String YELLOW = "\u001B[33m";
+	    String RED    = "\u001B[31m";
+	    String RESET  = "\u001B[0m";
+	    JavascriptExecutor js = (JavascriptExecutor) driver;
+	    js.executeScript("window.scrollTo(0, 0);");
+	    Common.waitForElement(2);
+	    // -------------------------------
+	    // Helper → get INT value or 0
+	    // -------------------------------
+	    Function<String, Integer> getIntValue = (label) -> {
+	        try {
+	            WebElement input = driver.findElement(By.xpath(
+	                "//label[normalize-space()='" + label + "']/following-sibling::input"
+	            ));
+	            return Integer.parseInt(
+	                input.getAttribute("value").replaceAll("[^0-9]", "")
+	            );
+	        } catch (Exception e) {
+	            return 0;
+	        }
+	    };
+
+	    // -------------------------------
+	    // Helper → get STRING value or empty
+	    // -------------------------------
+	    Function<String, String> getStringValue = (label) -> {
+	        try {
+	            return driver.findElement(By.xpath(
+	                "//label[normalize-space()='" + label + "']/following-sibling::input"
+	            )).getAttribute("value").trim();
+	        } catch (Exception e) {
+	            return "";
+	        }
+	    };
+
+	    // -------------------------------
+	    // 🔹 FETCH MAIN ORDER VALUES
+	    // -------------------------------
+	    mainReferenceId          = getStringValue.apply("Reference Id");
+	    mainTotalMRP             = getIntValue.apply("Total Mrp Price");
+	    mainTotalDiscountedPrice = getIntValue.apply("Total Discounted Price");
+	    mainTotalCouponPrice     = getIntValue.apply("Total Coupon Price");
+	    mainTotalTaxPrice        = getIntValue.apply("Total Tax Price");
+	    mainTotalTaxableAmount   = getIntValue.apply("Total Taxable Amount");
+	    mainShippingCharge       = getIntValue.apply("Shipping Charge");
+	    mainGrandTotal           = getIntValue.apply("Grand Total");
+	    mainThread               = getIntValue.apply("Thread");
+	    mainGiftCardApplied      = getIntValue.apply("Gift Card Applied");
+
+	    // -------------------------------
+	    // 🔹 PRINT WITH COLORS
+	    // -------------------------------
+	    System.out.println(CYAN + "\n━━━━━━━━━━ MAIN ORDER DETAILS ━━━━━━━━━━" + RESET);
+	    System.out.println(YELLOW + "🧾 Reference ID              : " + RESET + mainReferenceId);
+	    System.out.println(BLUE   + "💰 UI Total MRP              : " + RESET + mainTotalMRP);
+	    System.out.println(BLUE   + "🏷 UI Discounted Price       : " + RESET + mainTotalDiscountedPrice);
+	    System.out.println(BLUE   + "🎟 UI Coupon Price           : " + RESET + mainTotalCouponPrice);
+	    System.out.println(BLUE   + "🧾 UI Tax Price              : " + RESET + mainTotalTaxPrice);
+	    System.out.println(BLUE   + "📊 UI Taxable Amount         : " + RESET + mainTotalTaxableAmount);
+	    System.out.println(BLUE   + "🚚 UI Shipping Charge        : " + RESET + mainShippingCharge);
+	    System.out.println(BLUE   + "🧵 UI Thread                 : " + RESET + mainThread);
+	    System.out.println(GREEN  + "🎁 Ui Gift Card Applied      : " + RESET + mainGiftCardApplied);
+	    System.out.println(GREEN  + "💵 UI Grand Total            : " + RESET + mainGrandTotal);
+	    System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
+
 	
+
+	int calMainTotalMRP;
+	int calMainTotalDiscountedPrice;
+	int calMainTotalCouponPrice;
+	int calMainTotalTaxPrice;
+	int calMainTotalTaxableAmount;
+	int calMainThread;
+	int calMainGiftCardApplied;
+	int calMainGrandTotal;
+	public void calculateAndPrintMainOrderTotals() {
+		
+		
+	    String GREEN  = "\u001B[32m";
+	    String BLUE   = "\u001B[34m";
+	    String YELLOW = "\u001B[33m";
+	    String CYAN   = "\u001B[36m";
+	    String RESET  = "\u001B[0m";
+
+	    // -------------------------------
+	    // 🔹 CALCULATIONS
+	    // -------------------------------
+	    calMainTotalMRP             = adminTotalMRP1 + adminTotalMRP2;
+	    calMainTotalDiscountedPrice = admindiscountedMRP1 + admindiscountedMRP2;
+	    calMainTotalCouponPrice     = admincouponDiscount1 + admincouponDiscount2;
+	    calMainTotalTaxPrice        = adminTaxPrice1 + adminTaxPrice2;
+	    calMainTotalTaxableAmount   = adminTaxableAmount1 + adminTaxableAmount2;
+	    calMainThread               = adminThread1 + adminThread2;
+	    calMainGiftCardApplied      = adminGiftCardApplied1 + adminGiftCardApplied2;
+	    calMainGrandTotal = (adminTotalPrice1
+	                      + adminTotalPrice2
+	                      + mainShippingCharge)
+	                      - (mainThread
+	                      + giftWrapFee);
+
+	    // -------------------------------
+	    // 🔹 PRINT RESULTS
+	    // -------------------------------
+	    System.out.println(CYAN + "\n━━━━━━━━━━ MAIN ORDER CALCULATION ━━━━━━━━━━" + RESET);
+
+	    System.out.println(BLUE   + "💰 Total MRP                : " + RESET + calMainTotalMRP);
+	    System.out.println(BLUE   + "🏷 Total Discounted Price  : " + RESET + calMainTotalDiscountedPrice);
+	    System.out.println(BLUE   + "🎟 Total Coupon Price      : " + RESET + calMainTotalCouponPrice);
+	    System.out.println(BLUE   + "🧾 Total Tax Price         : " + RESET + calMainTotalTaxPrice);
+	    System.out.println(BLUE   + "📊 Total Taxable Amount    : " + RESET + calMainTotalTaxableAmount);
+	    System.out.println(BLUE   + "🧵 Total Thread            : " + RESET + calMainThread);
+	    System.out.println(BLUE   + "🎁 Gift Card Applied       : " + RESET + calMainGiftCardApplied);
+
+	    System.out.println(GREEN  + "💵 Calculated Grand Total  : " + RESET + calMainGrandTotal);
+
+	    System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
+
+	public void validateMainTotals() {
+
+	    String GREEN  = "\u001B[32m";
+	    String RED    = "\u001B[31m";
+	    String BLUE   = "\u001B[34m";
+	    String CYAN   = "\u001B[36m";
+	    String RESET  = "\u001B[0m";
+
+	    System.out.println(CYAN + "\n━━━━━━━━━━ VALIDATING MAIN TOTALS ━━━━━━━━━━" + RESET);
+
+	    // -------------------------------
+	    // 🔹 MAIN TOTAL MRP
+	    // -------------------------------
+	    compareValue("Total MRP",
+	            mainTotalMRP,
+	            calMainTotalMRP,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 DISCOUNTED PRICE
+	    // -------------------------------
+	    compareValue("Total Discounted Price",
+	            mainTotalDiscountedPrice,
+	            calMainTotalDiscountedPrice,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 COUPON PRICE
+	    // -------------------------------
+	    compareValue("Total Coupon Price",
+	            mainTotalCouponPrice,
+	            calMainTotalCouponPrice,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 TAX PRICE
+	    // -------------------------------
+	    compareValue("Total Tax Price",
+	            mainTotalTaxPrice,
+	            calMainTotalTaxPrice,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 TAXABLE AMOUNT
+	    // -------------------------------
+	    compareValue("Total Taxable Amount",
+	            mainTotalTaxableAmount,
+	            calMainTotalTaxableAmount,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 THREAD
+	    // -------------------------------
+	    compareValue("Total Thread",
+	            mainThread,
+	            calMainThread,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 GIFT CARD
+	    // -------------------------------
+	    compareValue("Gift Card Applied",
+	            mainGiftCardApplied,
+	            calMainGiftCardApplied,
+	            GREEN, RED, RESET);
+
+	    // -------------------------------
+	    // 🔹 GRAND TOTAL
+	    // -------------------------------
+	    compareValue("Grand Total",
+	            mainGrandTotal,
+	            calMainGrandTotal,
+	            GREEN, RED, RESET);
+
+	    System.out.println(CYAN + "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" + RESET);
+	}
 	
-	
-	
-	
-	
-	
+	private void compareValue(String label, int uiValue, int calcValue,
+            String GREEN, String RED, String RESET) {
+
+if (uiValue == calcValue) {
+System.out.println(GREEN + "✅ " + label + " MATCHED — " + uiValue + RESET);
+} else {
+System.out.println(RED + "❌ " + label + " MISMATCH — UI: "
+  + uiValue + " | CALC: " + calcValue + RESET);
+
+Assert.fail("❌ " + label + " MISMATCH — UI: "
+  + uiValue + " | CALC: " + calcValue);
+}
+}
+
 	
 //TC-01 For one Product	
 	public void verify_P1_With_GW_C_GC_GA_T() throws InterruptedException {
@@ -4620,6 +5405,38 @@ public void takeCustomizeProduct() {
 //		moveToProduct(1);
 //		
 //		validateOrderSummaryForTwoProduct_P1();	
+		
+	}
+	//AdminPanel  Calculation 
+	public void verifyTwoProductCalculationAdminPanel() throws InterruptedException {
+		
+		openAdminAppForCalculation();
+		
+		copyAllSecondProductDetailsAdmin();
+		
+		allDeatailsFirstProduct();
+		
+		
+		compareUserAndAdminProduct2Details();
+		
+		calculateAndValidateAdminTax2();
+		
+		
+		copyAllFirstProductDetailsAdmin();
+		
+		allDeatailsSecondProduct();
+
+		
+		compareUserAndAdminProduct1Details();
+		
+		calculateAndValidateAdminTax1();
+		
+		
+		copyMainOrderDetails();
+		
+		calculateAndPrintMainOrderTotals();
+		
+		validateMainTotals();
 		
 	}
 	
