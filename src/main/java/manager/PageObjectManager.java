@@ -40,6 +40,8 @@ public class PageObjectManager {
     private AdminEmailVerifyOrderFlowPage adminEmail;
     private Admin_Order_Page adminorder;
     private Calculation_MyOrder_Page calculation;
+    private TryAlongSectionPage tryAlong;
+
    
 
     public PageObjectManager(WebDriver driver) {
@@ -161,5 +163,9 @@ public class PageObjectManager {
 	
 	public Calculation_MyOrder_Page getCalculation_MyOrder_Page() {
 		return (calculation == null) ? calculation = new Calculation_MyOrder_Page(driver) : calculation;
+	}
+	
+	public TryAlongSectionPage getTryAlongSectionPage() {
+		return (tryAlong == null) ? tryAlong = new TryAlongSectionPage(driver): tryAlong;
 	}
 }
