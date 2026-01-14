@@ -27,6 +27,7 @@ public class Calculation_MyOrder_StepDef {
 	@Given("User adds Product P1 & P2 with Gift Wrap, Coupon, Gift Card Amount, and Thread")
 		public void user_adds_product_p1_p2_with_gift_wrap_coupon_gift_card_amount_and_thread() throws InterruptedException {
 		calculation.verify_P1_P2_With_GC_C_GW_GCA_T_E();
+		calculation.verifyTwoProductCalculationAdminPanel();
 		}
 		@When("Verify Product P1 & P2 checkout page, Razorpay popup details and My Orders price breakup after placing the order.")
 		public void verify_product_p1_p2_checkout_page_razorpay_popup_details_and_my_orders_price_breakup_after_placing_the_order() {
