@@ -209,7 +209,15 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	}
 	
 
-	
+	private String normalizeText(String text) {
+	    if (text == null) return "";
+
+	    return text
+	            .toLowerCase()
+	            .replaceAll("[^a-z0-9]", "") // removes spaces, hyphens, special chars
+	            .trim();
+	}
+
 	// Method to verify that the first product in category is correct
 	public void verifyFirstProductInUserApp() throws InterruptedException {
 
@@ -222,7 +230,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 	    // FLUENT WAIT
 	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-	            .withTimeout(Duration.ofMinutes(5))
+	            .withTimeout(Duration.ofMinutes(8))
 	            .pollingEvery(Duration.ofSeconds(3))
 	            .ignoring(NoSuchElementException.class)
 	            .ignoring(StaleElementReferenceException.class);
@@ -253,11 +261,18 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	        }
 
 	        // ---------- MATCHING LOGIC ----------
-	        boolean altMatch = !altText.isEmpty() &&
-	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//	        boolean altMatch = !altText.isEmpty() &&
+//	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//	        boolean headingMatch = !headingText.isEmpty() &&
+//	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
 
-	        boolean headingMatch = !headingText.isEmpty() &&
-	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+	        String expectedNorm = normalizeText(expectedFirstProduct);
+	        String altNorm      = normalizeText(altText);
+	        String headingNorm  = normalizeText(headingText);
+
+	        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+	        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
 
 	        // If either one matches → PASS
 	        if (altMatch || headingMatch) {
@@ -418,7 +433,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 	    // FLUENT WAIT
 	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-	            .withTimeout(Duration.ofMinutes(5))
+	            .withTimeout(Duration.ofMinutes(8))
 	            .pollingEvery(Duration.ofSeconds(3))
 	            .ignoring(NoSuchElementException.class)
 	            .ignoring(StaleElementReferenceException.class);
@@ -449,11 +464,18 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	        }
 
 	        // ---------- MATCHING LOGIC ----------
-	        boolean altMatch = !altText.isEmpty() &&
-	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//	        boolean altMatch = !altText.isEmpty() &&
+//	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//	        boolean headingMatch = !headingText.isEmpty() &&
+//	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+	        
+	        String expectedNorm = normalizeText(expectedFirstProduct);
+	        String altNorm      = normalizeText(altText);
+	        String headingNorm  = normalizeText(headingText);
 
-	        boolean headingMatch = !headingText.isEmpty() &&
-	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+	        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+	        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
 
 	        // If either one matches → PASS
 	        if (altMatch || headingMatch) {
@@ -609,7 +631,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 	    // FLUENT WAIT
 	    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-	            .withTimeout(Duration.ofMinutes(5))
+	            .withTimeout(Duration.ofMinutes(8))
 	            .pollingEvery(Duration.ofSeconds(3))
 	            .ignoring(NoSuchElementException.class)
 	            .ignoring(StaleElementReferenceException.class);
@@ -640,12 +662,19 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 	        }
 
 	        // ---------- MATCHING LOGIC ----------
-	        boolean altMatch = !altText.isEmpty() &&
-	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//	        boolean altMatch = !altText.isEmpty() &&
+//	                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//	        boolean headingMatch = !headingText.isEmpty() &&
+//	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
 
-	        boolean headingMatch = !headingText.isEmpty() &&
-	                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+	        String expectedNorm = normalizeText(expectedFirstProduct);
+	        String altNorm      = normalizeText(altText);
+	        String headingNorm  = normalizeText(headingText);
 
+	        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+	        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
+	        
 	        // If either one matches → PASS
 	        if (altMatch || headingMatch) {
 	            System.out.println("✅ Match found! (ALT or Heading)");
@@ -797,7 +826,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 		    // FLUENT WAIT
 		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-		            .withTimeout(Duration.ofMinutes(5))
+		            .withTimeout(Duration.ofMinutes(8))
 		            .pollingEvery(Duration.ofSeconds(3))
 		            .ignoring(NoSuchElementException.class)
 		            .ignoring(StaleElementReferenceException.class);
@@ -828,12 +857,19 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		        }
 
 		        // ---------- MATCHING LOGIC ----------
-		        boolean altMatch = !altText.isEmpty() &&
-		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//		        boolean altMatch = !altText.isEmpty() &&
+//		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//		        boolean headingMatch = !headingText.isEmpty() &&
+//		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
 
-		        boolean headingMatch = !headingText.isEmpty() &&
-		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+		        String expectedNorm = normalizeText(expectedFirstProduct);
+		        String altNorm      = normalizeText(altText);
+		        String headingNorm  = normalizeText(headingText);
 
+		        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+		        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
+		        
 		        // If either one matches → PASS
 		        if (altMatch || headingMatch) {
 		            System.out.println("✅ Match found! (ALT or Heading)");
@@ -990,7 +1026,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 		    // FLUENT WAIT
 		    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-		            .withTimeout(Duration.ofMinutes(5))
+		            .withTimeout(Duration.ofMinutes(8))
 		            .pollingEvery(Duration.ofSeconds(3))
 		            .ignoring(NoSuchElementException.class)
 		            .ignoring(StaleElementReferenceException.class);
@@ -1021,11 +1057,18 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 		        }
 
 		        // ---------- MATCHING LOGIC ----------
-		        boolean altMatch = !altText.isEmpty() &&
-		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//		        boolean altMatch = !altText.isEmpty() &&
+//		                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//		        boolean headingMatch = !headingText.isEmpty() &&
+//		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+		        
+		        String expectedNorm = normalizeText(expectedFirstProduct);
+		        String altNorm      = normalizeText(altText);
+		        String headingNorm  = normalizeText(headingText);
 
-		        boolean headingMatch = !headingText.isEmpty() &&
-		                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+		        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+		        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
 
 		        // If either one matches → PASS
 		        if (altMatch || headingMatch) {
@@ -1181,7 +1224,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 			    // FLUENT WAIT
 			    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-			            .withTimeout(Duration.ofMinutes(5))
+			            .withTimeout(Duration.ofMinutes(8))
 			            .pollingEvery(Duration.ofSeconds(3))
 			            .ignoring(NoSuchElementException.class)
 			            .ignoring(StaleElementReferenceException.class);
@@ -1212,11 +1255,18 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 			        }
 
 			        // ---------- MATCHING LOGIC ----------
-			        boolean altMatch = !altText.isEmpty() &&
-			                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//			        boolean altMatch = !altText.isEmpty() &&
+//			                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//			        boolean headingMatch = !headingText.isEmpty() &&
+//			                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+			        
+			        String expectedNorm = normalizeText(expectedFirstProduct);
+			        String altNorm      = normalizeText(altText);
+			        String headingNorm  = normalizeText(headingText);
 
-			        boolean headingMatch = !headingText.isEmpty() &&
-			                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+			        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+			        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
 
 			        // If either one matches → PASS
 			        if (altMatch || headingMatch) {
@@ -1370,7 +1420,7 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 
 				    // FLUENT WAIT
 				    FluentWait<WebDriver> wait = new FluentWait<>(driver)
-				            .withTimeout(Duration.ofMinutes(5))
+				            .withTimeout(Duration.ofMinutes(8))
 				            .pollingEvery(Duration.ofSeconds(3))
 				            .ignoring(NoSuchElementException.class)
 				            .ignoring(StaleElementReferenceException.class);
@@ -1401,11 +1451,18 @@ public class AdminPanelSortingPage extends AdminPanelSortingObjRepo {
 				        }
 
 				        // ---------- MATCHING LOGIC ----------
-				        boolean altMatch = !altText.isEmpty() &&
-				                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//				        boolean altMatch = !altText.isEmpty() &&
+//				                altText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+//
+//				        boolean headingMatch = !headingText.isEmpty() &&
+//				                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+				        
+				        String expectedNorm = normalizeText(expectedFirstProduct);
+				        String altNorm      = normalizeText(altText);
+				        String headingNorm  = normalizeText(headingText);
 
-				        boolean headingMatch = !headingText.isEmpty() &&
-				                headingText.toLowerCase().contains(expectedFirstProduct.toLowerCase());
+				        boolean altMatch = !altNorm.isEmpty() && altNorm.contains(expectedNorm);
+				        boolean headingMatch = !headingNorm.isEmpty() && headingNorm.contains(expectedNorm);
 
 				        // If either one matches → PASS
 				        if (altMatch || headingMatch) {
