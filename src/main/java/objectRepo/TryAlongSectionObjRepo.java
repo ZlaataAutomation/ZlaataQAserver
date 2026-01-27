@@ -61,5 +61,31 @@ public abstract class TryAlongSectionObjRepo extends BasePage {
 	@FindBy(xpath = "//input[@name='filters[0][name]']")
 	protected WebElement productDetailsName;
 	
+	@FindBy(xpath = "//span[@id='select2-82j0-container']")
+	protected WebElement tryalongtextBox;
+	
+	@FindBy(xpath = "//a[@id='crudTable_reset_button']")
+	protected WebElement resetButton;
+	
+	@FindBy(xpath = "//a[contains(@class,'d-print-none font-sm')]")
+	protected WebElement BacktoAllProductButon;
+	
+	@FindBy(xpath = "//a[normalize-space()='Status']")
+	protected WebElement statusButton;
+	
+	@FindBy(xpath = "//li[@id='select2-filter_status-result-5018-1']")
+	protected WebElement activeButton;
+	
+	@FindBy(xpath = "//span[@class='select2-dropdown select2-dropdown--below']//input[@type='search']")
+	protected WebElement statusDropDown;
+	
+	@FindBy(xpath = "//input[@name='filters[0][sku]']")
+	protected WebElement skuCopy;
+	
+	
+	@FindBy(xpath = "//div[@class='product_list_card_img']")
+	protected WebElement productImage;
+	
+	
 	
 }
