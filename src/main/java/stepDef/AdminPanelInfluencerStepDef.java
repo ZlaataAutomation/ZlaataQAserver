@@ -28,7 +28,7 @@ public class AdminPanelInfluencerStepDef {
 			String imagepath = System.getProperty("user.dir") + "/src/test/resources/images/" + filePath;
 			adminInflu.adminLoginApp();
 			adminInflu.setTheProductImageAndStatusInInfluencer(productName, imagepath);
-			adminInflu.addTheProductInProductCollection();
+		//	adminInflu.addTheProductInProductCollection();
 			adminInflu.sortTheProductForIncluencer();
 			
 
