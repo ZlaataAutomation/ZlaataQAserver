@@ -458,7 +458,7 @@ public class Calculation_MyOrder_Page extends Calculation_MyOrder_ObjRepo {
 	        ));
 
 	        giftCardInput.clear();
-	        giftCardInput.sendKeys("1743285016732974");
+	        giftCardInput.sendKeys("6065844211517004");
 	        System.out.println(GREEN + "✔ Entered Gift Card number successfully" + RESET);
 
 	        Common.waitForElement(2);

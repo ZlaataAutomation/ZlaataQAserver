@@ -214,7 +214,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 
 	    // ✅ Click "All" from dropdown
 	    WebElement allButton = wait.until(ExpectedConditions
-	            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='All']")));
+	            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES']")));
 	    allButton.click();
 
 	    System.out.println("✅ Clicked on 'All' under Shop menu");
@@ -288,7 +288,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 	  
 	    System.out.println( "🔍 Checking Coupon Status..." );
 
-
+	    Common.waitForElement(2);
 	    // CHECK 1: Coupon Applied
 	    try {
 	        WebElement appliedMsg = wait.until(ExpectedConditions.visibilityOfElementLocated(
@@ -446,7 +446,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 
 		    // ✅ Click "All" from dropdown
 		    WebElement allButton = wait.until(ExpectedConditions
-		            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[normalize-space()='All']")));
+		            .elementToBeClickable(By.xpath("//div[@class='nav_drop_down_box_category active']//ul/li/a[translate(normalize-space(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') = 'DRESSES']")));
 		    allButton.click();
 
 		    System.out.println("✅ Clicked on 'All' under Shop menu");
@@ -455,13 +455,13 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    // --------------------------
 		    // Step 1: Get all products > 500
 		    // --------------------------
-		    List<WebElement> allProducts = driver.findElements(By.xpath("//div[@class='product_list_cards_wrpr']"));
+		    List<WebElement> allProducts = driver.findElements(By.xpath("//div[@class='product_list_cards_list ']"));
 		    List<WebElement> validProducts = new ArrayList<>();
 
 		    for (WebElement product : allProducts) {
 		        String priceText = product.findElement(By.xpath(".//span[@class='prod_current_price']")).getText().replaceAll("[^0-9]", "");
 		        int price = Integer.parseInt(priceText);
-		        if (price > 500) {
+		        if (price > 499) {
 		            validProducts.add(product);
 		        }
 		    }
@@ -486,10 +486,7 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    // Step 3: Add to Cart
 		    // --------------------------
 		    Common.waitForElement(2);
-		    js.executeScript("arguments[0].scrollIntoView(true);", selectedProduct);
-		    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='product_list_cards_btn_group product_list_add_to_cart Cls_CartListes ClsSingleCart']"))).click();
-		    Common.waitForElement(2);
-		    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[@class='add_bag_prod_buy_now_btn btn___2 Cls_CartList ClsProductListSizes'])[1]"))).click();
+		    wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//button[contains(text(),'Buy')]"))).click();
 		    System.out.println("✅ Product added to cart successfully.");
 
 		    // --------------------------
@@ -498,23 +495,23 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
 		    Common.waitForElement(3);
 	        wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
 		    click(clickCartBtn);
-		    Common.waitForElement(3);
-	        wait.until(ExpectedConditions.elementToBeClickable(viewCoupon));
-		    click(viewCoupon);
 		 // Convert to uppercase to match the app display
 		    specialCouponName = specialCouponName.toUpperCase();
 		    
-		 // Wait for popup to appear
-		    Common.waitForElement(2);
-	        wait.until(ExpectedConditions.elementToBeClickable(searchBox));
-		    click(searchBox);
-		    searchBox.sendKeys(specialCouponName);
-		    System.out.println("✍️ Entered coupon code: " + specialCouponName);
+		
+		    
+			 // Enter coupon
+			    Common.waitForElement(2);
+			    wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+			    click(searchBox);
+			    searchBox.sendKeys(specialCouponName);
+			    System.out.println( "✍️ Entered coupon code:"+ specialCouponName);
 
-		    Common.waitForElement(2);
-	        wait.until(ExpectedConditions.elementToBeClickable(applyBtn2));
-		    click(applyBtn2);
-		    System.out.println("🟢 Clicked on Apply button.");
+			    // Click Apply
+			    Common.waitForElement(2);
+			    wait.until(ExpectedConditions.elementToBeClickable(applyBtn));
+			    click(applyBtn);
+			    System.out.println("🔄 Applying coupon...");
 		    Thread.sleep(3000);
 
 		 // Apply coupon
@@ -718,22 +715,23 @@ public class AdminPanelCouponPage extends AdminPanelCouponObjRepo{
         wait.until(ExpectedConditions.elementToBeClickable(clickCartBtn));
 	    click(clickCartBtn);
 	    Common.waitForElement(3);
-        wait.until(ExpectedConditions.elementToBeClickable(viewCoupon));
-	    click(viewCoupon);
-	 // Convert to uppercase to match the app display
 	    couponName = couponName.toUpperCase();
 	    
-	 // Wait for popup to appear
-	    Common.waitForElement(2);
-        wait.until(ExpectedConditions.elementToBeClickable(searchBox));
-	    click(searchBox);
-	    searchBox.sendKeys(couponName);
-	    System.out.println("✍️ Entered coupon code: " + couponName);
+		 // Enter coupon
+		    Common.waitForElement(2);
+		    wait.until(ExpectedConditions.elementToBeClickable(searchBox));
+		    click(searchBox);
+		    searchBox.sendKeys(couponName);
+		    System.out.println( "✍️ Entered coupon code:"+ couponName);
 
-	    Common.waitForElement(2);
-        wait.until(ExpectedConditions.elementToBeClickable(applyBtn2));
-	    click(applyBtn2);
-	    System.out.println("🟢 Clicked on Apply button.");
+		    // Click Apply
+		    Common.waitForElement(2);
+		    wait.until(ExpectedConditions.elementToBeClickable(applyBtn));
+		    click(applyBtn);
+		    System.out.println("🔄 Applying coupon...");
+
+		  
+		    System.out.println( "🔍 Checking Coupon Status..." );
 	    Common.waitForElement(3);
 	 // Apply coupon
 	    boolean applied = false;

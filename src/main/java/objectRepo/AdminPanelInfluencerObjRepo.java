@@ -130,7 +130,7 @@ public abstract class AdminPanelInfluencerObjRepo extends BasePage {
     @FindBy(xpath = "//input[@id='search_input']") 
     protected WebElement searchBox;
 	
-    @FindBy(xpath = "//a[normalize-space()='Influencer']") 
+    @FindBy(xpath = "//a[normalize-space()='Styled by']") 
     protected WebElement clickInfluencer;
   
     

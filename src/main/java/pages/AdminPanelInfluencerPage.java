@@ -247,12 +247,9 @@ public class AdminPanelInfluencerPage extends AdminPanelInfluencerObjRepo {
         click(addProductSort);
         System.out.println("✅ Clicked add product Sort");
         Common.waitForElement(2);
+        
         click(categoryType);
-        type(categorySearchTextBox, "Collection");
-        categorySearchTextBox.sendKeys(Keys.ENTER);
-        click(categoryId);
-        Common.waitForElement(2);
-        type(categorySearchTextBox, "Insta Influencer");
+        type(categorySearchTextBox, "Style By");
         categorySearchTextBox.sendKeys(Keys.ENTER);
         System.out.println("✅ Collection selected for Product Sort");
 
