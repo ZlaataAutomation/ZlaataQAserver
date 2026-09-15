@@ -18,6 +18,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import manager.FileReaderManager;
 import objectRepo.Admin_OrderObjRepo;
 import utils.Common;
 
@@ -31,7 +32,14 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	}
 
 	
-	
+	public void homeLunch() {
+
+		driver.get(FileReaderManager.getInstance().getConfigReader().getApplicationUrl());
+		type(accessCode, FileReaderManager.getInstance().getJsonReader().getValueFromJson("Access"));
+		click(submit);
+		Common.waitForElement(3);
+		//        popup();
+	}
 	
 	public void placeOrderByAdmin(String paymentMode) {
 
@@ -43,7 +51,12 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	    String RESET  = "\u001B[0m";
 
 	    System.out.println(CYAN + "🚀 Starting Admin Order Placement Flow" + RESET);
-
+	    
+	    
+	    homeLunch();
+	    
+	    
+		
 	    AdminPanelPage admin = new AdminPanelPage(driver);
 	    admin.adminLogin();
 	    System.out.println(GREEN + "✅ Admin login successful" + RESET);
@@ -265,7 +278,7 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	        // 3️⃣ Validate Payment Link Status = Not Created
 	        // ================================
 	        WebElement paymentLinkStatus = driver.findElement(
-	                By.xpath("(//tr[contains(@class,'odd')]//td/span[@title='Not Created'])[1]")
+	                By.xpath("(//span[@title='-' and normalize-space()='Not Created'])[1]")
 	        );
 
 	        
@@ -322,7 +335,7 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	        Thread.sleep(5000);
 	        WebElement createdStatus = wait.until(
 	                ExpectedConditions.visibilityOfElementLocated(
-	                        By.xpath("(//tr[contains(@class,'odd')]//span[contains(text(),'created')])[1]")
+	                        By.xpath("(//span[normalize-space()='created'])[1]")
 	                )
 	        );
 
@@ -358,8 +371,8 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	private String normalizePrice(String price) {
 	    return price.replaceAll("[^0-9]", ""); // Keep only digits
 	}
-	String gmailId="zlaata.qa.test@gmail.com";
-	String gmailPassword="user@123";
+	String gmailId="roseberry12390987@gmail.com";
+	String gmailPassword="18Itr023@";
 	public void verifyMail_PaymentLink_Prepaid(String expectedmsg)
 	        throws InterruptedException {
 
@@ -446,7 +459,7 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	    // 1️⃣ Validate Payment Link text
 	    // =========================
 	    By paymentLinkText = By.xpath(
-	            "//p[contains(normalize-space(),'Payment link')]"
+	            "//a[normalize-space()='Pay Now']"
 	    );
 
 	    if (driver.findElements(paymentLinkText).isEmpty()) {
@@ -459,7 +472,7 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	    // =========================
 	    System.out.println(GREEN + "🔍 Comparing mail details with order summary..." + RESET);
 	    String mailOrderId = driver.findElement(
-	            By.xpath("//td[contains(text(),'Order ID')]/following-sibling::td/following-sibling::td")
+	            By.xpath("//td[starts-with(normalize-space(), 'ZLTQA/')]")
 	    ).getText().trim();
 	    
 	    
@@ -595,26 +608,26 @@ public class Admin_Order_Page extends Admin_OrderObjRepo {
 	    System.out.println(GREEN + "📞 Entered mobile number" + RESET);
 Thread.sleep(2000);
 	    // ---------- STEP 5: Enter Email ----------
-	    By emailInput = By.xpath("//input[@data-testid='email']");
-
-	    WebElement email = wait.until(ExpectedConditions.visibilityOfElementLocated(emailInput));
-	    email.clear();
-	    email.sendKeys("zlaata.qa.test@gmail.com");
-
-	    System.out.println(GREEN + "📧 Entered email address" + RESET);
-
-	    // ---------- STEP 6: Click Continue ----------
-	    By continueBtn = By.xpath("//button[normalize-space()='Continue']");
-	    Common.waitForElement(2);
-	    WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
-	    continueButton.click();
-	    System.out.println(GREEN + "➡️ Clicked Continue button" + RESET);
-	    Thread.sleep(2000);    
-	    
-	    // Wait for payment form
-	    wait.until(ExpectedConditions.visibilityOfElementLocated(
-	            By.id("mobile-nav")
-	    ));
+//	    By emailInput = By.xpath("//input[@data-testid='email']");
+//
+//	    WebElement email = wait.until(ExpectedConditions.visibilityOfElementLocated(emailInput));
+//	    email.clear();
+//	    email.sendKeys("zlaata.qa.test@gmail.com");
+//
+//	    System.out.println(GREEN + "📧 Entered email address" + RESET);
+//
+//	    // ---------- STEP 6: Click Continue ----------
+//	    By continueBtn = By.xpath("//button[normalize-space()='Continue']");
+//	    Common.waitForElement(2);
+//	    WebElement continueButton = wait.until(ExpectedConditions.elementToBeClickable(continueBtn));
+//	    continueButton.click();
+//	    System.out.println(GREEN + "➡️ Clicked Continue button" + RESET);
+//	    Thread.sleep(2000);    
+//	    
+//	    // Wait for payment form
+//	    wait.until(ExpectedConditions.visibilityOfElementLocated(
+//	            By.id("mobile-nav")
+//	    ));
 
 	    // Click Netbanking
 	    By netBankingOption = By.xpath(
@@ -900,7 +913,7 @@ Thread.sleep(2000);
 	        // 3️⃣ Validate Payment Link Status = Not Created
 	        // ================================
 	        WebElement paymentLinkStatus = driver.findElement(
-	                By.xpath("(//tr[contains(@class,'odd')]//td/span[@title='Not Created'])[1]")
+	                By.xpath("(//span[@title='-' and normalize-space()='Not Created'])[1]")
 	        );
 
 	        
