@@ -23,6 +23,14 @@ public abstract class Admin_OrderObjRepo extends BasePage {
     }
 
 
+    
+
+	@FindBy(name = "access_code")
+	protected WebElement accessCode;
+	
+	@FindBy(xpath = "//button")
+	protected WebElement submit;
+    
     @FindBy(xpath="//input[@id='menuSearch']")
     protected WebElement searchProductCollectionMenu;
     
@@ -49,7 +57,7 @@ public abstract class Admin_OrderObjRepo extends BasePage {
     @FindBy(xpath="//button[@id='create-order-btn' and normalize-space(.)='Create Order']")
     protected WebElement createOrderBtn;
     
-    @FindBy(xpath = "//a[@title='Cart Icon']")
+    @FindBy(xpath = "//button[@class='header_cta_btn Cls_cart_btn ']")
 	protected WebElement bagIcon;
 	
     @FindBy(xpath = "//button[contains(@class,'place_order_btn') and normalize-space(text())='Place order']")

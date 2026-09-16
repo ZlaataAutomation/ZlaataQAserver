@@ -16,7 +16,7 @@ features = {"src/test/resources/features/"},
 glue = "stepDef",	
 monochrome = true,	
 dryRun = false,
-tags= "@flash"
+tags= "@TC_UI_Zlaata_ADMINORDER_01"
 )	
 		
 public class TestRunner {	
