@@ -25,7 +25,7 @@ public abstract class ExpressDeliveryObjRepo extends BasePage {
     @FindBy(xpath = "//span[@class='landing_page_link_btn'][normalize-space()='SHOP NOW']")
 	   protected WebElement zlaataIndiaShopButton;
     
-    @FindBy(xpath = "//div[@class='header_nav_item has_dropdown']")
+    @FindBy(xpath = "(//span[@class='header_nav_link active'])[1]")
 	protected WebElement shopMenu;
     
     @FindBy(xpath = "//a[normalize-space()='All']")
@@ -33,7 +33,7 @@ public abstract class ExpressDeliveryObjRepo extends BasePage {
 	
 
     
-	@FindBy(xpath = "//a[normalize-space()='dresses']")
+	@FindBy(xpath = "(//a[@href='/zlaata-india/dresses'])[1]")
 	protected WebElement  randomcategory;
 	
 	@FindBy(name = "access_code")

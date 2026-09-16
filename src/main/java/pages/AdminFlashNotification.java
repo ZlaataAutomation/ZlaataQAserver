@@ -1,6 +1,7 @@
 package pages;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,6 +31,8 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
     private String selectedBrandType = "";
     private String selectedBrandUrl = "";
     private String randomBrandForTC02 = "";
+    // List to store all generated notification texts for UI verification
+    private List<String> savedDescriptions = new ArrayList<>();
 
     public String getSavedDescription() {
         return savedDescription;
@@ -234,8 +237,39 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         Thread.sleep(500);
         System.out.println(GREEN + "✅ Step: Empty form save attempted — validation errors should be visible" + RESET);
     }
+    
+    /**
+     * Adds multiple notification content items dynamically.
+     * 
+     * @param contents Array or List of String contents to add
+     */
+    public void addNotificationContents(String... contents) throws InterruptedException {
+        JavascriptExecutor js = (JavascriptExecutor) driver;
 
-    public String fillFlashNotificationForm() throws InterruptedException {
+        for (int i = 0; i < contents.length; i++) {
+            // Step 1: Click "Add Content" button except for the very first item (if the first input is already open)
+            if (i > 0) {
+                WebElement addContentBtn = wait.until(ExpectedConditions.elementToBeClickable(
+                    By.xpath("//button[normalize-space()='Add Content']")));
+                js.executeScript("arguments[0].scrollIntoView(true);", addContentBtn);
+                addContentBtn.click();
+                Thread.sleep(300);
+            }
+
+            // Step 2: Dynamically construct XPath based on index 'i'
+            By dynamicTextArea = By.xpath(String.format("(//textarea[contains(@name, 'contents[%d]')])[1]", i));
+            
+            WebElement contentInput = wait.until(ExpectedConditions.elementToBeClickable(dynamicTextArea));
+            js.executeScript("arguments[0].scrollIntoView(true);", contentInput);
+            
+            type(contentInput, contents[i]);
+            System.out.println(GREEN + "✅ Step: Entered content [" + i + "]: " + contents[i] + RESET);
+            Thread.sleep(300);
+        }
+    }
+
+
+    public String fillFlashNotificationForm(String... contents) throws InterruptedException {
         String uniqueName = " " + UUID.randomUUID().toString().substring(0, 5);
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -250,12 +284,36 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         Thread.sleep(500);
         System.out.println(GREEN + "✅ Step: Brand Type selected — Landing Page" + RESET);
 
-        js.executeScript("arguments[0].scrollIntoView(true);", descriptionTextArea);
-        Thread.sleep(300);
-        savedDescription = "Automated flash notification for landing page" + uniqueName;
-        type(descriptionTextArea, savedDescription);
-        Thread.sleep(300);
-        System.out.println(GREEN + "✅ Step: Description entered: " + savedDescription + RESET);
+        // Clear previous runs and populate content boxes dynamically
+        savedDescriptions.clear();
+
+        // Default to at least 2 content items if none are provided
+        String[] contentsToFill = (contents != null && contents.length > 0) 
+            ? contents 
+            : new String[]{
+                "Automated flash notification 1 " + uniqueName, 
+                "Automated flash notification 2 " + uniqueName
+              };
+
+        for (int i = 0; i < contentsToFill.length; i++) {
+            // Click "Add Content" button for the second item and beyond
+            if (i > 0) {
+                js.executeScript("arguments[0].scrollIntoView(true);", addContentButton);
+                wait.until(ExpectedConditions.elementToBeClickable(addContentButton)).click();
+                Thread.sleep(300);
+            }
+
+            // Dynamically locate content text area by index: contents[0][content], contents[1][content], etc.
+            By dynamicContentXpath = By.xpath(String.format("(//textarea[@name='contents[%d][content]'])[1]", i));
+            WebElement contentInput = wait.until(ExpectedConditions.elementToBeClickable(dynamicContentXpath));
+            
+            js.executeScript("arguments[0].scrollIntoView(true);", contentInput);
+            type(contentInput, contentsToFill[i]);
+            savedDescriptions.add(contentsToFill[i]);
+            
+            System.out.println(GREEN + "✅ Step: Content [" + i + "] entered: " + contentsToFill[i] + RESET);
+            Thread.sleep(300);
+        }
 
         WebElement isActiveChk = wait.until(ExpectedConditions.presenceOfElementLocated(
             By.xpath("//input[@name='isactive' and @class='always-show']")));
@@ -272,15 +330,15 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         }
         Thread.sleep(300);
 
-        WebElement save = wait.until(ExpectedConditions.presenceOfElementLocated(
-            By.xpath("//span[@data-value='save_and_back']")));
-        js.executeScript("arguments[0].scrollIntoView(true);", save);
-        Thread.sleep(300);
-
         saveFlashNotification();
         System.out.println(GREEN + "✅ Step: Flash notification form saved successfully — returned to list page" + RESET);
 
         return uniqueName;
+    }
+
+    // Helper getter for StepDef to retrieve all added descriptions
+    public List<String> getSavedDescriptions() {
+        return savedDescriptions;
     }
 
     public void saveFlashNotification() throws InterruptedException {
@@ -341,25 +399,42 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         System.out.println(GREEN + "✅ Step: Successfully navigated to Landing Page UI" + RESET);
     }
 
+    // Updated UI verification to handle single or multiple content items
     public boolean verifyFlashNotificationOnUI(String expectedDescription) throws InterruptedException {
         Thread.sleep(1000);
         try {
             WebElement flashBar = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@class='flash_sale_bar']")));
-            String actualText = flashBar.getText().trim().toLowerCase();
-            String expectedText = expectedDescription.trim().toLowerCase();
-            System.out.println(BLUE + "ℹ️ Flash bar text on UI  : " + actualText + RESET);
-            System.out.println(BLUE + "ℹ️ Expected description  : " + expectedText + RESET);
-            boolean result = actualText.contains(expectedText) || expectedText.contains(actualText);
-            if (result) System.out.println(GREEN + "✅ Step: Flash notification verified successfully on Landing Page UI" + RESET);
-            else System.out.println(RED + "❌ Step: Flash notification NOT matching on Landing Page UI" + RESET);
-            return result;
+            
+            // Fetch raw text and normalize it: replace all newlines, tabs, and multiple spaces with a single space
+            String rawActualText = flashBar.getText();
+            String normalizedActualText = rawActualText.replaceAll("\\s+", " ").trim().toLowerCase();
+
+            // Verify all saved descriptions appear in the UI bar
+            List<String> targets = savedDescriptions.isEmpty() ? List.of(expectedDescription) : savedDescriptions;
+            
+            for (String desc : targets) {
+                // Normalize expected text the exact same way to ensure a perfect match
+                String normalizedExpectedText = desc.replaceAll("\\s+", " ").trim().toLowerCase();
+                
+                System.out.println(BLUE + "ℹ️ Flash bar text on UI (normalized) : " + normalizedActualText + RESET);
+                System.out.println(BLUE + "ℹ️ Checking description (normalized) : " + normalizedExpectedText + RESET);
+                
+                if (!normalizedActualText.contains(normalizedExpectedText)) {
+                    System.out.println(RED + "❌ Step: Content missing on UI: " + desc + RESET);
+                    return false;
+                }
+            }
+            System.out.println(GREEN + "✅ Step: All flash notification contents verified successfully on UI" + RESET);
+            return true;
         } catch (Exception e) {
             System.out.println(RED + "❌ Step: Flash bar not found on Landing Page UI: " + e.getMessage() + RESET);
             return false;
         }
     }
-
+    
+    
+    //------------------------------------------------------------------------------------
     public void filterByZlaataIndia() throws InterruptedException {
         click(brandTypeButton);
         Thread.sleep(500);
@@ -384,6 +459,7 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
     public String getRandomBrandForTC02() {
         return randomBrandForTC02;
     }
+
 
     public void addFlashNotificationForRandomBrand() throws InterruptedException {
         // randomly pick between Zlaata India and Boss Lady
@@ -421,14 +497,14 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         clickAddFlashNotification();
         Thread.sleep(1500);
 
-        // fill form with selected brand
+        // fill form with selected brand using dynamic multiple content support
         fillFlashNotificationFormForRandomBrand();
 
         // enable display toggle for first record
         enableDisplayToggleForFirstRecord();
     }
 
-    private void fillFlashNotificationFormForRandomBrand() throws InterruptedException {
+    private void fillFlashNotificationFormForRandomBrand(String... contents) throws InterruptedException {
         System.out.println(PURPLE + "▶ Step: Filling Flash Notification form for: " + randomBrandForTC02 + RESET);
         String uniqueName = "FN_" + UUID.randomUUID().toString().substring(0, 5);
         JavascriptExecutor js = (JavascriptExecutor) driver;
@@ -445,14 +521,36 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         Thread.sleep(500);
         System.out.println(GREEN + "✅ Brand Type selected: " + randomBrandForTC02 + RESET);
 
-        // description
-        js.executeScript("arguments[0].scrollIntoView(true);", descriptionTextArea);
-        Thread.sleep(300);
-        savedDescription = "Automated flash notification for "
-            + randomBrandForTC02.toLowerCase() + " - " + uniqueName;
-        type(descriptionTextArea, savedDescription);
-        Thread.sleep(300);
-        System.out.println(GREEN + "✅ Description entered: " + savedDescription + RESET);
+        // Clear previous runs and populate content boxes dynamically
+        savedDescriptions.clear();
+
+        // Default to 2 content items if none are explicitly provided
+        String[] contentsToFill = (contents != null && contents.length > 0) 
+            ? contents 
+            : new String[]{
+                "Automated flash notification 1 for " + randomBrandForTC02.toLowerCase() + " - " + uniqueName,
+                "Automated flash notification 2 for " + randomBrandForTC02.toLowerCase() + " - " + uniqueName
+              };
+
+        for (int i = 0; i < contentsToFill.length; i++) {
+            // Click "Add Content" button for index 1 and above
+            if (i > 0) {
+                js.executeScript("arguments[0].scrollIntoView(true);", addContentButton);
+                wait.until(ExpectedConditions.elementToBeClickable(addContentButton)).click();
+                Thread.sleep(300);
+            }
+
+            // Dynamically locate content text area: contents[0][content], contents[1][content], etc.
+            By dynamicContentXpath = By.xpath(String.format("(//textarea[@name='contents[%d][content]'])[1]", i));
+            WebElement contentInput = wait.until(ExpectedConditions.elementToBeClickable(dynamicContentXpath));
+
+            js.executeScript("arguments[0].scrollIntoView(true);", contentInput);
+            type(contentInput, contentsToFill[i]);
+            savedDescriptions.add(contentsToFill[i]);
+
+            System.out.println(GREEN + "✅ Step: Content [" + i + "] entered: " + contentsToFill[i] + RESET);
+            Thread.sleep(300);
+        }
 
         // isactive always-show checkbox
         WebElement isActiveChk = wait.until(ExpectedConditions.presenceOfElementLocated(
@@ -513,15 +611,27 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         try {
             WebElement flashBar = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@class='flash_sale_bar']")));
-            String actualText = flashBar.getText().trim().toLowerCase();
-            String expectedText = savedDescription.trim().toLowerCase();
-            System.out.println(BLUE + "ℹ️ Brand selected        : " + randomBrandForTC02 + RESET);
-            System.out.println(BLUE + "ℹ️ Flash bar text on UI  : " + actualText + RESET);
-            System.out.println(BLUE + "ℹ️ Expected description  : " + expectedText + RESET);
-            boolean result = actualText.contains(expectedText) || expectedText.contains(actualText);
-            if (result) System.out.println(GREEN + "✅ Flash notification verified on " + randomBrandForTC02 + " UI" + RESET);
-            else System.out.println(RED + "❌ Flash notification NOT matching on " + randomBrandForTC02 + " UI" + RESET);
-            return result;
+            
+            // Normalize spaces/newlines from UI ticker tape
+            String rawActualText = flashBar.getText();
+            String normalizedActualText = rawActualText.replaceAll("\\s+", " ").trim().toLowerCase();
+
+            System.out.println(BLUE + "ℹ️ Brand selected                   : " + randomBrandForTC02 + RESET);
+            System.out.println(BLUE + "ℹ️ Flash bar text on UI (normalized): " + normalizedActualText + RESET);
+
+            // Verify all saved descriptions exist on the UI
+            for (String desc : savedDescriptions) {
+                String normalizedExpectedText = desc.replaceAll("\\s+", " ").trim().toLowerCase();
+                System.out.println(BLUE + "ℹ️ Checking description (normalized): " + normalizedExpectedText + RESET);
+
+                if (!normalizedActualText.contains(normalizedExpectedText)) {
+                    System.out.println(RED + "❌ Flash notification NOT matching on " + randomBrandForTC02 + " UI for: " + desc + RESET);
+                    return false;
+                }
+            }
+
+            System.out.println(GREEN + "✅ Flash notification verified on " + randomBrandForTC02 + " UI" + RESET);
+            return true;
         } catch (Exception e) {
             System.out.println(RED + "❌ Flash bar not found on " + randomBrandForTC02 + " UI: " + e.getMessage() + RESET);
             return false;
@@ -623,7 +733,7 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         Thread.sleep(300);
     }
 
-    public void editFirstFlashNotificationForSelectedBrand() throws InterruptedException {
+    public void editFirstFlashNotificationForSelectedBrand(String... updatedContents) throws InterruptedException {
         System.out.println(PURPLE + "▶ Step: Starting edit for brand: " + selectedBrandType + RESET);
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
@@ -645,9 +755,8 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         System.out.println(GREEN + "✅ Step: Edit page loaded: " + editUrl + RESET);
 
         String uniqueSuffix = "FN_" + UUID.randomUUID().toString().substring(0, 5);
-        savedDescription = "Updated flash notification for "
-            + selectedBrandType.toLowerCase() + " - " + uniqueSuffix;
 
+        // Update Name field
         WebElement nameField = wait.until(ExpectedConditions.presenceOfElementLocated(
             By.xpath("//input[@name='name']")));
         js.executeScript("arguments[0].scrollIntoView(true);", nameField);
@@ -656,14 +765,38 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         nameField.sendKeys(uniqueSuffix);
         Thread.sleep(300);
 
-        WebElement descField = wait.until(ExpectedConditions.presenceOfElementLocated(
-            By.xpath("(//input[@name='description'])[1]")));
-        js.executeScript("arguments[0].scrollIntoView(true);", descField);
-        Thread.sleep(300);
-        js.executeScript("arguments[0].value='';", descField);
-        descField.sendKeys(savedDescription);
-        Thread.sleep(300);
+        // Clear previous list and set contents to update
+        savedDescriptions.clear();
+        String[] contentsToFill = (updatedContents != null && updatedContents.length > 0)
+            ? updatedContents
+            : new String[]{
+                "Updated flash notification 1 for " + selectedBrandType.toLowerCase() + " - " + uniqueSuffix,
+                "Updated flash notification 2 for " + selectedBrandType.toLowerCase() + " - " + uniqueSuffix
+              };
 
+        for (int i = 0; i < contentsToFill.length; i++) {
+            By dynamicContentXpath = By.xpath(String.format("(//textarea[@name='contents[%d][content]'])[1]", i));
+            List<WebElement> existingInputs = driver.findElements(dynamicContentXpath);
+
+            // If the content field doesn't exist at index 'i', click "Add Content"
+            if (existingInputs.isEmpty() && i > 0) {
+                js.executeScript("arguments[0].scrollIntoView(true);", addContentButton);
+                wait.until(ExpectedConditions.elementToBeClickable(addContentButton)).click();
+                Thread.sleep(300);
+            }
+
+            WebElement contentInput = wait.until(ExpectedConditions.elementToBeClickable(dynamicContentXpath));
+            js.executeScript("arguments[0].scrollIntoView(true);", contentInput);
+            
+            // Clear existing text and type new updated description
+            type(contentInput, contentsToFill[i]);
+            savedDescriptions.add(contentsToFill[i]);
+
+            System.out.println(GREEN + "✅ Step: Updated Content [" + i + "] entered: " + contentsToFill[i] + RESET);
+            Thread.sleep(300);
+        }
+
+        // Active state check
         WebElement isActiveChk = wait.until(ExpectedConditions.presenceOfElementLocated(
             By.xpath("//input[@name='isactive' and @class='always-show']")));
         js.executeScript("arguments[0].scrollIntoView(true);", isActiveChk);
@@ -676,6 +809,7 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         }
         Thread.sleep(300);
 
+        // Save flash notification
         WebElement save = wait.until(ExpectedConditions.presenceOfElementLocated(
             By.xpath("(//span[@data-value='save_and_back'])[1]")));
         js.executeScript("arguments[0].scrollIntoView(true);", save);
@@ -689,23 +823,36 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         System.out.println(GREEN + "✅ Step: Edit saved — returned to list page" + RESET);
 
         enableDisplayToggleForFirstRecord();
-        System.out.println(GREEN + "✅ Step: Flash notification edited: " + savedDescription + RESET);
+        System.out.println(GREEN + "✅ Step: Flash notification edited successfully for: " + selectedBrandType + RESET);
     }
 
     public boolean verifyUpdatedFlashNotificationOnUI() throws InterruptedException {
+        System.out.println(PURPLE + "▶ Step: Verifying updated flash notification on " + selectedBrandType + " UI..." + RESET);
         Thread.sleep(1000);
         try {
             WebElement flashBar = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@class='flash_sale_bar']")));
-            String actualText = flashBar.getText().trim().toLowerCase();
-            String expectedText = savedDescription.trim().toLowerCase();
-            System.out.println(BLUE + "ℹ️ Brand selected       : " + selectedBrandType + RESET);
-            System.out.println(BLUE + "ℹ️ Flash bar text on UI : " + actualText + RESET);
-            System.out.println(BLUE + "ℹ️ Expected description : " + expectedText + RESET);
-            boolean result = actualText.contains(expectedText) || expectedText.contains(actualText);
-            if (result) System.out.println(GREEN + "✅ Step: Updated flash notification verified on UI" + RESET);
-            else System.out.println(RED + "❌ Step: Updated flash notification NOT matching on UI" + RESET);
-            return result;
+
+            // Normalize newlines and redundant spaces from the UI ticker tape
+            String rawActualText = flashBar.getText();
+            String normalizedActualText = rawActualText.replaceAll("\\s+", " ").trim().toLowerCase();
+
+            System.out.println(BLUE + "ℹ️ Brand selected                   : " + selectedBrandType + RESET);
+            System.out.println(BLUE + "ℹ️ Flash bar text on UI (normalized): " + normalizedActualText + RESET);
+
+            // Verify all updated descriptions exist on the UI
+            for (String desc : savedDescriptions) {
+                String normalizedExpectedText = desc.replaceAll("\\s+", " ").trim().toLowerCase();
+                System.out.println(BLUE + "ℹ️ Checking description (normalized): " + normalizedExpectedText + RESET);
+
+                if (!normalizedActualText.contains(normalizedExpectedText)) {
+                    System.out.println(RED + "❌ Step: Updated flash notification NOT matching on UI for: " + desc + RESET);
+                    return false;
+                }
+            }
+
+            System.out.println(GREEN + "✅ Step: Updated flash notification verified successfully on " + selectedBrandType + " UI" + RESET);
+            return true;
         } catch (Exception e) {
             System.out.println(RED + "❌ Step: Flash bar not found on UI: " + e.getMessage() + RESET);
             return false;
@@ -854,17 +1001,11 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         }
     }
 
-    public String fillFlashNotificationFormWithSchedule() throws InterruptedException {
-        System.out.println(PURPLE + "▶ Step: Filling Flash Notification form with schedule dates..." + RESET);
-        String uniqueName = "FN_" + UUID.randomUUID().toString().substring(0, 5);
+    public void fillFlashNotificationFormWithSchedule(String... contents) throws InterruptedException {
+        String uniqueName = "Sch_FN_" + UUID.randomUUID().toString().substring(0, 5);
         JavascriptExecutor js = (JavascriptExecutor) driver;
 
-        java.time.LocalDate today = java.time.LocalDate.now();
-        java.time.LocalDate tomorrow = today.plusDays(1);
-        String fromDate = today.toString();
-        String toDate = tomorrow.toString();
-        System.out.println(BLUE + "ℹ️ Step: From date: " + fromDate + " | To date: " + toDate + RESET);
-
+        System.out.println(PURPLE + "▶ Step: Entering name: " + uniqueName.trim() + RESET);
         wait.until(ExpectedConditions.elementToBeClickable(nameTextBox));
         type(nameTextBox, uniqueName);
         Thread.sleep(300);
@@ -873,37 +1014,91 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         Select brandSelect = new Select(brandDropdown);
         brandSelect.selectByVisibleText("Landing Page");
         Thread.sleep(500);
+        System.out.println(GREEN + "✅ Step: Brand Type selected — Landing Page" + RESET);
 
-        js.executeScript("arguments[0].scrollIntoView(true);", descriptionTextArea);
+        // Clear previous list and dynamically add contents
+        savedDescriptions.clear();
+        String[] contentsToFill = (contents != null && contents.length > 0) 
+            ? contents 
+            : new String[]{
+                "Scheduled flash notification 1 " + uniqueName, 
+                "Scheduled flash notification 2 " + uniqueName
+              };
+
+        for (int i = 0; i < contentsToFill.length; i++) {
+            if (i > 0) {
+                js.executeScript("arguments[0].scrollIntoView(true);", addContentButton);
+                wait.until(ExpectedConditions.elementToBeClickable(addContentButton)).click();
+                Thread.sleep(300);
+            }
+
+            By dynamicContentXpath = By.xpath(String.format("(//textarea[@name='contents[%d][content]'])[1]", i));
+            WebElement contentInput = wait.until(ExpectedConditions.elementToBeClickable(dynamicContentXpath));
+            
+            js.executeScript("arguments[0].scrollIntoView(true);", contentInput);
+            type(contentInput, contentsToFill[i]);
+            savedDescriptions.add(contentsToFill[i]);
+            
+            System.out.println(GREEN + "✅ Step: Content [" + i + "] entered: " + contentsToFill[i] + RESET);
+            Thread.sleep(300);
+        }
+
+        // Uncheck 'Always Show' to enable date scheduling
+        WebElement isActiveChk = wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.xpath("//input[@name='isactive' and @class='always-show']")));
+        js.executeScript("arguments[0].scrollIntoView(true);", isActiveChk);
         Thread.sleep(300);
-        savedDescription = "Scheduled flash notification - " + uniqueName;
-        type(descriptionTextArea, savedDescription);
+        Boolean isChecked = (Boolean) js.executeScript("return arguments[0].checked;", isActiveChk);
+        if (isChecked) {
+            js.executeScript("arguments[0].click();", isActiveChk);
+            System.out.println(GREEN + "✅ Step: 'Always Show' unchecked for scheduling" + RESET);
+        }
+
+        // Calculate ISO datetime values for inputs (YYYY-MM-DDTHH:mm format required for datetime-local)
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        java.time.LocalDateTime thirtyMinsLater = now.plusMinutes(30);
+        java.time.format.DateTimeFormatter formatter = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+        String fromDateVal = now.format(formatter);
+        String toDateVal = thirtyMinsLater.format(formatter);
+
+        // Set From Date (Now)
+        WebElement fromDateInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("from_date")));
+        js.executeScript("arguments[0].scrollIntoView(true);", fromDateInput);
+        js.executeScript("arguments[0].value = arguments[1];", fromDateInput, fromDateVal);
+        js.executeScript("arguments[0].dispatchEvent(new Event('change'));", fromDateInput);
+        System.out.println(GREEN + "✅ Step: From Date set to current time: " + fromDateVal + RESET);
         Thread.sleep(300);
 
-        js.executeScript("arguments[0].scrollIntoView(true);", fromDateTextBox);
-        Thread.sleep(300);
-        js.executeScript("arguments[0].removeAttribute('readonly');", fromDateTextBox);
-        js.executeScript("arguments[0].value='" + fromDate + "';", fromDateTextBox);
-        js.executeScript("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", fromDateTextBox);
-        js.executeScript("arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", fromDateTextBox);
-        Thread.sleep(300);
-
-        js.executeScript("arguments[0].scrollIntoView(true);", endDateTextBox);
-        Thread.sleep(300);
-        js.executeScript("arguments[0].removeAttribute('readonly');", endDateTextBox);
-        js.executeScript("arguments[0].value='" + toDate + "';", endDateTextBox);
-        js.executeScript("arguments[0].dispatchEvent(new Event('input', { bubbles: true }));", endDateTextBox);
-        js.executeScript("arguments[0].dispatchEvent(new Event('change', { bubbles: true }));", endDateTextBox);
+        // Set To Date (Now + 30 Mins)
+        WebElement endDateInput = wait.until(ExpectedConditions.presenceOfElementLocated(By.id("end_date")));
+        js.executeScript("arguments[0].scrollIntoView(true);", endDateInput);
+        js.executeScript("arguments[0].value = arguments[1];", endDateInput, toDateVal);
+        js.executeScript("arguments[0].dispatchEvent(new Event('change'));", endDateInput);
+        System.out.println(GREEN + "✅ Step: To Date set to 30 mins in future: " + toDateVal + RESET);
         Thread.sleep(300);
 
-        // save — returns to list page
+        // Scroll to Save button and click
+        WebElement save = wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.xpath("//span[@data-value='save_and_back']")));
+        js.executeScript("arguments[0].scrollIntoView(true);", save);
+        Thread.sleep(300);
+        
         saveFlashNotification();
-        System.out.println(GREEN + "✅ Step: Scheduled flash notification saved: " + uniqueName + RESET);
+        System.out.println(GREEN + "✅ Step: Scheduled Flash notification saved" + RESET);
+        
+        // Disable status toggle for the newly created top record to make it inactive
+        WebElement firstToggleLabel = wait.until(ExpectedConditions.presenceOfElementLocated(
+            By.xpath("(//tbody/tr[1]//label[contains(@for,'V_status_')])[1]")));
+        js.executeScript("arguments[0].scrollIntoView(true);", firstToggleLabel);
+        Thread.sleep(300);
+        js.executeScript("arguments[0].click();", firstToggleLabel);
+        Thread.sleep(800);
+        dismissAlertIfPresent();
+        System.out.println(GREEN + "✅ Step: Status toggle turned OFF (Inactive) for saved record" + RESET);
 
-        // clear cache immediately after saving so UI reflects latest state
+        // Clear cache after making record inactive
         clearCache();
-
-        return uniqueName;
     }
 
     public boolean verifyFlashNotificationNotVisibleOnUI() throws InterruptedException {
@@ -934,18 +1129,22 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
             return true;
         }
 
-        String actualText = flashBar.get(0).getText().trim().toLowerCase();
-        String expectedText = savedDescription.trim().toLowerCase();
-        System.out.println(BLUE + "ℹ️ Flash bar text on UI : " + actualText + RESET);
-        System.out.println(BLUE + "ℹ️ Expected description : " + expectedText + RESET);
+        String rawActualText = flashBar.get(0).getText();
+        String normalizedActualText = rawActualText.replaceAll("\\s+", " ").trim().toLowerCase();
+        System.out.println(BLUE + "ℹ️ Flash bar text on UI (normalized) : " + normalizedActualText + RESET);
 
-        // if the scheduled notification is already showing — FAIL
-        if (actualText.contains(expectedText)) {
-            System.out.println(RED + "❌ Step: Scheduled notification already visible on UI before toggle — FAIL" + RESET);
-            return false;
+        for (String desc : savedDescriptions) {
+            String normalizedExpectedText = desc.replaceAll("\\s+", " ").trim().toLowerCase();
+            System.out.println(BLUE + "ℹ️ Checking description (normalized) : " + normalizedExpectedText + RESET);
+
+            // if the scheduled notification is already showing — FAIL
+            if (normalizedActualText.contains(normalizedExpectedText)) {
+                System.out.println(RED + "❌ Step: Scheduled notification already visible on UI before toggle for text: " + desc + " — FAIL" + RESET);
+                return false;
+            }
         }
 
-        System.out.println(GREEN + "✅ Step: Different notification visible — scheduled one not yet showing — PASS" + RESET);
+        System.out.println(GREEN + "✅ Step: Scheduled items correctly NOT visible yet — PASS" + RESET);
         return true;
     }
 
@@ -984,14 +1183,23 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
         try {
             WebElement flashBar = wait.until(ExpectedConditions.presenceOfElementLocated(
                 By.xpath("//div[@class='flash_sale_bar']")));
-            String actualText = flashBar.getText().trim().toLowerCase();
-            String expectedText = savedDescription.trim().toLowerCase();
-            System.out.println(BLUE + "ℹ️ Flash bar text on UI : " + actualText + RESET);
-            System.out.println(BLUE + "ℹ️ Expected description : " + expectedText + RESET);
-            boolean result = actualText.contains(expectedText) || expectedText.contains(actualText);
-            if (result) System.out.println(GREEN + "✅ Step: Scheduled flash notification IS visible after toggle — PASS" + RESET);
-            else System.out.println(RED + "❌ Step: Scheduled flash notification NOT visible after toggle — FAIL" + RESET);
-            return result;
+            
+            String rawActualText = flashBar.getText();
+            String normalizedActualText = rawActualText.replaceAll("\\s+", " ").trim().toLowerCase();
+            System.out.println(BLUE + "ℹ️ Flash bar text on UI (normalized) : " + normalizedActualText + RESET);
+            
+            for (String desc : savedDescriptions) {
+                String normalizedExpectedText = desc.replaceAll("\\s+", " ").trim().toLowerCase();
+                System.out.println(BLUE + "ℹ️ Checking description (normalized) : " + normalizedExpectedText + RESET);
+
+                if (!normalizedActualText.contains(normalizedExpectedText)) {
+                    System.out.println(RED + "❌ Step: Scheduled flash notification NOT visible after toggle for: " + desc + " — FAIL" + RESET);
+                    return false;
+                }
+            }
+
+            System.out.println(GREEN + "✅ Step: Scheduled flash notifications ARE visible after toggle — PASS" + RESET);
+            return true;
         } catch (Exception e) {
             System.out.println(RED + "❌ Step: Flash bar not found on UI after toggle: " + e.getMessage() + RESET);
             return false;
@@ -1011,6 +1219,16 @@ public class AdminFlashNotification extends AdminFlashNotificationObjRepo {
  	    trySaveEmptyForm();
     }
     
+    
+    public void validateScheduledFlashNotification() throws InterruptedException {
+    	navigateToFlashNotificationModule();
+        filterByLandingPage();
+        filterByActiveStatus();
+        disableFirstActiveLandingPageNotification();
+        clearFilters();
+        clickAddFlashNotification();
+        fillFlashNotificationFormWithSchedule();
+    }
     
     
     

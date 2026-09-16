@@ -119,7 +119,7 @@
 	        // Wait until the dresses link is present in DOM (not necessarily visible)
 	        WebElement dressesLink = dressWait.until(
 	                ExpectedConditions.presenceOfElementLocated(
-	                        By.xpath("(//a[normalize-space()='dresses'])[1]")));
+	                        By.xpath("(//a[normalize-space()='All'])[1]")));
 
 	        // Hover shop link again immediately before JS click to keep dropdown open
 	        actions.moveToElement(shopLink).perform();
@@ -213,9 +213,9 @@
 	        // ─── DIRECT NAVIGATION ────────────────────────────────────────────────────
 
 	        wait.until(ExpectedConditions.elementToBeClickable(
-	                By.xpath("//body/div[@class='app-body']/div[@class='sidebar text-dark shadow']/nav[@class='sidebar-nav ps ps--active-y']/ul[@class='nav']/ul[@class='nav']/li[2]/a[1]")));
+	                By.xpath("(//a[normalize-space()=\"Product's\"])[1]")));
 	        ((JavascriptExecutor) driver).executeScript("arguments[0].click();",
-	                driver.findElement(By.xpath("//body/div[@class='app-body']/div[@class='sidebar text-dark shadow']/nav[@class='sidebar-nav ps ps--active-y']/ul[@class='nav']/ul[@class='nav']/li[2]/a[1]")));
+	                driver.findElement(By.xpath("(//a[normalize-space()=\"Product's\"])[1]")));
 	        System.out.println(GREEN + "✅ Clicked Product's menu" + RESET);
 
 	        wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[normalize-space()='Products']")));

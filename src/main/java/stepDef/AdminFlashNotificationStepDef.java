@@ -43,7 +43,7 @@ public class AdminFlashNotificationStepDef {
 
 	@And("fill and save flash notification for {string}")
 	public void fill_and_save_flash_notification_for(String pageType) throws InterruptedException {
-	    addedNotificationName = adminFlashNotifications.fillFlashNotificationForm();
+		addedNotificationName = adminFlashNotifications.fillFlashNotificationForm();
 	    adminFlashNotifications.enableDisplayToggleForFirstRecord();
 	}
 
@@ -117,13 +117,7 @@ public class AdminFlashNotificationStepDef {
 // TC_UI_Zlaata_FN_04
     @When("add scheduled flash notification")
     public void add_scheduled_flash_notification() throws InterruptedException {
-        adminFlashNotifications.navigateToFlashNotificationModule();
-        adminFlashNotifications.filterByLandingPage();
-        adminFlashNotifications.filterByActiveStatus();
-        adminFlashNotifications.disableFirstActiveLandingPageNotification();
-        adminFlashNotifications.clearFilters();
-        adminFlashNotifications.clickAddFlashNotification();
-        adminFlashNotifications.fillFlashNotificationFormWithSchedule();
+        adminFlashNotifications.validateScheduledFlashNotification();
     }
 
     @Then("verify notification is NOT visible on UI before toggle")

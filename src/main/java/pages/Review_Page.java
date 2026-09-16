@@ -100,7 +100,7 @@ public class Review_Page extends Review_ObjRepo{
 
 	    // Hover on Shop
 	    WebElement shopMenu = wait.until(ExpectedConditions.visibilityOfElementLocated(
-	            By.xpath("//div[@class='header_nav_item has_dropdown']")
+	            By.xpath("//div[@class='header_nav_item has_dropdown shop']")
 	    ));
 	    actions.moveToElement(shopMenu).perform();
 
@@ -202,38 +202,72 @@ public class Review_Page extends Review_ObjRepo{
 	    WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(15));
 	    JavascriptExecutor js = (JavascriptExecutor) driver;
 
-	    // ============================================
-	    // STEP 1: Scroll to and click "Write a Review" button
+	 // ============================================
+	    // STEP 1: Scroll 20-25% from top & open review popup
 	    // ============================================
 	    
+	    By reviewBtnLocator = By.xpath("(//button[normalize-space()='Write a Review'])[1]");
+	    // Targets the active popup modal wrapper OR any input field inside it
+	    By reviewFormLocator = By.xpath("//div[contains(@class,'write_review_popup') and contains(@class,'active')] | (//textarea[@placeholder='Write a review'])[1]");
 
-	    WebElement writeReviewBtn = wait.until(ExpectedConditions.elementToBeClickable(
-	        By.xpath("(//button[normalize-space()='Write a Review'])[1]")
-	    ));
+	    boolean isFormOpened = false;
 
-	    // Scroll with offset to avoid fixed header
-	    js.executeScript(
-	        "var headerOffset = 100;" +
-	        "var elementPosition = arguments[0].getBoundingClientRect().top;" +
-	        "var offsetPosition = elementPosition + window.pageYOffset - headerOffset;" +
-	        "window.scrollTo({top: offsetPosition, behavior: 'instant'});", 
-	        writeReviewBtn
-	    );
-	    Common.waitForElement(2);
+	    // Check if the popup is already open before attempting any scrolling/clicking
+	    if (!driver.findElements(reviewFormLocator).isEmpty() && driver.findElement(reviewFormLocator).isDisplayed()) {
+	        System.out.println("🛒 Review popup is already open.");
+	        isFormOpened = true;
+	    } else {
+	        for (int attempt = 1; attempt <= 3; attempt++) {
+	            try {
+	                // 1. Initial page scroll to load review section
+	                js.executeScript("window.scrollTo(0, document.body.scrollHeight * 0.25);");
+	                Common.waitForElement(1);
 
-	    // Re-find after scroll
-	    writeReviewBtn = wait.until(ExpectedConditions.elementToBeClickable(
-	        By.xpath("(//button[normalize-space()='Write a Review'])[1]")
-	    ));
+	                // 2. Locate button and scroll it 20-25% down from top
+	                WebElement writeReviewBtn = wait.until(ExpectedConditions.presenceOfElementLocated(reviewBtnLocator));
+	                js.executeScript(
+	                    "var elementRect = arguments[0].getBoundingClientRect();" +
+	                    "var absoluteElementTop = elementRect.top + window.pageYOffset;" +
+	                    "var targetPosition = absoluteElementTop - (window.innerHeight * 0.22);" +
+	                    "window.scrollTo({top: targetPosition, behavior: 'instant'});", 
+	                    writeReviewBtn
+	                );
+	                Common.waitForElement(1);
 
-	    // ALWAYS use JS click to avoid both interception and stale element issues
-	    js.executeScript("arguments[0].click();", writeReviewBtn);
+	                // 3. Re-query fresh element reference
+	                writeReviewBtn = driver.findElement(reviewBtnLocator);
 
-	    System.out.println("🛒 'Write a Review' button clicked for: " + productlistingName);
-	    
-	    // Wait for form to fully open
-	    Common.waitForElement(3);
+	                // 4. Force JavaScript click to avoid layout overlap issues
+	                js.executeScript("arguments[0].click();", writeReviewBtn);
 
+	                // 5. Wait for active modal popup container to become visible
+	                WebDriverWait popupWait = new WebDriverWait(driver, Duration.ofSeconds(8));
+	                popupWait.until(ExpectedConditions.visibilityOfElementLocated(reviewFormLocator));
+	                
+	                isFormOpened = true;
+	                System.out.println("🛒 'Write a Review' button clicked successfully for: " + productlistingName);
+	                break;
+
+	            } catch (Exception e) {
+	                // If the popup popped open despite catching an exception, break out cleanly
+	                if (!driver.findElements(reviewFormLocator).isEmpty() && driver.findElement(reviewFormLocator).isDisplayed()) {
+	                    isFormOpened = true;
+	                    System.out.println("🛒 'Write a Review' popup detected open after attempt " + attempt);
+	                    break;
+	                }
+	                System.out.println("⚠️ Attempt " + attempt + " to open review popup failed. Retrying...");
+	                Common.waitForElement(1);
+	            }
+	        }
+	    }
+
+	    if (!isFormOpened) {
+	        Assert.fail("❌ Failed to open 'Write a Review' form after 3 attempts.");
+	    }
+
+	    if (!isFormOpened) {
+	        Assert.fail("❌ Failed to open 'Write a Review' form after 3 attempts.");
+	    }
 	    // ============================================
 	    // STEP 2: Select 5-star rating
 	    // ============================================

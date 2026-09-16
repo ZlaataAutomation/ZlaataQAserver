@@ -18,7 +18,7 @@ monochrome = true,
 dryRun = false,
 tags= "@TC_UI_Zlaata_ADMINORDER_01"
 )	
-		
+			
 public class TestRunner {	
 	
 	static {
