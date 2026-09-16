@@ -87,8 +87,8 @@ public abstract class AdminFlashNotificationObjRepo extends BasePage{
    	@FindBy(xpath="//select[@name='brand_type']")
    	protected WebElement brandTypeDropdown;
    	
-   	@FindBy(xpath="//textarea[@name='description']")
-   	protected WebElement descriptionTextArea;
+   	@FindBy(xpath = "//button[normalize-space()='Add Content']")
+    protected WebElement addContentButton;
    	
    	@FindBy(xpath="//input[@name='link']")
    	protected WebElement linkTextBox;

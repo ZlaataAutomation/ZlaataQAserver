@@ -29,7 +29,6 @@ Examples:
   | TD_UI_Zlaata_ExpressDelivery_02    |
   
      @exp
-  
  @TC_UI_Zlaata_ExpressDelivery_03
 Scenario Outline: TC_UI_Zlaata_ExpressDelivery_03|Verify  Delivery Day functionality on Product Listing Page.| "<TD_ID>"
 
